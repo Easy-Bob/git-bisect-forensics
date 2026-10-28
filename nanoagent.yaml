@@ -1,7 +1,7 @@
 _ > nanoagent.plugin.v0001.ManifestConfig:
 id: git-bisect-forensics
 name: Git Bisect Forensics
-version: 0.1.1
+version: 0.1.2
 status: ready
 spec: nanoagent.plugin/v0001
 
@@ -29,7 +29,7 @@ tools > dict[contract.Tool, nanoagent.plugin.v0001.ToolConfig]:
 # One entry per contract.Task; its input class is contract.TASKS's.
 tasks > dict[contract.Task, nanoagent.plugin.v0001.TaskConfig]:
   bisect:
-    description: Find the first commit in a bundled repo's history whose tests fail, and prove it with the agent's own test runs
+    description: Find the first commit whose tests fail in one of the bundled projects (moneyfmt, dateparse, iniparse, slugify or csvsum) and prove it with the agent's own test runs, for example find the commit that broke moneyfmt
     runner: agent
     tools: [git_log, show_commit, run_tests]
     reference: pin_truth
