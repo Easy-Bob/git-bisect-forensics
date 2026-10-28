@@ -1,0 +1,37 @@
+{
+  "description": "Boundary: commits 18-19 do not load (skip) right before the first bad (20).",
+  "repo": "slugify",
+  "calls": [
+    [
+      6,
+      12,
+      18,
+      24,
+      30,
+      36,
+      42
+    ],
+    [
+      13,
+      14,
+      15,
+      16,
+      17,
+      19,
+      20
+    ]
+  ],
+  "submit": {
+    "first_bad": 20,
+    "last_good": 17,
+    "skipped_between": [
+      18,
+      19
+    ]
+  },
+  "expect": {
+    "valid": true,
+    "score": 1.0,
+    "check": null
+  }
+}

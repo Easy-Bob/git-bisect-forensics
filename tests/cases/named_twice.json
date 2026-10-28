@@ -1,0 +1,38 @@
+{
+  "description": "last_good is also listed in skipped_between.",
+  "repo": "slugify",
+  "calls": [
+    [
+      6,
+      12,
+      18,
+      24,
+      30,
+      36,
+      42
+    ],
+    [
+      13,
+      14,
+      15,
+      16,
+      17,
+      19,
+      20
+    ]
+  ],
+  "submit": {
+    "first_bad": 20,
+    "last_good": 17,
+    "skipped_between": [
+      17,
+      18,
+      19
+    ]
+  },
+  "expect": {
+    "valid": false,
+    "score": 0.0,
+    "check": "submitted-shape"
+  }
+}

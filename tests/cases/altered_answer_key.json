@@ -1,0 +1,35 @@
+{
+  "description": "The pinned answer key altered without its sha256.",
+  "repo": "moneyfmt",
+  "calls": [
+    [
+      8,
+      16,
+      24,
+      32,
+      40,
+      48,
+      56
+    ],
+    [
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39
+    ]
+  ],
+  "submit": {
+    "first_bad": 37,
+    "last_good": 36,
+    "skipped_between": []
+  },
+  "expect": {
+    "valid": false,
+    "score": 0.0,
+    "check": "truth-integrity"
+  },
+  "tamper": "altered-answer-key"
+}

@@ -1,0 +1,34 @@
+{
+  "description": "A regression in the middle (37 of 64): two calls narrow 64 to 8 to 1.",
+  "repo": "moneyfmt",
+  "calls": [
+    [
+      8,
+      16,
+      24,
+      32,
+      40,
+      48,
+      56
+    ],
+    [
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39
+    ]
+  ],
+  "submit": {
+    "first_bad": 37,
+    "last_good": 36,
+    "skipped_between": []
+  },
+  "expect": {
+    "valid": true,
+    "score": 1.0,
+    "check": null
+  }
+}

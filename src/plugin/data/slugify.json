@@ -1,0 +1,494 @@
+{
+ "commits": [
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n",
+    "README.md": "# slugify\n\nTurn titles into URL slugs.\n",
+    "slugify/__init__.py": "\"\"\"Turn titles into URL slugs.\"\"\"\n\n__version__ = \"0.1.0\"\n",
+    "slugify/core.py": "\"\"\"Turn titles into URL slugs.\"\"\"\n\nimport re\nimport unicodedata\n\nSEPARATORS = re.compile(r\"[^a-z0-9]+\")\n\n\ndef slugify(text, sep=\"-\"):\n    ascii_text = unicodedata.normalize(\"NFKD\", text).encode(\"ascii\", \"ignore\").decode()\n    return SEPARATORS.sub(sep, ascii_text.lower()).strip(sep)\n",
+    "tests/__init__.py": "",
+    "tests/test_core.py": "import unittest\n\nfrom slugify import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_slugify(self):\n        self.assertEqual(core.slugify(\"  Hello, World!  \"), \"hello-world\")\n        self.assertEqual(core.slugify(\"Top 10 Tips\"), \"top-10-tips\")\n"
+   },
+   "date": "2025-03-04T07:41:00Z",
+   "id": "8b68564b08",
+   "message": "Initial import",
+   "parent": ""
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "README.md": "# slugify\n\nTurn titles into URL slugs.\n\n## slug_words\n\nSee `tests/test_core.py` for slug_words examples.\n"
+   },
+   "date": "2025-03-04T19:25:00Z",
+   "id": "4301870872",
+   "message": "docs: document slug_words",
+   "parent": "8b68564b08"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "slugify/__init__.py": "\"\"\"Turn titles into URL slugs.\"\"\"\n\n__version__ = \"0.1.1\"\n"
+   },
+   "date": "2025-03-05T16:55:00Z",
+   "id": "333782ac08",
+   "message": "chore: bump version to 0.1.1",
+   "parent": "4301870872"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "slugify/__init__.py": "\"\"\"Turn titles into URL slugs.\"\"\"\n\n__version__ = \"0.1.2\"\n"
+   },
+   "date": "2025-03-06T04:51:00Z",
+   "id": "5960535134",
+   "message": "chore: bump version to 0.1.2",
+   "parent": "333782ac08"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how separators behaves on edge inputs\n"
+   },
+   "date": "2025-03-06T23:28:00Z",
+   "id": "083d53fdfd",
+   "message": "docs: changelog entry for separators",
+   "parent": "5960535134"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "slugify/core.py": "\"\"\"Turn titles into URL slugs.\"\"\"\n\nimport re\nimport unicodedata\n\nSEPARATORS = re.compile(r\"[^a-z0-9]+\")\n\n\ndef slugify(text, sep=\"-\"):\n    ascii_text = unicodedata.normalize(\"NFKD\", text).encode(\"ascii\", \"ignore\").decode()\n    return SEPARATORS.sub(sep, ascii_text.lower()).strip(sep)\n\n# is_slug: keep this module free of I/O\n"
+   },
+   "date": "2025-03-07T07:11:00Z",
+   "id": "da1a815773",
+   "message": "style: note on is_slug",
+   "parent": "083d53fdfd"
+  },
+  {
+   "author": "Farah Haddad",
+   "changes": {
+    "slugify/__init__.py": "\"\"\"Turn titles into URL slugs.\"\"\"\n\n__version__ = \"0.1.3\"\n"
+   },
+   "date": "2025-03-07T08:33:00Z",
+   "id": "cdcbb10f54",
+   "message": "chore: bump version to 0.1.3",
+   "parent": "da1a815773"
+  },
+  {
+   "author": "Ada Park",
+   "changes": {
+    "slugify/__init__.py": "\"\"\"Turn titles into URL slugs.\"\"\"\n\n__version__ = \"0.1.4\"\n"
+   },
+   "date": "2025-03-07T21:56:00Z",
+   "id": "bff9d5a706",
+   "message": "chore: bump version to 0.1.4",
+   "parent": "cdcbb10f54"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "README.md": "# slugify\n\nTurn titles into URL slugs.\n\n## slug_words\n\nSee `tests/test_core.py` for slug_words examples.\n\n## slugify\n\nSee `tests/test_core.py` for slugify examples.\n"
+   },
+   "date": "2025-03-08T05:58:00Z",
+   "id": "d07fd4fbc4",
+   "message": "docs: document slugify",
+   "parent": "bff9d5a706"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how separators behaves on edge inputs\n- note how unique_slug behaves on edge inputs\n"
+   },
+   "date": "2025-03-09T02:19:00Z",
+   "id": "bfcf08115e",
+   "message": "docs: changelog entry for unique_slug",
+   "parent": "d07fd4fbc4"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "slugify/core.py": "\"\"\"Turn titles into URL slugs.\"\"\"\n\nimport re\nimport unicodedata\n\nSEPARATORS = re.compile(r\"[^a-z0-9]+\")\n\n\ndef slugify(text, sep=\"-\"):\n    ascii_text = unicodedata.normalize(\"NFKD\", text).encode(\"ascii\", \"ignore\").decode()\n    return SEPARATORS.sub(sep, ascii_text.lower()).strip(sep)\n\n# is_slug: keep this module free of I/O\n\n\ndef unique_slug(text, taken):\n    base = slugify(text)\n    if base not in taken:\n        return base\n    count = 2\n    while f\"{base}-{count}\" in taken:\n        count += 1\n    return f\"{base}-{count}\"\n",
+    "tests/test_core.py": "import unittest\n\nfrom slugify import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_slugify(self):\n        self.assertEqual(core.slugify(\"  Hello, World!  \"), \"hello-world\")\n        self.assertEqual(core.slugify(\"Top 10 Tips\"), \"top-10-tips\")\n\n    def test_unique_slug(self):\n        self.assertEqual(core.unique_slug(\"A b\", {\"a-b\", \"a-b-2\"}), \"a-b-3\")\n"
+   },
+   "date": "2025-03-09T11:58:00Z",
+   "id": "02df78044f",
+   "message": "feat: unique_slug",
+   "parent": "bfcf08115e"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "README.md": "# slugify\n\nTurn titles into URL slugs.\n\n## slug_words\n\nSee `tests/test_core.py` for slug_words examples.\n\n## slugify\n\nSee `tests/test_core.py` for slugify examples.\n\n## slug_words\n\nSee `tests/test_core.py` for slug_words examples.\n"
+   },
+   "date": "2025-03-10T11:12:00Z",
+   "id": "58c04264d0",
+   "message": "docs: document slug_words",
+   "parent": "02df78044f"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "README.md": "# slugify\n\nTurn titles into URL slugs.\n\n## slug_words\n\nSee `tests/test_core.py` for slug_words examples.\n\n## slugify\n\nSee `tests/test_core.py` for slugify examples.\n\n## slug_words\n\nSee `tests/test_core.py` for slug_words examples.\n\n## unique_slug\n\nSee `tests/test_core.py` for unique_slug examples.\n"
+   },
+   "date": "2025-03-11T15:43:00Z",
+   "id": "919a755876",
+   "message": "docs: document unique_slug",
+   "parent": "58c04264d0"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "README.md": "# slugify\n\nTurn titles into URL slugs.\n\n## slug_words\n\nSee `tests/test_core.py` for slug_words examples.\n\n## slugify\n\nSee `tests/test_core.py` for slugify examples.\n\n## slug_words\n\nSee `tests/test_core.py` for slug_words examples.\n\n## unique_slug\n\nSee `tests/test_core.py` for unique_slug examples.\n\n## unique_slug\n\nSee `tests/test_core.py` for unique_slug examples.\n"
+   },
+   "date": "2025-03-12T15:48:00Z",
+   "id": "f2db360928",
+   "message": "docs: document unique_slug",
+   "parent": "919a755876"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "slugify/__init__.py": "\"\"\"Turn titles into URL slugs.\"\"\"\n\n__version__ = \"0.1.5\"\n"
+   },
+   "date": "2025-03-12T19:52:00Z",
+   "id": "84b7ec1f28",
+   "message": "chore: bump version to 0.1.5",
+   "parent": "f2db360928"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "README.md": "# slugify\n\nTurn titles into URL slugs.\n\n## slug_words\n\nSee `tests/test_core.py` for slug_words examples.\n\n## slugify\n\nSee `tests/test_core.py` for slugify examples.\n\n## slug_words\n\nSee `tests/test_core.py` for slug_words examples.\n\n## unique_slug\n\nSee `tests/test_core.py` for unique_slug examples.\n\n## unique_slug\n\nSee `tests/test_core.py` for unique_slug examples.\n\n## separators\n\nSee `tests/test_core.py` for separators examples.\n"
+   },
+   "date": "2025-03-13T02:22:00Z",
+   "id": "e2e6dcaea9",
+   "message": "docs: document separators",
+   "parent": "84b7ec1f28"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "slugify/__init__.py": "\"\"\"Turn titles into URL slugs.\"\"\"\n\n__version__ = \"0.1.6\"\n"
+   },
+   "date": "2025-03-13T09:52:00Z",
+   "id": "1520438a65",
+   "message": "chore: bump version to 0.1.6",
+   "parent": "e2e6dcaea9"
+  },
+  {
+   "author": "Farah Haddad",
+   "changes": {
+    "slugify/core.py": "\"\"\"Turn titles into URL slugs.\"\"\"\n\nimport re\nimport unicodedata\n\nSEPARATORS = re.compile(r\"[^a-z0-9]+\")\n\n\ndef slugify(text, sep=\"-\"):\n    ascii_text = unicodedata.normalize(\"NFKD\", text).encode(\"ascii\", \"ignore\").decode()\n    return SEPARATORS.sub(sep, ascii_text.lower()).strip(sep)\n\n# is_slug: keep this module free of I/O\n\n\ndef unique_slug(text, taken):\n    base = slugify(text)\n    if base not in taken:\n        return base\n    count = 2\n    while f\"{base}-{count}\" in taken:\n        count += 1\n    return f\"{base}-{count}\"\n\n\ndef truncate(text, limit:\n    return text[:limit]\n"
+   },
+   "date": "2025-03-13T17:21:00Z",
+   "id": "12f362ce63",
+   "message": "wip: start a helper",
+   "parent": "1520438a65"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "slugify/core.py": "\"\"\"Turn titles into URL slugs.\"\"\"\n\nimport re\nimport unicodedata\n\nSEPARATORS = re.compile(r\"[^a-z0-9]+\")\n\n\ndef slugify(text, sep=\"-\"):\n    ascii_text = unicodedata.normalize(\"NFKD\", text).encode(\"ascii\", \"ignore\").decode()\n    return SEPARATORS.sub(sep, ascii_text.lower())\n\n# is_slug: keep this module free of I/O\n\n\ndef unique_slug(text, taken):\n    base = slugify(text)\n    if base not in taken:\n        return base\n    count = 2\n    while f\"{base}-{count}\" in taken:\n        count += 1\n    return f\"{base}-{count}\"\n\n\ndef truncate(text, limit:\n    return text[:limit]\n"
+   },
+   "date": "2025-03-14T10:52:00Z",
+   "id": "0b040d6154",
+   "message": "perf: one pass less in slugify",
+   "parent": "12f362ce63"
+  },
+  {
+   "author": "Ada Park",
+   "changes": {
+    "slugify/core.py": "\"\"\"Turn titles into URL slugs.\"\"\"\n\nimport re\nimport unicodedata\n\nSEPARATORS = re.compile(r\"[^a-z0-9]+\")\n\n\ndef slugify(text, sep=\"-\"):\n    ascii_text = unicodedata.normalize(\"NFKD\", text).encode(\"ascii\", \"ignore\").decode()\n    return SEPARATORS.sub(sep, ascii_text.lower())\n\n# is_slug: keep this module free of I/O\n\n\ndef unique_slug(text, taken):\n    base = slugify(text)\n    if base not in taken:\n        return base\n    count = 2\n    while f\"{base}-{count}\" in taken:\n        count += 1\n    return f\"{base}-{count}\"\n\n\ndef truncate(text, limit):\n    return text[:limit]\n"
+   },
+   "date": "2025-03-15T13:36:00Z",
+   "id": "81eb9009ca",
+   "message": "fix: truncate's signature",
+   "parent": "0b040d6154"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how separators behaves on edge inputs\n- note how unique_slug behaves on edge inputs\n- note how separators behaves on edge inputs\n"
+   },
+   "date": "2025-03-16T14:39:00Z",
+   "id": "68ef3b49eb",
+   "message": "docs: changelog entry for separators",
+   "parent": "81eb9009ca"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "slugify/__init__.py": "\"\"\"Turn titles into URL slugs.\"\"\"\n\n__version__ = \"0.1.7\"\n"
+   },
+   "date": "2025-03-16T18:55:00Z",
+   "id": "40b382cfdf",
+   "message": "chore: bump version to 0.1.7",
+   "parent": "68ef3b49eb"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "slugify/core.py": "\"\"\"Turn titles into URL slugs.\"\"\"\n\nimport re\nimport unicodedata\n\nSEPARATORS = re.compile(r\"[^a-z0-9]+\")\n\n\ndef slugify(text, sep=\"-\"):\n    ascii_text = unicodedata.normalize(\"NFKD\", text).encode(\"ascii\", \"ignore\").decode()\n    return SEPARATORS.sub(sep, ascii_text.lower())\n\n# is_slug: keep this module free of I/O\n\n\ndef unique_slug(text, taken):\n    base = slugify(text)\n    if base not in taken:\n        return base\n    count = 2\n    while f\"{base}-{count}\" in taken:\n        count += 1\n    return f\"{base}-{count}\"\n\n\ndef truncate(text, limit):\n    return text[:limit]\n\n\ndef slug_words(slug, sep=\"-\"):\n    return [word for word in slug.split(sep) if word]\n",
+    "tests/test_core.py": "import unittest\n\nfrom slugify import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_slugify(self):\n        self.assertEqual(core.slugify(\"  Hello, World!  \"), \"hello-world\")\n        self.assertEqual(core.slugify(\"Top 10 Tips\"), \"top-10-tips\")\n\n    def test_unique_slug(self):\n        self.assertEqual(core.unique_slug(\"A b\", {\"a-b\", \"a-b-2\"}), \"a-b-3\")\n\n    def test_slug_words(self):\n        self.assertEqual(core.slug_words(\"a-b-c\"), [\"a\", \"b\", \"c\"])\n"
+   },
+   "date": "2025-03-17T16:52:00Z",
+   "id": "5ea2088cf5",
+   "message": "feat: slug_words",
+   "parent": "40b382cfdf"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "README.md": "# slugify\n\nTurn titles into URL slugs.\n\n## slug_words\n\nSee `tests/test_core.py` for slug_words examples.\n\n## slugify\n\nSee `tests/test_core.py` for slugify examples.\n\n## slug_words\n\nSee `tests/test_core.py` for slug_words examples.\n\n## unique_slug\n\nSee `tests/test_core.py` for unique_slug examples.\n\n## unique_slug\n\nSee `tests/test_core.py` for unique_slug examples.\n\n## separators\n\nSee `tests/test_core.py` for separators examples.\n\n## slug_words\n\nSee `tests/test_core.py` for slug_words examples.\n"
+   },
+   "date": "2025-03-18T19:23:00Z",
+   "id": "4d0d451c96",
+   "message": "docs: document slug_words",
+   "parent": "5ea2088cf5"
+  },
+  {
+   "author": "Farah Haddad",
+   "changes": {
+    "slugify/__init__.py": "\"\"\"Turn titles into URL slugs.\"\"\"\n\n__version__ = \"0.1.8\"\n"
+   },
+   "date": "2025-03-19T22:11:00Z",
+   "id": "b9f7a74eea",
+   "message": "chore: bump version to 0.1.8",
+   "parent": "4d0d451c96"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how separators behaves on edge inputs\n- note how unique_slug behaves on edge inputs\n- note how separators behaves on edge inputs\n- note how slug_words behaves on edge inputs\n"
+   },
+   "date": "2025-03-20T14:09:00Z",
+   "id": "cd839930a1",
+   "message": "docs: changelog entry for slug_words",
+   "parent": "b9f7a74eea"
+  },
+  {
+   "author": "Farah Haddad",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how separators behaves on edge inputs\n- note how unique_slug behaves on edge inputs\n- note how separators behaves on edge inputs\n- note how slug_words behaves on edge inputs\n- note how slug_words behaves on edge inputs\n"
+   },
+   "date": "2025-03-21T18:21:00Z",
+   "id": "d2072091f9",
+   "message": "docs: changelog entry for slug_words",
+   "parent": "cd839930a1"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "README.md": "# slugify\n\nTurn titles into URL slugs.\n\n## slug_words\n\nSee `tests/test_core.py` for slug_words examples.\n\n## slugify\n\nSee `tests/test_core.py` for slugify examples.\n\n## slug_words\n\nSee `tests/test_core.py` for slug_words examples.\n\n## unique_slug\n\nSee `tests/test_core.py` for unique_slug examples.\n\n## unique_slug\n\nSee `tests/test_core.py` for unique_slug examples.\n\n## separators\n\nSee `tests/test_core.py` for separators examples.\n\n## slug_words\n\nSee `tests/test_core.py` for slug_words examples.\n\n## slugify\n\nSee `tests/test_core.py` for slugify examples.\n"
+   },
+   "date": "2025-03-21T19:53:00Z",
+   "id": "d886863871",
+   "message": "docs: document slugify",
+   "parent": "d2072091f9"
+  },
+  {
+   "author": "Farah Haddad",
+   "changes": {
+    "slugify/__init__.py": "\"\"\"Turn titles into URL slugs.\"\"\"\n\n__version__ = \"0.1.9\"\n"
+   },
+   "date": "2025-03-21T21:39:00Z",
+   "id": "6d225fe26c",
+   "message": "chore: bump version to 0.1.9",
+   "parent": "d886863871"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how separators behaves on edge inputs\n- note how unique_slug behaves on edge inputs\n- note how separators behaves on edge inputs\n- note how slug_words behaves on edge inputs\n- note how slug_words behaves on edge inputs\n- note how slug_words behaves on edge inputs\n"
+   },
+   "date": "2025-03-21T23:33:00Z",
+   "id": "080dd3a0f2",
+   "message": "docs: changelog entry for slug_words",
+   "parent": "6d225fe26c"
+  },
+  {
+   "author": "Ada Park",
+   "changes": {
+    "slugify/core.py": "\"\"\"Turn titles into URL slugs.\"\"\"\n\nimport re\nimport unicodedata\n\nSEPARATORS = re.compile(r\"[^a-z0-9]+\")\n\n\ndef slugify(text, sep=\"-\"):\n    ascii_text = unicodedata.normalize(\"NFKD\", text).encode(\"ascii\", \"ignore\").decode()\n    return SEPARATORS.sub(sep, ascii_text.lower())\n\n# is_slug: keep this module free of I/O\n\n\ndef unique_slug(text, taken):\n    base = slugify(text)\n    if base not in taken:\n        return base\n    count = 2\n    while f\"{base}-{count}\" in taken:\n        count += 1\n    return f\"{base}-{count}\"\n\n\ndef truncate(text, limit):\n    return text[:limit]\n\n\ndef slug_words(slug, sep=\"-\"):\n    return [word for word in slug.split(sep) if word]\n\n\ndef is_slug(text, sep=\"-\"):\n    return bool(text) and slugify(text, sep) == text\n",
+    "tests/test_core.py": "import unittest\n\nfrom slugify import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_slugify(self):\n        self.assertEqual(core.slugify(\"  Hello, World!  \"), \"hello-world\")\n        self.assertEqual(core.slugify(\"Top 10 Tips\"), \"top-10-tips\")\n\n    def test_unique_slug(self):\n        self.assertEqual(core.unique_slug(\"A b\", {\"a-b\", \"a-b-2\"}), \"a-b-3\")\n\n    def test_slug_words(self):\n        self.assertEqual(core.slug_words(\"a-b-c\"), [\"a\", \"b\", \"c\"])\n\n    def test_is_slug(self):\n        self.assertTrue(core.is_slug(\"ok-slug\"))\n        self.assertFalse(core.is_slug(\"Not ok\"))\n"
+   },
+   "date": "2025-03-22T04:46:00Z",
+   "id": "4a41b12f64",
+   "message": "feat: is_slug",
+   "parent": "080dd3a0f2"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "tests/test_core.py": "import unittest\n\nfrom slugify import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_slugify(self):\n        self.assertEqual(core.slugify(\"  Hello, World!  \"), \"hello-world\")\n        self.assertEqual(core.slugify(\"Top 10 Tips\"), \"top-10-tips\")\n\n    def test_unique_slug(self):\n        self.assertEqual(core.unique_slug(\"A b\", {\"a-b\", \"a-b-2\"}), \"a-b-3\")\n\n    def test_slug_words(self):\n        self.assertEqual(core.slug_words(\"a-b-c\"), [\"a\", \"b\", \"c\"])\n\n    def test_is_slug(self):\n        self.assertTrue(core.is_slug(\"ok-slug\"))\n        self.assertFalse(core.is_slug(\"Not ok\"))\n\n    def test_accents(self):\n        self.assertEqual(core.slugify(\"Cr\u00e8me Br\u00fbl\u00e9e\"), \"creme-brulee\")\n"
+   },
+   "date": "2025-03-22T22:51:00Z",
+   "id": "3896a31bd4",
+   "message": "test: cover accents",
+   "parent": "4a41b12f64"
+  },
+  {
+   "author": "Farah Haddad",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how separators behaves on edge inputs\n- note how unique_slug behaves on edge inputs\n- note how separators behaves on edge inputs\n- note how slug_words behaves on edge inputs\n- note how slug_words behaves on edge inputs\n- note how slug_words behaves on edge inputs\n- note how is_slug behaves on edge inputs\n"
+   },
+   "date": "2025-03-23T07:39:00Z",
+   "id": "13f9120f90",
+   "message": "docs: changelog entry for is_slug",
+   "parent": "3896a31bd4"
+  },
+  {
+   "author": "Farah Haddad",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how separators behaves on edge inputs\n- note how unique_slug behaves on edge inputs\n- note how separators behaves on edge inputs\n- note how slug_words behaves on edge inputs\n- note how slug_words behaves on edge inputs\n- note how slug_words behaves on edge inputs\n- note how is_slug behaves on edge inputs\n- note how is_slug behaves on edge inputs\n"
+   },
+   "date": "2025-03-24T09:52:00Z",
+   "id": "f75d8aef02",
+   "message": "docs: changelog entry for is_slug",
+   "parent": "13f9120f90"
+  },
+  {
+   "author": "Farah Haddad",
+   "changes": {
+    "slugify/core.py": "\"\"\"Turn titles into URL slugs.\"\"\"\n\nimport re\nimport unicodedata\n\nSEPARATORS = re.compile(r\"[^a-z0-9]+\")\n\n\ndef slugify(text, sep=\"-\"):\n    ascii_text = unicodedata.normalize(\"NFKD\", text).encode(\"ascii\", \"ignore\").decode()\n    return SEPARATORS.sub(sep, ascii_text.lower())\n\n# is_slug: keep this module free of I/O\n\n\ndef unique_slug(text, taken):\n    base = slugify(text)\n    if base not in taken:\n        return base\n    count = 2\n    while f\"{base}-{count}\" in taken:\n        count += 1\n    return f\"{base}-{count}\"\n\n\ndef truncate(text, limit):\n    return text[:limit]\n\n\ndef slug_words(slug, sep=\"-\"):\n    return [word for word in slug.split(sep) if word]\n\n\ndef is_slug(text, sep=\"-\"):\n    return bool(text) and slugify(text, sep) == text\n\n# slugify: keep this module free of I/O\n"
+   },
+   "date": "2025-03-25T07:20:00Z",
+   "id": "877c5c1357",
+   "message": "style: note on slugify",
+   "parent": "f75d8aef02"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "slugify/__init__.py": "\"\"\"Turn titles into URL slugs.\"\"\"\n\n__version__ = \"0.1.10\"\n"
+   },
+   "date": "2025-03-25T17:03:00Z",
+   "id": "a4c645bfb1",
+   "message": "chore: bump version to 0.1.10",
+   "parent": "877c5c1357"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "tests/test_core.py": "import unittest\n\nfrom slugify import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_slugify(self):\n        self.assertEqual(core.slugify(\"  Hello, World!  \"), \"hello-world\")\n        self.assertEqual(core.slugify(\"Top 10 Tips\"), \"top-10-tips\")\n\n    def test_unique_slug(self):\n        self.assertEqual(core.unique_slug(\"A b\", {\"a-b\", \"a-b-2\"}), \"a-b-3\")\n\n    def test_slug_words(self):\n        self.assertEqual(core.slug_words(\"a-b-c\"), [\"a\", \"b\", \"c\"])\n\n    def test_is_slug(self):\n        self.assertTrue(core.is_slug(\"ok-slug\"))\n        self.assertFalse(core.is_slug(\"Not ok\"))\n\n    def test_accents(self):\n        self.assertEqual(core.slugify(\"Cr\u00e8me Br\u00fbl\u00e9e\"), \"creme-brulee\")\n\n    def test_underscore(self):\n        self.assertEqual(core.slugify(\"a b\", \"_\"), \"a_b\")\n"
+   },
+   "date": "2025-03-26T14:36:00Z",
+   "id": "f441d8bdd0",
+   "message": "test: cover custom separators",
+   "parent": "a4c645bfb1"
+  },
+  {
+   "author": "Farah Haddad",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how separators behaves on edge inputs\n- note how unique_slug behaves on edge inputs\n- note how separators behaves on edge inputs\n- note how slug_words behaves on edge inputs\n- note how slug_words behaves on edge inputs\n- note how slug_words behaves on edge inputs\n- note how is_slug behaves on edge inputs\n- note how is_slug behaves on edge inputs\n- note how slug_words behaves on edge inputs\n"
+   },
+   "date": "2025-03-27T09:53:00Z",
+   "id": "4727386cd9",
+   "message": "docs: changelog entry for slug_words",
+   "parent": "f441d8bdd0"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "tests/test_core.py": "import unittest\n\nfrom slugify import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_slugify(self):\n        self.assertEqual(core.slugify(\"  Hello, World!  \"), \"hello-world\")\n        self.assertEqual(core.slugify(\"Top 10 Tips\"), \"top-10-tips\")\n\n    def test_unique_slug(self):\n        self.assertEqual(core.unique_slug(\"A b\", {\"a-b\", \"a-b-2\"}), \"a-b-3\")\n\n    def test_slug_words(self):\n        self.assertEqual(core.slug_words(\"a-b-c\"), [\"a\", \"b\", \"c\"])\n\n    def test_is_slug(self):\n        self.assertTrue(core.is_slug(\"ok-slug\"))\n        self.assertFalse(core.is_slug(\"Not ok\"))\n\n    def test_accents(self):\n        self.assertEqual(core.slugify(\"Cr\u00e8me Br\u00fbl\u00e9e\"), \"creme-brulee\")\n\n    def test_underscore(self):\n        self.assertEqual(core.slugify(\"a b\", \"_\"), \"a_b\")\n\n    def test_empty(self):\n        self.assertEqual(core.slugify(\"\"), \"\")\n"
+   },
+   "date": "2025-03-28T11:53:00Z",
+   "id": "647c144ed9",
+   "message": "test: cover empty titles",
+   "parent": "4727386cd9"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "slugify/core.py": "\"\"\"Turn titles into URL slugs.\"\"\"\n\nimport re\nimport unicodedata\n\nSEPARATORS = re.compile(r\"[^a-z0-9]+\")\n\n\ndef slugify(text, sep=\"-\"):\n    ascii_text = unicodedata.normalize(\"NFKD\", text).encode(\"ascii\", \"ignore\").decode()\n    return SEPARATORS.sub(sep, ascii_text.lower())\n\n# is_slug: keep this module free of I/O\n\n\ndef unique_slug(text, taken):\n    base = slugify(text)\n    if base not in taken:\n        return base\n    count = 2\n    while f\"{base}-{count}\" in taken:\n        count += 1\n    return f\"{base}-{count}\"\n\n\ndef truncate(text, limit):\n    return text[:limit]\n\n\ndef slug_words(slug, sep=\"-\"):\n    return [word for word in slug.split(sep) if word]\n\n\ndef is_slug(text, sep=\"-\"):\n    return bool(text) and slugify(text, sep) == text\n\n# slugify: keep this module free of I/O\n\n\ndef short_slug(text, words, sep=\"-\"):\n    return sep.join(slug_words(slugify(text, sep), sep)[:words])\n",
+    "tests/test_core.py": "import unittest\n\nfrom slugify import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_slugify(self):\n        self.assertEqual(core.slugify(\"  Hello, World!  \"), \"hello-world\")\n        self.assertEqual(core.slugify(\"Top 10 Tips\"), \"top-10-tips\")\n\n    def test_unique_slug(self):\n        self.assertEqual(core.unique_slug(\"A b\", {\"a-b\", \"a-b-2\"}), \"a-b-3\")\n\n    def test_slug_words(self):\n        self.assertEqual(core.slug_words(\"a-b-c\"), [\"a\", \"b\", \"c\"])\n\n    def test_is_slug(self):\n        self.assertTrue(core.is_slug(\"ok-slug\"))\n        self.assertFalse(core.is_slug(\"Not ok\"))\n\n    def test_accents(self):\n        self.assertEqual(core.slugify(\"Cr\u00e8me Br\u00fbl\u00e9e\"), \"creme-brulee\")\n\n    def test_underscore(self):\n        self.assertEqual(core.slugify(\"a b\", \"_\"), \"a_b\")\n\n    def test_empty(self):\n        self.assertEqual(core.slugify(\"\"), \"\")\n\n    def test_short_slug(self):\n        self.assertEqual(core.short_slug(\"one two three\", 2), \"one-two\")\n"
+   },
+   "date": "2025-03-29T10:31:00Z",
+   "id": "a8c4efe8af",
+   "message": "feat: short_slug",
+   "parent": "647c144ed9"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "slugify/core.py": "\"\"\"Turn titles into URL slugs.\"\"\"\n\nimport re\nimport unicodedata\n\nSEPARATORS = re.compile(r\"[^a-z0-9]+\")\n\n\ndef slugify(text, sep=\"-\"):\n    ascii_text = unicodedata.normalize(\"NFKD\", text).encode(\"ascii\", \"ignore\").decode()\n    return SEPARATORS.sub(sep, ascii_text.lower())\n\n# is_slug: keep this module free of I/O\n\n\ndef unique_slug(text, taken):\n    base = slugify(text)\n    if base not in taken:\n        return base\n    count = 2\n    while f\"{base}-{count}\" in taken:\n        count += 1\n    return f\"{base}-{count}\"\n\n\ndef truncate(text, limit):\n    return text[:limit]\n\n\ndef slug_words(slug, sep=\"-\"):\n    return [word for word in slug.split(sep) if word]\n\n\ndef is_slug(text, sep=\"-\"):\n    return bool(text) and slugify(text, sep) == text\n\n# slugify: keep this module free of I/O\n\n\ndef short_slug(text, words, sep=\"-\"):\n    return sep.join(slug_words(slugify(text, sep), sep)[:words])\n\n# slug_words: keep this module free of I/O\n"
+   },
+   "date": "2025-03-29T20:16:00Z",
+   "id": "8c9587250b",
+   "message": "style: note on slug_words",
+   "parent": "a8c4efe8af"
+  },
+  {
+   "author": "Farah Haddad",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how separators behaves on edge inputs\n- note how unique_slug behaves on edge inputs\n- note how separators behaves on edge inputs\n- note how slug_words behaves on edge inputs\n- note how slug_words behaves on edge inputs\n- note how slug_words behaves on edge inputs\n- note how is_slug behaves on edge inputs\n- note how is_slug behaves on edge inputs\n- note how slug_words behaves on edge inputs\n- note how is_slug behaves on edge inputs\n"
+   },
+   "date": "2025-03-31T01:19:00Z",
+   "id": "516053564f",
+   "message": "docs: changelog entry for is_slug",
+   "parent": "8c9587250b"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "slugify/__init__.py": "\"\"\"Turn titles into URL slugs.\"\"\"\n\n__version__ = \"0.1.11\"\n"
+   },
+   "date": "2025-03-31T11:06:00Z",
+   "id": "74a949c7a6",
+   "message": "chore: bump version to 0.1.11",
+   "parent": "516053564f"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how separators behaves on edge inputs\n- note how unique_slug behaves on edge inputs\n- note how separators behaves on edge inputs\n- note how slug_words behaves on edge inputs\n- note how slug_words behaves on edge inputs\n- note how slug_words behaves on edge inputs\n- note how is_slug behaves on edge inputs\n- note how is_slug behaves on edge inputs\n- note how slug_words behaves on edge inputs\n- note how is_slug behaves on edge inputs\n- note how unicode titles behaves on edge inputs\n"
+   },
+   "date": "2025-04-01T06:50:00Z",
+   "id": "66730b81b9",
+   "message": "docs: changelog entry for unicode titles",
+   "parent": "74a949c7a6"
+  },
+  {
+   "author": "Ada Park",
+   "changes": {
+    "README.md": "# slugify\n\nTurn titles into URL slugs.\n\n## slug_words\n\nSee `tests/test_core.py` for slug_words examples.\n\n## slugify\n\nSee `tests/test_core.py` for slugify examples.\n\n## slug_words\n\nSee `tests/test_core.py` for slug_words examples.\n\n## unique_slug\n\nSee `tests/test_core.py` for unique_slug examples.\n\n## unique_slug\n\nSee `tests/test_core.py` for unique_slug examples.\n\n## separators\n\nSee `tests/test_core.py` for separators examples.\n\n## slug_words\n\nSee `tests/test_core.py` for slug_words examples.\n\n## slugify\n\nSee `tests/test_core.py` for slugify examples.\n\n## separators\n\nSee `tests/test_core.py` for separators examples.\n"
+   },
+   "date": "2025-04-02T00:13:00Z",
+   "id": "6c2f0c5bca",
+   "message": "docs: document separators",
+   "parent": "66730b81b9"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "slugify/__init__.py": "\"\"\"Turn titles into URL slugs.\"\"\"\n\n__version__ = \"0.1.12\"\n"
+   },
+   "date": "2025-04-02T06:33:00Z",
+   "id": "00b1b14b00",
+   "message": "chore: bump version to 0.1.12",
+   "parent": "6c2f0c5bca"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "slugify/core.py": "\"\"\"Turn titles into URL slugs.\"\"\"\n\nimport re\nimport unicodedata\n\nSEPARATORS = re.compile(r\"[^a-z0-9]+\")\n\n\ndef slugify(text, sep=\"-\"):\n    ascii_text = unicodedata.normalize(\"NFKD\", text).encode(\"ascii\", \"ignore\").decode()\n    return SEPARATORS.sub(sep, ascii_text.lower())\n\n# is_slug: keep this module free of I/O\n\n\ndef unique_slug(text, taken):\n    base = slugify(text)\n    if base not in taken:\n        return base\n    count = 2\n    while f\"{base}-{count}\" in taken:\n        count += 1\n    return f\"{base}-{count}\"\n\n\ndef truncate(text, limit):\n    return text[:limit]\n\n\ndef slug_words(slug, sep=\"-\"):\n    return [word for word in slug.split(sep) if word]\n\n\ndef is_slug(text, sep=\"-\"):\n    return bool(text) and slugify(text, sep) == text\n\n# slugify: keep this module free of I/O\n\n\ndef short_slug(text, words, sep=\"-\"):\n    return sep.join(slug_words(slugify(text, sep), sep)[:words])\n\n# slug_words: keep this module free of I/O\n\n# slugify: keep this module free of I/O\n"
+   },
+   "date": "2025-04-02T23:32:00Z",
+   "id": "bdc14b9466",
+   "message": "style: note on slugify",
+   "parent": "00b1b14b00"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how separators behaves on edge inputs\n- note how unique_slug behaves on edge inputs\n- note how separators behaves on edge inputs\n- note how slug_words behaves on edge inputs\n- note how slug_words behaves on edge inputs\n- note how slug_words behaves on edge inputs\n- note how is_slug behaves on edge inputs\n- note how is_slug behaves on edge inputs\n- note how slug_words behaves on edge inputs\n- note how is_slug behaves on edge inputs\n- note how unicode titles behaves on edge inputs\n- note how separators behaves on edge inputs\n"
+   },
+   "date": "2025-04-03T10:10:00Z",
+   "id": "80f76ba3fc",
+   "message": "docs: changelog entry for separators",
+   "parent": "bdc14b9466"
+  }
+ ],
+ "repo": "slugify"
+}

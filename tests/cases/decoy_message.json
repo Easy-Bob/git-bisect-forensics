@@ -1,0 +1,30 @@
+{
+  "description": "Trusts the 'fix rounding' message: submits the good decoy commit 16.",
+  "repo": "csvsum",
+  "calls": [
+    [
+      4,
+      8,
+      12,
+      16,
+      20,
+      24,
+      28
+    ],
+    [
+      17,
+      18,
+      19
+    ]
+  ],
+  "submit": {
+    "first_bad": 16,
+    "last_good": 12,
+    "skipped_between": []
+  },
+  "expect": {
+    "valid": false,
+    "score": 0.0,
+    "check": "first-bad-correct"
+  }
+}

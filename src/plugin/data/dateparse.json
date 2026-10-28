@@ -1,0 +1,655 @@
+{
+ "commits": [
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n",
+    "README.md": "# dateparse\n\nCalendar dates as (year, month, day) tuples.\n",
+    "dateparse/__init__.py": "\"\"\"Calendar dates as (year, month, day) tuples.\"\"\"\n\n__version__ = \"0.1.0\"\n",
+    "dateparse/core.py": "\"\"\"Calendar dates as (year, month, day) tuples.\"\"\"\n\nDAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]\n\n\ndef is_leap(year):\n    return year % 4 == 0 and (year % 100 != 0 or year % 400 == 0)\n\n\ndef days_in_month(year, month):\n    if month == 2 and is_leap(year):\n        return 29\n    return DAYS[month - 1]\n\n\ndef parse_iso_date(text):\n    \"\"\"'2024-02-29' -> (2024, 2, 29); ValueError for a date that does not exist.\"\"\"\n    year, month, day = (int(part) for part in text.strip().split(\"-\"))\n    if not 1 <= month <= 12 or not 1 <= day <= days_in_month(year, month):\n        raise ValueError(f\"no such date: {text}\")\n    return year, month, day\n",
+    "tests/__init__.py": "",
+    "tests/test_core.py": "import unittest\n\nfrom dateparse import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_is_leap(self):\n        self.assertTrue(core.is_leap(2000))\n        self.assertFalse(core.is_leap(1900))\n        self.assertTrue(core.is_leap(2024))\n\n    def test_parse_iso_date(self):\n        self.assertEqual(core.parse_iso_date(\"2024-02-29\"), (2024, 2, 29))\n        with self.assertRaises(ValueError):\n            core.parse_iso_date(\"2023-02-29\")\n"
+   },
+   "date": "2025-03-03T20:58:00Z",
+   "id": "7ac0bdc9f6",
+   "message": "Initial import",
+   "parent": ""
+  },
+  {
+   "author": "Ada Park",
+   "changes": {
+    "dateparse/core.py": "\"\"\"Calendar dates as (year, month, day) tuples.\"\"\"\n\nDAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]\n\n\ndef is_leap(year):\n    return year % 4 == 0 and year % 100 != 0\n\n\ndef days_in_month(year, month):\n    if month == 2 and is_leap(year):\n        return 29\n    return DAYS[month - 1]\n\n\ndef parse_iso_date(text):\n    \"\"\"'2024-02-29' -> (2024, 2, 29); ValueError for a date that does not exist.\"\"\"\n    year, month, day = (int(part) for part in text.strip().split(\"-\"))\n    if not 1 <= month <= 12 or not 1 <= day <= days_in_month(year, month):\n        raise ValueError(f\"no such date: {text}\")\n    return year, month, day\n"
+   },
+   "date": "2025-03-03T23:09:00Z",
+   "id": "943b275ad2",
+   "message": "refactor: shorten is_leap",
+   "parent": "7ac0bdc9f6"
+  },
+  {
+   "author": "Ada Park",
+   "changes": {
+    "README.md": "# dateparse\n\nCalendar dates as (year, month, day) tuples.\n\n## day_of_year\n\nSee `tests/test_core.py` for day_of_year examples.\n"
+   },
+   "date": "2025-03-04T18:00:00Z",
+   "id": "a2f654fe0f",
+   "message": "docs: document day_of_year",
+   "parent": "943b275ad2"
+  },
+  {
+   "author": "Farah Haddad",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how days_in_month behaves on edge inputs\n"
+   },
+   "date": "2025-03-05T14:05:00Z",
+   "id": "392e64ee42",
+   "message": "docs: changelog entry for days_in_month",
+   "parent": "a2f654fe0f"
+  },
+  {
+   "author": "Ada Park",
+   "changes": {
+    "dateparse/__init__.py": "\"\"\"Calendar dates as (year, month, day) tuples.\"\"\"\n\n__version__ = \"0.1.1\"\n"
+   },
+   "date": "2025-03-06T18:41:00Z",
+   "id": "e975bb773b",
+   "message": "chore: bump version to 0.1.1",
+   "parent": "392e64ee42"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "dateparse/core.py": "\"\"\"Calendar dates as (year, month, day) tuples.\"\"\"\n\nDAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]\n\n\ndef is_leap(year):\n    return year % 4 == 0 and year % 100 != 0\n\n\ndef days_in_month(year, month):\n    if month == 2 and is_leap(year):\n        return 29\n    return DAYS[month - 1]\n\n\ndef parse_iso_date(text):\n    \"\"\"'2024-02-29' -> (2024, 2, 29); ValueError for a date that does not exist.\"\"\"\n    year, month, day = (int(part) for part in text.strip().split(\"-\"))\n    if not 1 <= month <= 12 or not 1 <= day <= days_in_month(year, month):\n        raise ValueError(f\"no such date: {text}\")\n    return year, month, day\n\n# weekday: keep this module free of I/O\n"
+   },
+   "date": "2025-03-07T15:41:00Z",
+   "id": "115e353420",
+   "message": "style: note on weekday",
+   "parent": "e975bb773b"
+  },
+  {
+   "author": "Farah Haddad",
+   "changes": {
+    "README.md": "# dateparse\n\nCalendar dates as (year, month, day) tuples.\n\n## day_of_year\n\nSee `tests/test_core.py` for day_of_year examples.\n\n## weekday\n\nSee `tests/test_core.py` for weekday examples.\n"
+   },
+   "date": "2025-03-08T02:50:00Z",
+   "id": "1b0e7fe992",
+   "message": "docs: document weekday",
+   "parent": "115e353420"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how days_in_month behaves on edge inputs\n- note how weekday behaves on edge inputs\n"
+   },
+   "date": "2025-03-09T06:31:00Z",
+   "id": "a4482f6b15",
+   "message": "docs: changelog entry for weekday",
+   "parent": "1b0e7fe992"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "dateparse/core.py": "\"\"\"Calendar dates as (year, month, day) tuples.\"\"\"\n\nDAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]\n\n\ndef is_leap(year):\n    return year % 4 == 0 and year % 100 != 0\n\n\ndef days_in_month(year, month):\n    if month == 2 and is_leap(year):\n        return 29\n    return DAYS[month - 1]\n\n\ndef parse_iso_date(text):\n    \"\"\"'2024-02-29' -> (2024, 2, 29); ValueError for a date that does not exist.\"\"\"\n    year, month, day = (int(part) for part in text.strip().split(\"-\"))\n    if not 1 <= month <= 12 or not 1 <= day <= days_in_month(year, month):\n        raise ValueError(f\"no such date: {text}\")\n    return year, month, day\n\n# weekday: keep this module free of I/O\n\n# days_in_month: keep this module free of I/O\n"
+   },
+   "date": "2025-03-10T05:18:00Z",
+   "id": "66a01fa8a7",
+   "message": "style: note on days_in_month",
+   "parent": "a4482f6b15"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "README.md": "# dateparse\n\nCalendar dates as (year, month, day) tuples.\n\n## day_of_year\n\nSee `tests/test_core.py` for day_of_year examples.\n\n## weekday\n\nSee `tests/test_core.py` for weekday examples.\n\n## is_leap\n\nSee `tests/test_core.py` for is_leap examples.\n"
+   },
+   "date": "2025-03-11T02:57:00Z",
+   "id": "292cee7136",
+   "message": "docs: document is_leap",
+   "parent": "66a01fa8a7"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "README.md": "# dateparse\n\nCalendar dates as (year, month, day) tuples.\n\n## day_of_year\n\nSee `tests/test_core.py` for day_of_year examples.\n\n## weekday\n\nSee `tests/test_core.py` for weekday examples.\n\n## is_leap\n\nSee `tests/test_core.py` for is_leap examples.\n\n## days_in_month\n\nSee `tests/test_core.py` for days_in_month examples.\n"
+   },
+   "date": "2025-03-11T13:53:00Z",
+   "id": "8e9ecaf31e",
+   "message": "docs: document days_in_month",
+   "parent": "292cee7136"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "dateparse/__init__.py": "\"\"\"Calendar dates as (year, month, day) tuples.\"\"\"\n\n__version__ = \"0.1.2\"\n"
+   },
+   "date": "2025-03-12T20:36:00Z",
+   "id": "a831c9be17",
+   "message": "chore: bump version to 0.1.2",
+   "parent": "8e9ecaf31e"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "dateparse/core.py": "\"\"\"Calendar dates as (year, month, day) tuples.\"\"\"\n\nDAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]\n\n\ndef is_leap(year):\n    return year % 4 == 0 and year % 100 != 0\n\n\ndef days_in_month(year, month):\n    if month == 2 and is_leap(year):\n        return 29\n    return DAYS[month - 1]\n\n\ndef parse_iso_date(text):\n    \"\"\"'2024-02-29' -> (2024, 2, 29); ValueError for a date that does not exist.\"\"\"\n    year, month, day = (int(part) for part in text.strip().split(\"-\"))\n    if not 1 <= month <= 12 or not 1 <= day <= days_in_month(year, month):\n        raise ValueError(f\"no such date: {text}\")\n    return year, month, day\n\n# weekday: keep this module free of I/O\n\n# days_in_month: keep this module free of I/O\n\n\ndef day_of_year(year, month, day):\n    return sum(days_in_month(year, k) for k in range(1, month)) + day\n",
+    "tests/test_core.py": "import unittest\n\nfrom dateparse import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_is_leap(self):\n        self.assertTrue(core.is_leap(2000))\n        self.assertFalse(core.is_leap(1900))\n        self.assertTrue(core.is_leap(2024))\n\n    def test_parse_iso_date(self):\n        self.assertEqual(core.parse_iso_date(\"2024-02-29\"), (2024, 2, 29))\n        with self.assertRaises(ValueError):\n            core.parse_iso_date(\"2023-02-29\")\n\n    def test_day_of_year(self):\n        self.assertEqual(core.day_of_year(2023, 3, 1), 60)\n"
+   },
+   "date": "2025-03-14T02:10:00Z",
+   "id": "f99e0d88af",
+   "message": "feat: day_of_year",
+   "parent": "a831c9be17"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "README.md": "# dateparse\n\nCalendar dates as (year, month, day) tuples.\n\n## day_of_year\n\nSee `tests/test_core.py` for day_of_year examples.\n\n## weekday\n\nSee `tests/test_core.py` for weekday examples.\n\n## is_leap\n\nSee `tests/test_core.py` for is_leap examples.\n\n## days_in_month\n\nSee `tests/test_core.py` for days_in_month examples.\n\n## day_of_year\n\nSee `tests/test_core.py` for day_of_year examples.\n"
+   },
+   "date": "2025-03-14T05:58:00Z",
+   "id": "ba0ca31bb0",
+   "message": "docs: document day_of_year",
+   "parent": "f99e0d88af"
+  },
+  {
+   "author": "Ada Park",
+   "changes": {
+    "README.md": "# dateparse\n\nCalendar dates as (year, month, day) tuples.\n\n## day_of_year\n\nSee `tests/test_core.py` for day_of_year examples.\n\n## weekday\n\nSee `tests/test_core.py` for weekday examples.\n\n## is_leap\n\nSee `tests/test_core.py` for is_leap examples.\n\n## days_in_month\n\nSee `tests/test_core.py` for days_in_month examples.\n\n## day_of_year\n\nSee `tests/test_core.py` for day_of_year examples.\n\n## days_in_month\n\nSee `tests/test_core.py` for days_in_month examples.\n"
+   },
+   "date": "2025-03-15T05:40:00Z",
+   "id": "1e4ec15c3f",
+   "message": "docs: document days_in_month",
+   "parent": "ba0ca31bb0"
+  },
+  {
+   "author": "Farah Haddad",
+   "changes": {
+    "dateparse/__init__.py": "\"\"\"Calendar dates as (year, month, day) tuples.\"\"\"\n\n__version__ = \"0.1.3\"\n"
+   },
+   "date": "2025-03-16T09:07:00Z",
+   "id": "b09db7a81c",
+   "message": "chore: bump version to 0.1.3",
+   "parent": "1e4ec15c3f"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "dateparse/core.py": "\"\"\"Calendar dates as (year, month, day) tuples.\"\"\"\n\nDAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]\n\n\ndef is_leap(year):\n    return year % 4 == 0 and year % 100 != 0\n\n\ndef days_in_month(year, month):\n    if month == 2 and is_leap(year):\n        return 29\n    return DAYS[month - 1]\n\n\ndef parse_iso_date(text):\n    \"\"\"'2024-02-29' -> (2024, 2, 29); ValueError for a date that does not exist.\"\"\"\n    year, month, day = (int(part) for part in text.strip().split(\"-\"))\n    if not 1 <= month <= 12 or not 1 <= day <= days_in_month(year, month):\n        raise ValueError(f\"no such date: {text}\")\n    return year, month, day\n\n# weekday: keep this module free of I/O\n\n# days_in_month: keep this module free of I/O\n\n\ndef day_of_year(year, month, day):\n    return sum(days_in_month(year, k) for k in range(1, month)) + day\n\n# day_of_year: keep this module free of I/O\n"
+   },
+   "date": "2025-03-16T18:07:00Z",
+   "id": "9421b5e461",
+   "message": "style: note on day_of_year",
+   "parent": "b09db7a81c"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "README.md": "# dateparse\n\nCalendar dates as (year, month, day) tuples.\n\n## day_of_year\n\nSee `tests/test_core.py` for day_of_year examples.\n\n## weekday\n\nSee `tests/test_core.py` for weekday examples.\n\n## is_leap\n\nSee `tests/test_core.py` for is_leap examples.\n\n## days_in_month\n\nSee `tests/test_core.py` for days_in_month examples.\n\n## day_of_year\n\nSee `tests/test_core.py` for day_of_year examples.\n\n## days_in_month\n\nSee `tests/test_core.py` for days_in_month examples.\n\n## days_in_month\n\nSee `tests/test_core.py` for days_in_month examples.\n"
+   },
+   "date": "2025-03-17T11:40:00Z",
+   "id": "588dd1aae0",
+   "message": "docs: document days_in_month",
+   "parent": "9421b5e461"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "dateparse/__init__.py": "\"\"\"Calendar dates as (year, month, day) tuples.\"\"\"\n\n__version__ = \"0.1.4\"\n"
+   },
+   "date": "2025-03-18T09:33:00Z",
+   "id": "4fdd35d222",
+   "message": "chore: bump version to 0.1.4",
+   "parent": "588dd1aae0"
+  },
+  {
+   "author": "Ada Park",
+   "changes": {
+    "tests/test_core.py": "import unittest\n\nfrom dateparse import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_is_leap(self):\n        self.assertTrue(core.is_leap(2000))\n        self.assertFalse(core.is_leap(1900))\n        self.assertTrue(core.is_leap(2024))\n\n    def test_parse_iso_date(self):\n        self.assertEqual(core.parse_iso_date(\"2024-02-29\"), (2024, 2, 29))\n        with self.assertRaises(ValueError):\n            core.parse_iso_date(\"2023-02-29\")\n\n    def test_day_of_year(self):\n        self.assertEqual(core.day_of_year(2023, 3, 1), 60)\n\n    def test_april(self):\n        self.assertEqual(core.days_in_month(2023, 4), 30)\n"
+   },
+   "date": "2025-03-19T04:51:00Z",
+   "id": "93ec2f716a",
+   "message": "test: cover april",
+   "parent": "4fdd35d222"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "dateparse/__init__.py": "\"\"\"Calendar dates as (year, month, day) tuples.\"\"\"\n\n__version__ = \"0.1.5\"\n"
+   },
+   "date": "2025-03-20T04:35:00Z",
+   "id": "d27d02e340",
+   "message": "chore: bump version to 0.1.5",
+   "parent": "93ec2f716a"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "dateparse/core.py": "\"\"\"Calendar dates as (year, month, day) tuples.\"\"\"\n\nDAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]\n\n\ndef is_leap(year):\n    return year % 4 == 0 and year % 100 != 0\n\n\ndef days_in_month(year, month):\n    if month == 2 and is_leap(year):\n        return 29\n    return DAYS[month - 1]\n\n\ndef parse_iso_date(text):\n    \"\"\"'2024-02-29' -> (2024, 2, 29); ValueError for a date that does not exist.\"\"\"\n    year, month, day = (int(part) for part in text.strip().split(\"-\"))\n    if not 1 <= month <= 12 or not 1 <= day <= days_in_month(year, month):\n        raise ValueError(f\"no such date: {text}\")\n    return year, month, day\n\n# weekday: keep this module free of I/O\n\n# days_in_month: keep this module free of I/O\n\n\ndef day_of_year(year, month, day):\n    return sum(days_in_month(year, k) for k in range(1, month)) + day\n\n# day_of_year: keep this module free of I/O\n\n# weekday: keep this module free of I/O\n"
+   },
+   "date": "2025-03-20T14:24:00Z",
+   "id": "25de197ebf",
+   "message": "style: note on weekday",
+   "parent": "d27d02e340"
+  },
+  {
+   "author": "Farah Haddad",
+   "changes": {
+    "dateparse/core.py": "\"\"\"Calendar dates as (year, month, day) tuples.\"\"\"\n\nDAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]\n\n\ndef is_leap(year):\n    return year % 4 == 0 and year % 100 != 0\n\n\ndef days_in_month(year, month):\n    if month == 2 and is_leap(year):\n        return 29\n    return DAYS[month - 1]\n\n\ndef parse_iso_date(text):\n    \"\"\"'2024-02-29' -> (2024, 2, 29); ValueError for a date that does not exist.\"\"\"\n    year, month, day = (int(part) for part in text.strip().split(\"-\"))\n    if not 1 <= month <= 12 or not 1 <= day <= days_in_month(year, month):\n        raise ValueError(f\"no such date: {text}\")\n    return year, month, day\n\n# weekday: keep this module free of I/O\n\n# days_in_month: keep this module free of I/O\n\n\ndef day_of_year(year, month, day):\n    return sum(days_in_month(year, k) for k in range(1, month)) + day\n\n# day_of_year: keep this module free of I/O\n\n# weekday: keep this module free of I/O\n\n# add_days: keep this module free of I/O\n"
+   },
+   "date": "2025-03-21T06:28:00Z",
+   "id": "bb707115fd",
+   "message": "style: note on add_days",
+   "parent": "25de197ebf"
+  },
+  {
+   "author": "Farah Haddad",
+   "changes": {
+    "dateparse/core.py": "\"\"\"Calendar dates as (year, month, day) tuples.\"\"\"\n\nDAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]\n\n\ndef is_leap(year):\n    return year % 4 == 0 and year % 100 != 0\n\n\ndef days_in_month(year, month):\n    if month == 2 and is_leap(year):\n        return 29\n    return DAYS[month - 1]\n\n\ndef parse_iso_date(text):\n    \"\"\"'2024-02-29' -> (2024, 2, 29); ValueError for a date that does not exist.\"\"\"\n    year, month, day = (int(part) for part in text.strip().split(\"-\"))\n    if not 1 <= month <= 12 or not 1 <= day <= days_in_month(year, month):\n        raise ValueError(f\"no such date: {text}\")\n    return year, month, day\n\n# weekday: keep this module free of I/O\n\n# days_in_month: keep this module free of I/O\n\n\ndef day_of_year(year, month, day):\n    return sum(days_in_month(year, k) for k in range(1, month)) + day\n\n# day_of_year: keep this module free of I/O\n\n# weekday: keep this module free of I/O\n\n# add_days: keep this module free of I/O\n\n\ndef format_iso(year, month, day):\n    return f\"{year:04d}-{month:02d}-{day:02d}\"\n",
+    "tests/test_core.py": "import unittest\n\nfrom dateparse import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_is_leap(self):\n        self.assertTrue(core.is_leap(2000))\n        self.assertFalse(core.is_leap(1900))\n        self.assertTrue(core.is_leap(2024))\n\n    def test_parse_iso_date(self):\n        self.assertEqual(core.parse_iso_date(\"2024-02-29\"), (2024, 2, 29))\n        with self.assertRaises(ValueError):\n            core.parse_iso_date(\"2023-02-29\")\n\n    def test_day_of_year(self):\n        self.assertEqual(core.day_of_year(2023, 3, 1), 60)\n\n    def test_april(self):\n        self.assertEqual(core.days_in_month(2023, 4), 30)\n\n    def test_format_iso(self):\n        self.assertEqual(core.format_iso(7, 3, 9), \"0007-03-09\")\n"
+   },
+   "date": "2025-03-21T13:05:00Z",
+   "id": "7505dc6f19",
+   "message": "feat: format_iso",
+   "parent": "bb707115fd"
+  },
+  {
+   "author": "Ada Park",
+   "changes": {
+    "README.md": "# dateparse\n\nCalendar dates as (year, month, day) tuples.\n\n## day_of_year\n\nSee `tests/test_core.py` for day_of_year examples.\n\n## weekday\n\nSee `tests/test_core.py` for weekday examples.\n\n## is_leap\n\nSee `tests/test_core.py` for is_leap examples.\n\n## days_in_month\n\nSee `tests/test_core.py` for days_in_month examples.\n\n## day_of_year\n\nSee `tests/test_core.py` for day_of_year examples.\n\n## days_in_month\n\nSee `tests/test_core.py` for days_in_month examples.\n\n## days_in_month\n\nSee `tests/test_core.py` for days_in_month examples.\n\n## days_in_month\n\nSee `tests/test_core.py` for days_in_month examples.\n"
+   },
+   "date": "2025-03-22T19:37:00Z",
+   "id": "4d96fb81d1",
+   "message": "docs: document days_in_month",
+   "parent": "7505dc6f19"
+  },
+  {
+   "author": "Ada Park",
+   "changes": {
+    "dateparse/core.py": "\"\"\"Calendar dates as (year, month, day) tuples.\"\"\"\n\nDAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]\n\n\ndef is_leap(year):\n    return year % 4 == 0 and year % 100 != 0\n\n\ndef days_in_month(year, month):\n    if month == 2 and is_leap(year):\n        return 29\n    return DAYS[month - 1]\n\n\ndef parse_iso_date(text):\n    \"\"\"'2024-02-29' -> (2024, 2, 29); ValueError for a date that does not exist.\"\"\"\n    year, month, day = (int(part) for part in text.strip().split(\"-\"))\n    if not 1 <= month <= 12 or not 1 <= day <= days_in_month(year, month):\n        raise ValueError(f\"no such date: {text}\")\n    return year, month, day\n\n# weekday: keep this module free of I/O\n\n# days_in_month: keep this module free of I/O\n\n\ndef day_of_year(year, month, day):\n    return sum(days_in_month(year, k) for k in range(1, month)) + day\n\n# day_of_year: keep this module free of I/O\n\n# weekday: keep this module free of I/O\n\n# add_days: keep this module free of I/O\n\n\ndef format_iso(year, month, day):\n    return f\"{year:04d}-{month:02d}-{day:02d}\"\n\n# is_leap: keep this module free of I/O\n"
+   },
+   "date": "2025-03-23T05:42:00Z",
+   "id": "4623dfab97",
+   "message": "style: note on is_leap",
+   "parent": "4d96fb81d1"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how days_in_month behaves on edge inputs\n- note how weekday behaves on edge inputs\n- note how weekday behaves on edge inputs\n"
+   },
+   "date": "2025-03-24T09:16:00Z",
+   "id": "1698b4fce3",
+   "message": "docs: changelog entry for weekday",
+   "parent": "4623dfab97"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "README.md": "# dateparse\n\nCalendar dates as (year, month, day) tuples.\n\n## day_of_year\n\nSee `tests/test_core.py` for day_of_year examples.\n\n## weekday\n\nSee `tests/test_core.py` for weekday examples.\n\n## is_leap\n\nSee `tests/test_core.py` for is_leap examples.\n\n## days_in_month\n\nSee `tests/test_core.py` for days_in_month examples.\n\n## day_of_year\n\nSee `tests/test_core.py` for day_of_year examples.\n\n## days_in_month\n\nSee `tests/test_core.py` for days_in_month examples.\n\n## days_in_month\n\nSee `tests/test_core.py` for days_in_month examples.\n\n## days_in_month\n\nSee `tests/test_core.py` for days_in_month examples.\n\n## add_days\n\nSee `tests/test_core.py` for add_days examples.\n"
+   },
+   "date": "2025-03-25T00:49:00Z",
+   "id": "e1fda404fd",
+   "message": "docs: document add_days",
+   "parent": "1698b4fce3"
+  },
+  {
+   "author": "Ada Park",
+   "changes": {
+    "README.md": "# dateparse\n\nCalendar dates as (year, month, day) tuples.\n\n## day_of_year\n\nSee `tests/test_core.py` for day_of_year examples.\n\n## weekday\n\nSee `tests/test_core.py` for weekday examples.\n\n## is_leap\n\nSee `tests/test_core.py` for is_leap examples.\n\n## days_in_month\n\nSee `tests/test_core.py` for days_in_month examples.\n\n## day_of_year\n\nSee `tests/test_core.py` for day_of_year examples.\n\n## days_in_month\n\nSee `tests/test_core.py` for days_in_month examples.\n\n## days_in_month\n\nSee `tests/test_core.py` for days_in_month examples.\n\n## days_in_month\n\nSee `tests/test_core.py` for days_in_month examples.\n\n## add_days\n\nSee `tests/test_core.py` for add_days examples.\n\n## add_days\n\nSee `tests/test_core.py` for add_days examples.\n"
+   },
+   "date": "2025-03-25T22:41:00Z",
+   "id": "e5e40ce35c",
+   "message": "docs: document add_days",
+   "parent": "e1fda404fd"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how days_in_month behaves on edge inputs\n- note how weekday behaves on edge inputs\n- note how weekday behaves on edge inputs\n- note how days_in_month behaves on edge inputs\n"
+   },
+   "date": "2025-03-26T17:54:00Z",
+   "id": "7acd1254ca",
+   "message": "docs: changelog entry for days_in_month",
+   "parent": "e5e40ce35c"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "dateparse/__init__.py": "\"\"\"Calendar dates as (year, month, day) tuples.\"\"\"\n\n__version__ = \"0.1.6\"\n"
+   },
+   "date": "2025-03-27T00:39:00Z",
+   "id": "d380848895",
+   "message": "chore: bump version to 0.1.6",
+   "parent": "7acd1254ca"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "README.md": "# dateparse\n\nCalendar dates as (year, month, day) tuples.\n\n## day_of_year\n\nSee `tests/test_core.py` for day_of_year examples.\n\n## weekday\n\nSee `tests/test_core.py` for weekday examples.\n\n## is_leap\n\nSee `tests/test_core.py` for is_leap examples.\n\n## days_in_month\n\nSee `tests/test_core.py` for days_in_month examples.\n\n## day_of_year\n\nSee `tests/test_core.py` for day_of_year examples.\n\n## days_in_month\n\nSee `tests/test_core.py` for days_in_month examples.\n\n## days_in_month\n\nSee `tests/test_core.py` for days_in_month examples.\n\n## days_in_month\n\nSee `tests/test_core.py` for days_in_month examples.\n\n## add_days\n\nSee `tests/test_core.py` for add_days examples.\n\n## add_days\n\nSee `tests/test_core.py` for add_days examples.\n\n## parse_iso_date\n\nSee `tests/test_core.py` for parse_iso_date examples.\n"
+   },
+   "date": "2025-03-27T05:36:00Z",
+   "id": "603d3fa27c",
+   "message": "docs: document parse_iso_date",
+   "parent": "d380848895"
+  },
+  {
+   "author": "Ada Park",
+   "changes": {
+    "dateparse/__init__.py": "\"\"\"Calendar dates as (year, month, day) tuples.\"\"\"\n\n__version__ = \"0.1.7\"\n"
+   },
+   "date": "2025-03-27T16:57:00Z",
+   "id": "19aadbda86",
+   "message": "chore: bump version to 0.1.7",
+   "parent": "603d3fa27c"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "dateparse/core.py": "\"\"\"Calendar dates as (year, month, day) tuples.\"\"\"\n\nDAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]\n\n\ndef is_leap(year):\n    return year % 4 == 0 and year % 100 != 0\n\n\ndef days_in_month(year, month):\n    if month == 2 and is_leap(year):\n        return 29\n    return DAYS[month - 1]\n\n\ndef parse_iso_date(text):\n    \"\"\"'2024-02-29' -> (2024, 2, 29); ValueError for a date that does not exist.\"\"\"\n    year, month, day = (int(part) for part in text.strip().split(\"-\"))\n    if not 1 <= month <= 12 or not 1 <= day <= days_in_month(year, month):\n        raise ValueError(f\"no such date: {text}\")\n    return year, month, day\n\n# weekday: keep this module free of I/O\n\n# days_in_month: keep this module free of I/O\n\n\ndef day_of_year(year, month, day):\n    return sum(days_in_month(year, k) for k in range(1, month)) + day\n\n# day_of_year: keep this module free of I/O\n\n# weekday: keep this module free of I/O\n\n# add_days: keep this module free of I/O\n\n\ndef format_iso(year, month, day):\n    return f\"{year:04d}-{month:02d}-{day:02d}\"\n\n# is_leap: keep this module free of I/O\n\n\ndef weekday(year, month, day):\n    \"\"\"0 = Monday ... 6 = Sunday.\"\"\"\n    offsets = [0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4]\n    if month < 3:\n        year -= 1\n    sunday_first = (year + year // 4 - year // 100 + year // 400 + offsets[month - 1] + day) % 7\n    return (sunday_first + 6) % 7\n",
+    "tests/test_core.py": "import unittest\n\nfrom dateparse import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_is_leap(self):\n        self.assertTrue(core.is_leap(2000))\n        self.assertFalse(core.is_leap(1900))\n        self.assertTrue(core.is_leap(2024))\n\n    def test_parse_iso_date(self):\n        self.assertEqual(core.parse_iso_date(\"2024-02-29\"), (2024, 2, 29))\n        with self.assertRaises(ValueError):\n            core.parse_iso_date(\"2023-02-29\")\n\n    def test_day_of_year(self):\n        self.assertEqual(core.day_of_year(2023, 3, 1), 60)\n\n    def test_april(self):\n        self.assertEqual(core.days_in_month(2023, 4), 30)\n\n    def test_format_iso(self):\n        self.assertEqual(core.format_iso(7, 3, 9), \"0007-03-09\")\n\n    def test_weekday(self):\n        self.assertEqual(core.weekday(2024, 1, 1), 0)\n"
+   },
+   "date": "2025-03-28T07:55:00Z",
+   "id": "040b743083",
+   "message": "feat: weekday",
+   "parent": "19aadbda86"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how days_in_month behaves on edge inputs\n- note how weekday behaves on edge inputs\n- note how weekday behaves on edge inputs\n- note how days_in_month behaves on edge inputs\n- note how is_leap behaves on edge inputs\n"
+   },
+   "date": "2025-03-28T14:44:00Z",
+   "id": "298b88b18c",
+   "message": "docs: changelog entry for is_leap",
+   "parent": "040b743083"
+  },
+  {
+   "author": "Farah Haddad",
+   "changes": {
+    "dateparse/core.py": "\"\"\"Calendar dates as (year, month, day) tuples.\"\"\"\n\nDAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]\n\n\ndef is_leap(year):\n    return year % 4 == 0 and year % 100 != 0\n\n\ndef days_in_month(year, month):\n    if month == 2 and is_leap(year):\n        return 29\n    return DAYS[month - 1]\n\n\ndef parse_iso_date(text):\n    \"\"\"'2024-02-29' -> (2024, 2, 29); ValueError for a date that does not exist.\"\"\"\n    year, month, day = (int(part) for part in text.strip().split(\"-\"))\n    if not 1 <= month <= 12 or not 1 <= day <= days_in_month(year, month):\n        raise ValueError(f\"no such date: {text}\")\n    return year, month, day\n\n# weekday: keep this module free of I/O\n\n# days_in_month: keep this module free of I/O\n\n\ndef day_of_year(year, month, day):\n    return sum(days_in_month(year, k) for k in range(1, month)) + day\n\n# day_of_year: keep this module free of I/O\n\n# weekday: keep this module free of I/O\n\n# add_days: keep this module free of I/O\n\n\ndef format_iso(year, month, day):\n    return f\"{year:04d}-{month:02d}-{day:02d}\"\n\n# is_leap: keep this module free of I/O\n\n\ndef weekday(year, month, day):\n    \"\"\"0 = Monday ... 6 = Sunday.\"\"\"\n    offsets = [0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4]\n    if month < 3:\n        year -= 1\n    sunday_first = (year + year // 4 - year // 100 + year // 400 + offsets[month - 1] + day) % 7\n    return (sunday_first + 6) % 7\n\n# add_days: keep this module free of I/O\n"
+   },
+   "date": "2025-03-29T13:34:00Z",
+   "id": "11e8e50c57",
+   "message": "style: note on add_days",
+   "parent": "298b88b18c"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "README.md": "# dateparse\n\nCalendar dates as (year, month, day) tuples.\n\n## day_of_year\n\nSee `tests/test_core.py` for day_of_year examples.\n\n## weekday\n\nSee `tests/test_core.py` for weekday examples.\n\n## is_leap\n\nSee `tests/test_core.py` for is_leap examples.\n\n## days_in_month\n\nSee `tests/test_core.py` for days_in_month examples.\n\n## day_of_year\n\nSee `tests/test_core.py` for day_of_year examples.\n\n## days_in_month\n\nSee `tests/test_core.py` for days_in_month examples.\n\n## days_in_month\n\nSee `tests/test_core.py` for days_in_month examples.\n\n## days_in_month\n\nSee `tests/test_core.py` for days_in_month examples.\n\n## add_days\n\nSee `tests/test_core.py` for add_days examples.\n\n## add_days\n\nSee `tests/test_core.py` for add_days examples.\n\n## parse_iso_date\n\nSee `tests/test_core.py` for parse_iso_date examples.\n\n## day_of_year\n\nSee `tests/test_core.py` for day_of_year examples.\n"
+   },
+   "date": "2025-03-29T19:09:00Z",
+   "id": "afcc7dcc51",
+   "message": "docs: document day_of_year",
+   "parent": "11e8e50c57"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "dateparse/__init__.py": "\"\"\"Calendar dates as (year, month, day) tuples.\"\"\"\n\n__version__ = \"0.1.8\"\n"
+   },
+   "date": "2025-03-31T00:50:00Z",
+   "id": "c51520776d",
+   "message": "chore: bump version to 0.1.8",
+   "parent": "afcc7dcc51"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how days_in_month behaves on edge inputs\n- note how weekday behaves on edge inputs\n- note how weekday behaves on edge inputs\n- note how days_in_month behaves on edge inputs\n- note how is_leap behaves on edge inputs\n- note how weekday behaves on edge inputs\n"
+   },
+   "date": "2025-03-31T16:24:00Z",
+   "id": "f4db7ba2cf",
+   "message": "docs: changelog entry for weekday",
+   "parent": "c51520776d"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "dateparse/core.py": "\"\"\"Calendar dates as (year, month, day) tuples.\"\"\"\n\nDAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]\n\n\ndef is_leap(year):\n    return year % 4 == 0 and year % 100 != 0\n\n\ndef days_in_month(year, month):\n    if month == 2 and is_leap(year):\n        return 29\n    return DAYS[month - 1]\n\n\ndef parse_iso_date(text):\n    \"\"\"'2024-02-29' -> (2024, 2, 29); ValueError for a date that does not exist.\"\"\"\n    year, month, day = (int(part) for part in text.strip().split(\"-\"))\n    if not 1 <= month <= 12 or not 1 <= day <= days_in_month(year, month):\n        raise ValueError(f\"no such date: {text}\")\n    return year, month, day\n\n# weekday: keep this module free of I/O\n\n# days_in_month: keep this module free of I/O\n\n\ndef day_of_year(year, month, day):\n    return sum(days_in_month(year, k) for k in range(1, month)) + day\n\n# day_of_year: keep this module free of I/O\n\n# weekday: keep this module free of I/O\n\n# add_days: keep this module free of I/O\n\n\ndef format_iso(year, month, day):\n    return f\"{year:04d}-{month:02d}-{day:02d}\"\n\n# is_leap: keep this module free of I/O\n\n\ndef weekday(year, month, day):\n    \"\"\"0 = Monday ... 6 = Sunday.\"\"\"\n    offsets = [0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4]\n    if month < 3:\n        year -= 1\n    sunday_first = (year + year // 4 - year // 100 + year // 400 + offsets[month - 1] + day) % 7\n    return (sunday_first + 6) % 7\n\n# add_days: keep this module free of I/O\n\n# add_days: keep this module free of I/O\n"
+   },
+   "date": "2025-04-01T18:28:00Z",
+   "id": "64c4a2aac3",
+   "message": "style: note on add_days",
+   "parent": "f4db7ba2cf"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "dateparse/__init__.py": "\"\"\"Calendar dates as (year, month, day) tuples.\"\"\"\n\n__version__ = \"0.1.9\"\n"
+   },
+   "date": "2025-04-03T00:20:00Z",
+   "id": "caa10512a9",
+   "message": "chore: bump version to 0.1.9",
+   "parent": "64c4a2aac3"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "dateparse/__init__.py": "\"\"\"Calendar dates as (year, month, day) tuples.\"\"\"\n\n__version__ = \"0.1.10\"\n"
+   },
+   "date": "2025-04-03T23:00:00Z",
+   "id": "34fdc9f4e0",
+   "message": "chore: bump version to 0.1.10",
+   "parent": "caa10512a9"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "tests/test_core.py": "import unittest\n\nfrom dateparse import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_is_leap(self):\n        self.assertTrue(core.is_leap(2000))\n        self.assertFalse(core.is_leap(1900))\n        self.assertTrue(core.is_leap(2024))\n\n    def test_parse_iso_date(self):\n        self.assertEqual(core.parse_iso_date(\"2024-02-29\"), (2024, 2, 29))\n        with self.assertRaises(ValueError):\n            core.parse_iso_date(\"2023-02-29\")\n\n    def test_day_of_year(self):\n        self.assertEqual(core.day_of_year(2023, 3, 1), 60)\n\n    def test_april(self):\n        self.assertEqual(core.days_in_month(2023, 4), 30)\n\n    def test_format_iso(self):\n        self.assertEqual(core.format_iso(7, 3, 9), \"0007-03-09\")\n\n    def test_weekday(self):\n        self.assertEqual(core.weekday(2024, 1, 1), 0)\n\n    def test_parse_strip(self):\n        self.assertEqual(core.parse_iso_date(\" 1999-12-31 \"), (1999, 12, 31))\n"
+   },
+   "date": "2025-04-04T01:11:00Z",
+   "id": "aa7d14d517",
+   "message": "test: cover whitespace",
+   "parent": "34fdc9f4e0"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "dateparse/core.py": "\"\"\"Calendar dates as (year, month, day) tuples.\"\"\"\n\nDAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]\n\n\ndef is_leap(year):\n    return year % 4 == 0 and year % 100 != 0\n\n\ndef days_in_month(year, month):\n    if month == 2 and is_leap(year):\n        return 29\n    return DAYS[month - 1]\n\n\ndef parse_iso_date(text):\n    \"\"\"'2024-02-29' -> (2024, 2, 29); ValueError for a date that does not exist.\"\"\"\n    year, month, day = (int(part) for part in text.strip().split(\"-\"))\n    if not 1 <= month <= 12 or not 1 <= day <= days_in_month(year, month):\n        raise ValueError(f\"no such date: {text}\")\n    return year, month, day\n\n# weekday: keep this module free of I/O\n\n# days_in_month: keep this module free of I/O\n\n\ndef day_of_year(year, month, day):\n    return sum(days_in_month(year, k) for k in range(1, month)) + day\n\n# day_of_year: keep this module free of I/O\n\n# weekday: keep this module free of I/O\n\n# add_days: keep this module free of I/O\n\n\ndef format_iso(year, month, day):\n    return f\"{year:04d}-{month:02d}-{day:02d}\"\n\n# is_leap: keep this module free of I/O\n\n\ndef weekday(year, month, day):\n    \"\"\"0 = Monday ... 6 = Sunday.\"\"\"\n    offsets = [0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4]\n    if month < 3:\n        year -= 1\n    sunday_first = (year + year // 4 - year // 100 + year // 400 + offsets[month - 1] + day) % 7\n    return (sunday_first + 6) % 7\n\n# add_days: keep this module free of I/O\n\n# add_days: keep this module free of I/O\n\n\ndef add_days(year, month, day, count):\n    for _ in range(count):\n        day += 1\n        if day > days_in_month(year, month):\n            day, month = 1, month + 1\n            if month > 12:\n                month, year = 1, year + 1\n    return year, month, day\n",
+    "tests/test_core.py": "import unittest\n\nfrom dateparse import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_is_leap(self):\n        self.assertTrue(core.is_leap(2000))\n        self.assertFalse(core.is_leap(1900))\n        self.assertTrue(core.is_leap(2024))\n\n    def test_parse_iso_date(self):\n        self.assertEqual(core.parse_iso_date(\"2024-02-29\"), (2024, 2, 29))\n        with self.assertRaises(ValueError):\n            core.parse_iso_date(\"2023-02-29\")\n\n    def test_day_of_year(self):\n        self.assertEqual(core.day_of_year(2023, 3, 1), 60)\n\n    def test_april(self):\n        self.assertEqual(core.days_in_month(2023, 4), 30)\n\n    def test_format_iso(self):\n        self.assertEqual(core.format_iso(7, 3, 9), \"0007-03-09\")\n\n    def test_weekday(self):\n        self.assertEqual(core.weekday(2024, 1, 1), 0)\n\n    def test_parse_strip(self):\n        self.assertEqual(core.parse_iso_date(\" 1999-12-31 \"), (1999, 12, 31))\n\n    def test_add_days(self):\n        self.assertEqual(core.add_days(2023, 12, 30, 3), (2024, 1, 2))\n"
+   },
+   "date": "2025-04-04T16:56:00Z",
+   "id": "d0df1c543c",
+   "message": "feat: add_days",
+   "parent": "aa7d14d517"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "dateparse/__init__.py": "\"\"\"Calendar dates as (year, month, day) tuples.\"\"\"\n\n__version__ = \"0.1.11\"\n"
+   },
+   "date": "2025-04-04T18:37:00Z",
+   "id": "3529a766a2",
+   "message": "chore: bump version to 0.1.11",
+   "parent": "d0df1c543c"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "README.md": "# dateparse\n\nCalendar dates as (year, month, day) tuples.\n\n## day_of_year\n\nSee `tests/test_core.py` for day_of_year examples.\n\n## weekday\n\nSee `tests/test_core.py` for weekday examples.\n\n## is_leap\n\nSee `tests/test_core.py` for is_leap examples.\n\n## days_in_month\n\nSee `tests/test_core.py` for days_in_month examples.\n\n## day_of_year\n\nSee `tests/test_core.py` for day_of_year examples.\n\n## days_in_month\n\nSee `tests/test_core.py` for days_in_month examples.\n\n## days_in_month\n\nSee `tests/test_core.py` for days_in_month examples.\n\n## days_in_month\n\nSee `tests/test_core.py` for days_in_month examples.\n\n## add_days\n\nSee `tests/test_core.py` for add_days examples.\n\n## add_days\n\nSee `tests/test_core.py` for add_days examples.\n\n## parse_iso_date\n\nSee `tests/test_core.py` for parse_iso_date examples.\n\n## day_of_year\n\nSee `tests/test_core.py` for day_of_year examples.\n\n## is_leap\n\nSee `tests/test_core.py` for is_leap examples.\n"
+   },
+   "date": "2025-04-04T20:13:00Z",
+   "id": "76049b8dfc",
+   "message": "docs: document is_leap",
+   "parent": "3529a766a2"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "README.md": "# dateparse\n\nCalendar dates as (year, month, day) tuples.\n\n## day_of_year\n\nSee `tests/test_core.py` for day_of_year examples.\n\n## weekday\n\nSee `tests/test_core.py` for weekday examples.\n\n## is_leap\n\nSee `tests/test_core.py` for is_leap examples.\n\n## days_in_month\n\nSee `tests/test_core.py` for days_in_month examples.\n\n## day_of_year\n\nSee `tests/test_core.py` for day_of_year examples.\n\n## days_in_month\n\nSee `tests/test_core.py` for days_in_month examples.\n\n## days_in_month\n\nSee `tests/test_core.py` for days_in_month examples.\n\n## days_in_month\n\nSee `tests/test_core.py` for days_in_month examples.\n\n## add_days\n\nSee `tests/test_core.py` for add_days examples.\n\n## add_days\n\nSee `tests/test_core.py` for add_days examples.\n\n## parse_iso_date\n\nSee `tests/test_core.py` for parse_iso_date examples.\n\n## day_of_year\n\nSee `tests/test_core.py` for day_of_year examples.\n\n## is_leap\n\nSee `tests/test_core.py` for is_leap examples.\n\n## day_of_year\n\nSee `tests/test_core.py` for day_of_year examples.\n"
+   },
+   "date": "2025-04-05T15:13:00Z",
+   "id": "f90a35b73c",
+   "message": "docs: document day_of_year",
+   "parent": "76049b8dfc"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "dateparse/__init__.py": "\"\"\"Calendar dates as (year, month, day) tuples.\"\"\"\n\n__version__ = \"0.1.12\"\n"
+   },
+   "date": "2025-04-06T07:22:00Z",
+   "id": "39fb1e854d",
+   "message": "chore: bump version to 0.1.12",
+   "parent": "f90a35b73c"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "dateparse/core.py": "\"\"\"Calendar dates as (year, month, day) tuples.\"\"\"\n\nDAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]\n\n\ndef is_leap(year):\n    return year % 4 == 0 and year % 100 != 0\n\n\ndef days_in_month(year, month):\n    if month == 2 and is_leap(year):\n        return 29\n    return DAYS[month - 1]\n\n\ndef parse_iso_date(text):\n    \"\"\"'2024-02-29' -> (2024, 2, 29); ValueError for a date that does not exist.\"\"\"\n    year, month, day = (int(part) for part in text.strip().split(\"-\"))\n    if not 1 <= month <= 12 or not 1 <= day <= days_in_month(year, month):\n        raise ValueError(f\"no such date: {text}\")\n    return year, month, day\n\n# weekday: keep this module free of I/O\n\n# days_in_month: keep this module free of I/O\n\n\ndef day_of_year(year, month, day):\n    return sum(days_in_month(year, k) for k in range(1, month)) + day\n\n# day_of_year: keep this module free of I/O\n\n# weekday: keep this module free of I/O\n\n# add_days: keep this module free of I/O\n\n\ndef format_iso(year, month, day):\n    return f\"{year:04d}-{month:02d}-{day:02d}\"\n\n# is_leap: keep this module free of I/O\n\n\ndef weekday(year, month, day):\n    \"\"\"0 = Monday ... 6 = Sunday.\"\"\"\n    offsets = [0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4]\n    if month < 3:\n        year -= 1\n    sunday_first = (year + year // 4 - year // 100 + year // 400 + offsets[month - 1] + day) % 7\n    return (sunday_first + 6) % 7\n\n# add_days: keep this module free of I/O\n\n# add_days: keep this module free of I/O\n\n\ndef add_days(year, month, day, count):\n    for _ in range(count):\n        day += 1\n        if day > days_in_month(year, month):\n            day, month = 1, month + 1\n            if month > 12:\n                month, year = 1, year + 1\n    return year, month, day\n\n# weekday: keep this module free of I/O\n"
+   },
+   "date": "2025-04-07T03:16:00Z",
+   "id": "1e0533b049",
+   "message": "style: note on weekday",
+   "parent": "39fb1e854d"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "dateparse/core.py": "\"\"\"Calendar dates as (year, month, day) tuples.\"\"\"\n\nDAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]\n\n\ndef is_leap(year):\n    return year % 4 == 0 and year % 100 != 0\n\n\ndef days_in_month(year, month):\n    if month == 2 and is_leap(year):\n        return 29\n    return DAYS[month - 1]\n\n\ndef parse_iso_date(text):\n    \"\"\"'2024-02-29' -> (2024, 2, 29); ValueError for a date that does not exist.\"\"\"\n    year, month, day = (int(part) for part in text.strip().split(\"-\"))\n    if not 1 <= month <= 12 or not 1 <= day <= days_in_month(year, month):\n        raise ValueError(f\"no such date: {text}\")\n    return year, month, day\n\n# weekday: keep this module free of I/O\n\n# days_in_month: keep this module free of I/O\n\n\ndef day_of_year(year, month, day):\n    return sum(days_in_month(year, k) for k in range(1, month)) + day\n\n# day_of_year: keep this module free of I/O\n\n# weekday: keep this module free of I/O\n\n# add_days: keep this module free of I/O\n\n\ndef format_iso(year, month, day):\n    return f\"{year:04d}-{month:02d}-{day:02d}\"\n\n# is_leap: keep this module free of I/O\n\n\ndef weekday(year, month, day):\n    \"\"\"0 = Monday ... 6 = Sunday.\"\"\"\n    offsets = [0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4]\n    if month < 3:\n        year -= 1\n    sunday_first = (year + year // 4 - year // 100 + year // 400 + offsets[month - 1] + day) % 7\n    return (sunday_first + 6) % 7\n\n# add_days: keep this module free of I/O\n\n# add_days: keep this module free of I/O\n\n\ndef add_days(year, month, day, count):\n    for _ in range(count):\n        day += 1\n        if day > days_in_month(year, month):\n            day, month = 1, month + 1\n            if month > 12:\n                month, year = 1, year + 1\n    return year, month, day\n\n# weekday: keep this module free of I/O\n\n# is_leap: keep this module free of I/O\n"
+   },
+   "date": "2025-04-08T00:01:00Z",
+   "id": "2948642cb8",
+   "message": "style: note on is_leap",
+   "parent": "1e0533b049"
+  },
+  {
+   "author": "Ada Park",
+   "changes": {
+    "dateparse/__init__.py": "\"\"\"Calendar dates as (year, month, day) tuples.\"\"\"\n\n__version__ = \"0.1.13\"\n"
+   },
+   "date": "2025-04-08T14:32:00Z",
+   "id": "694013203b",
+   "message": "chore: bump version to 0.1.13",
+   "parent": "2948642cb8"
+  },
+  {
+   "author": "Ada Park",
+   "changes": {
+    "tests/test_core.py": "import unittest\n\nfrom dateparse import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_is_leap(self):\n        self.assertTrue(core.is_leap(2000))\n        self.assertFalse(core.is_leap(1900))\n        self.assertTrue(core.is_leap(2024))\n\n    def test_parse_iso_date(self):\n        self.assertEqual(core.parse_iso_date(\"2024-02-29\"), (2024, 2, 29))\n        with self.assertRaises(ValueError):\n            core.parse_iso_date(\"2023-02-29\")\n\n    def test_day_of_year(self):\n        self.assertEqual(core.day_of_year(2023, 3, 1), 60)\n\n    def test_april(self):\n        self.assertEqual(core.days_in_month(2023, 4), 30)\n\n    def test_format_iso(self):\n        self.assertEqual(core.format_iso(7, 3, 9), \"0007-03-09\")\n\n    def test_weekday(self):\n        self.assertEqual(core.weekday(2024, 1, 1), 0)\n\n    def test_parse_strip(self):\n        self.assertEqual(core.parse_iso_date(\" 1999-12-31 \"), (1999, 12, 31))\n\n    def test_add_days(self):\n        self.assertEqual(core.add_days(2023, 12, 30, 3), (2024, 1, 2))\n\n    def test_bad_month(self):\n        with self.assertRaises(ValueError):\n            core.parse_iso_date(\"2020-13-01\")\n"
+   },
+   "date": "2025-04-08T18:14:00Z",
+   "id": "7c12a3f4fa",
+   "message": "test: cover month 13",
+   "parent": "694013203b"
+  },
+  {
+   "author": "Farah Haddad",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how days_in_month behaves on edge inputs\n- note how weekday behaves on edge inputs\n- note how weekday behaves on edge inputs\n- note how days_in_month behaves on edge inputs\n- note how is_leap behaves on edge inputs\n- note how weekday behaves on edge inputs\n- note how is_leap behaves on edge inputs\n"
+   },
+   "date": "2025-04-09T09:25:00Z",
+   "id": "3fcc388f81",
+   "message": "docs: changelog entry for is_leap",
+   "parent": "7c12a3f4fa"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how days_in_month behaves on edge inputs\n- note how weekday behaves on edge inputs\n- note how weekday behaves on edge inputs\n- note how days_in_month behaves on edge inputs\n- note how is_leap behaves on edge inputs\n- note how weekday behaves on edge inputs\n- note how is_leap behaves on edge inputs\n- note how days_in_month behaves on edge inputs\n"
+   },
+   "date": "2025-04-09T11:39:00Z",
+   "id": "a960498561",
+   "message": "docs: changelog entry for days_in_month",
+   "parent": "3fcc388f81"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "dateparse/core.py": "\"\"\"Calendar dates as (year, month, day) tuples.\"\"\"\n\nDAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]\n\n\ndef is_leap(year):\n    return year % 4 == 0 and year % 100 != 0\n\n\ndef days_in_month(year, month):\n    if month == 2 and is_leap(year):\n        return 29\n    return DAYS[month - 1]\n\n\ndef parse_iso_date(text):\n    \"\"\"'2024-02-29' -> (2024, 2, 29); ValueError for a date that does not exist.\"\"\"\n    year, month, day = (int(part) for part in text.strip().split(\"-\"))\n    if not 1 <= month <= 12 or not 1 <= day <= days_in_month(year, month):\n        raise ValueError(f\"no such date: {text}\")\n    return year, month, day\n\n# weekday: keep this module free of I/O\n\n# days_in_month: keep this module free of I/O\n\n\ndef day_of_year(year, month, day):\n    return sum(days_in_month(year, k) for k in range(1, month)) + day\n\n# day_of_year: keep this module free of I/O\n\n# weekday: keep this module free of I/O\n\n# add_days: keep this module free of I/O\n\n\ndef format_iso(year, month, day):\n    return f\"{year:04d}-{month:02d}-{day:02d}\"\n\n# is_leap: keep this module free of I/O\n\n\ndef weekday(year, month, day):\n    \"\"\"0 = Monday ... 6 = Sunday.\"\"\"\n    offsets = [0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4]\n    if month < 3:\n        year -= 1\n    sunday_first = (year + year // 4 - year // 100 + year // 400 + offsets[month - 1] + day) % 7\n    return (sunday_first + 6) % 7\n\n# add_days: keep this module free of I/O\n\n# add_days: keep this module free of I/O\n\n\ndef add_days(year, month, day, count):\n    for _ in range(count):\n        day += 1\n        if day > days_in_month(year, month):\n            day, month = 1, month + 1\n            if month > 12:\n                month, year = 1, year + 1\n    return year, month, day\n\n# weekday: keep this module free of I/O\n\n# is_leap: keep this module free of I/O\n\n\ndef is_weekend(year, month, day):\n    return weekday(year, month, day) >= 5\n",
+    "tests/test_core.py": "import unittest\n\nfrom dateparse import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_is_leap(self):\n        self.assertTrue(core.is_leap(2000))\n        self.assertFalse(core.is_leap(1900))\n        self.assertTrue(core.is_leap(2024))\n\n    def test_parse_iso_date(self):\n        self.assertEqual(core.parse_iso_date(\"2024-02-29\"), (2024, 2, 29))\n        with self.assertRaises(ValueError):\n            core.parse_iso_date(\"2023-02-29\")\n\n    def test_day_of_year(self):\n        self.assertEqual(core.day_of_year(2023, 3, 1), 60)\n\n    def test_april(self):\n        self.assertEqual(core.days_in_month(2023, 4), 30)\n\n    def test_format_iso(self):\n        self.assertEqual(core.format_iso(7, 3, 9), \"0007-03-09\")\n\n    def test_weekday(self):\n        self.assertEqual(core.weekday(2024, 1, 1), 0)\n\n    def test_parse_strip(self):\n        self.assertEqual(core.parse_iso_date(\" 1999-12-31 \"), (1999, 12, 31))\n\n    def test_add_days(self):\n        self.assertEqual(core.add_days(2023, 12, 30, 3), (2024, 1, 2))\n\n    def test_bad_month(self):\n        with self.assertRaises(ValueError):\n            core.parse_iso_date(\"2020-13-01\")\n\n    def test_is_weekend(self):\n        self.assertTrue(core.is_weekend(2024, 1, 6))\n"
+   },
+   "date": "2025-04-09T13:33:00Z",
+   "id": "350ed61dc0",
+   "message": "feat: is_weekend",
+   "parent": "a960498561"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "dateparse/__init__.py": "\"\"\"Calendar dates as (year, month, day) tuples.\"\"\"\n\n__version__ = \"0.1.14\"\n"
+   },
+   "date": "2025-04-10T00:27:00Z",
+   "id": "2cbcbd1162",
+   "message": "chore: bump version to 0.1.14",
+   "parent": "350ed61dc0"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how days_in_month behaves on edge inputs\n- note how weekday behaves on edge inputs\n- note how weekday behaves on edge inputs\n- note how days_in_month behaves on edge inputs\n- note how is_leap behaves on edge inputs\n- note how weekday behaves on edge inputs\n- note how is_leap behaves on edge inputs\n- note how days_in_month behaves on edge inputs\n- note how day_of_year behaves on edge inputs\n"
+   },
+   "date": "2025-04-10T20:30:00Z",
+   "id": "37678ed612",
+   "message": "docs: changelog entry for day_of_year",
+   "parent": "2cbcbd1162"
+  },
+  {
+   "author": "Ada Park",
+   "changes": {
+    "dateparse/core.py": "\"\"\"Calendar dates as (year, month, day) tuples.\"\"\"\n\nDAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]\n\n\ndef is_leap(year):\n    return year % 4 == 0 and year % 100 != 0\n\n\ndef days_in_month(year, month):\n    if month == 2 and is_leap(year):\n        return 29\n    return DAYS[month - 1]\n\n\ndef parse_iso_date(text):\n    \"\"\"'2024-02-29' -> (2024, 2, 29); ValueError for a date that does not exist.\"\"\"\n    year, month, day = (int(part) for part in text.strip().split(\"-\"))\n    if not 1 <= month <= 12 or not 1 <= day <= days_in_month(year, month):\n        raise ValueError(f\"no such date: {text}\")\n    return year, month, day\n\n# weekday: keep this module free of I/O\n\n# days_in_month: keep this module free of I/O\n\n\ndef day_of_year(year, month, day):\n    return sum(days_in_month(year, k) for k in range(1, month)) + day\n\n# day_of_year: keep this module free of I/O\n\n# weekday: keep this module free of I/O\n\n# add_days: keep this module free of I/O\n\n\ndef format_iso(year, month, day):\n    return f\"{year:04d}-{month:02d}-{day:02d}\"\n\n# is_leap: keep this module free of I/O\n\n\ndef weekday(year, month, day):\n    \"\"\"0 = Monday ... 6 = Sunday.\"\"\"\n    offsets = [0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4]\n    if month < 3:\n        year -= 1\n    sunday_first = (year + year // 4 - year // 100 + year // 400 + offsets[month - 1] + day) % 7\n    return (sunday_first + 6) % 7\n\n# add_days: keep this module free of I/O\n\n# add_days: keep this module free of I/O\n\n\ndef add_days(year, month, day, count):\n    for _ in range(count):\n        day += 1\n        if day > days_in_month(year, month):\n            day, month = 1, month + 1\n            if month > 12:\n                month, year = 1, year + 1\n    return year, month, day\n\n# weekday: keep this module free of I/O\n\n# is_leap: keep this module free of I/O\n\n\ndef is_weekend(year, month, day):\n    return weekday(year, month, day) >= 5\n\n# days_in_month: keep this module free of I/O\n"
+   },
+   "date": "2025-04-11T19:52:00Z",
+   "id": "6677d6543d",
+   "message": "style: note on days_in_month",
+   "parent": "37678ed612"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how days_in_month behaves on edge inputs\n- note how weekday behaves on edge inputs\n- note how weekday behaves on edge inputs\n- note how days_in_month behaves on edge inputs\n- note how is_leap behaves on edge inputs\n- note how weekday behaves on edge inputs\n- note how is_leap behaves on edge inputs\n- note how days_in_month behaves on edge inputs\n- note how day_of_year behaves on edge inputs\n- note how days_in_month behaves on edge inputs\n"
+   },
+   "date": "2025-04-12T09:30:00Z",
+   "id": "a0f0ac8f04",
+   "message": "docs: changelog entry for days_in_month",
+   "parent": "6677d6543d"
+  },
+  {
+   "author": "Ada Park",
+   "changes": {
+    "README.md": "# dateparse\n\nCalendar dates as (year, month, day) tuples.\n\n## day_of_year\n\nSee `tests/test_core.py` for day_of_year examples.\n\n## weekday\n\nSee `tests/test_core.py` for weekday examples.\n\n## is_leap\n\nSee `tests/test_core.py` for is_leap examples.\n\n## days_in_month\n\nSee `tests/test_core.py` for days_in_month examples.\n\n## day_of_year\n\nSee `tests/test_core.py` for day_of_year examples.\n\n## days_in_month\n\nSee `tests/test_core.py` for days_in_month examples.\n\n## days_in_month\n\nSee `tests/test_core.py` for days_in_month examples.\n\n## days_in_month\n\nSee `tests/test_core.py` for days_in_month examples.\n\n## add_days\n\nSee `tests/test_core.py` for add_days examples.\n\n## add_days\n\nSee `tests/test_core.py` for add_days examples.\n\n## parse_iso_date\n\nSee `tests/test_core.py` for parse_iso_date examples.\n\n## day_of_year\n\nSee `tests/test_core.py` for day_of_year examples.\n\n## is_leap\n\nSee `tests/test_core.py` for is_leap examples.\n\n## day_of_year\n\nSee `tests/test_core.py` for day_of_year examples.\n\n## weekday\n\nSee `tests/test_core.py` for weekday examples.\n"
+   },
+   "date": "2025-04-13T14:47:00Z",
+   "id": "67c18f07f8",
+   "message": "docs: document weekday",
+   "parent": "a0f0ac8f04"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "dateparse/core.py": "\"\"\"Calendar dates as (year, month, day) tuples.\"\"\"\n\nDAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]\n\n\ndef is_leap(year):\n    return year % 4 == 0 and year % 100 != 0\n\n\ndef days_in_month(year, month):\n    if month == 2 and is_leap(year):\n        return 29\n    return DAYS[month - 1]\n\n\ndef parse_iso_date(text):\n    \"\"\"'2024-02-29' -> (2024, 2, 29); ValueError for a date that does not exist.\"\"\"\n    year, month, day = (int(part) for part in text.strip().split(\"-\"))\n    if not 1 <= month <= 12 or not 1 <= day <= days_in_month(year, month):\n        raise ValueError(f\"no such date: {text}\")\n    return year, month, day\n\n# weekday: keep this module free of I/O\n\n# days_in_month: keep this module free of I/O\n\n\ndef day_of_year(year, month, day):\n    return sum(days_in_month(year, k) for k in range(1, month)) + day\n\n# day_of_year: keep this module free of I/O\n\n# weekday: keep this module free of I/O\n\n# add_days: keep this module free of I/O\n\n\ndef format_iso(year, month, day):\n    return f\"{year:04d}-{month:02d}-{day:02d}\"\n\n# is_leap: keep this module free of I/O\n\n\ndef weekday(year, month, day):\n    \"\"\"0 = Monday ... 6 = Sunday.\"\"\"\n    offsets = [0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4]\n    if month < 3:\n        year -= 1\n    sunday_first = (year + year // 4 - year // 100 + year // 400 + offsets[month - 1] + day) % 7\n    return (sunday_first + 6) % 7\n\n# add_days: keep this module free of I/O\n\n# add_days: keep this module free of I/O\n\n\ndef add_days(year, month, day, count):\n    for _ in range(count):\n        day += 1\n        if day > days_in_month(year, month):\n            day, month = 1, month + 1\n            if month > 12:\n                month, year = 1, year + 1\n    return year, month, day\n\n# weekday: keep this module free of I/O\n\n# is_leap: keep this module free of I/O\n\n\ndef is_weekend(year, month, day):\n    return weekday(year, month, day) >= 5\n\n# days_in_month: keep this module free of I/O\n\n# parse_iso_date: keep this module free of I/O\n"
+   },
+   "date": "2025-04-13T16:49:00Z",
+   "id": "288fc016c6",
+   "message": "style: note on parse_iso_date",
+   "parent": "67c18f07f8"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how days_in_month behaves on edge inputs\n- note how weekday behaves on edge inputs\n- note how weekday behaves on edge inputs\n- note how days_in_month behaves on edge inputs\n- note how is_leap behaves on edge inputs\n- note how weekday behaves on edge inputs\n- note how is_leap behaves on edge inputs\n- note how days_in_month behaves on edge inputs\n- note how day_of_year behaves on edge inputs\n- note how days_in_month behaves on edge inputs\n- note how weekday behaves on edge inputs\n"
+   },
+   "date": "2025-04-14T14:15:00Z",
+   "id": "fed2a991c0",
+   "message": "docs: changelog entry for weekday",
+   "parent": "288fc016c6"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "tests/test_core.py": "import unittest\n\nfrom dateparse import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_is_leap(self):\n        self.assertTrue(core.is_leap(2000))\n        self.assertFalse(core.is_leap(1900))\n        self.assertTrue(core.is_leap(2024))\n\n    def test_parse_iso_date(self):\n        self.assertEqual(core.parse_iso_date(\"2024-02-29\"), (2024, 2, 29))\n        with self.assertRaises(ValueError):\n            core.parse_iso_date(\"2023-02-29\")\n\n    def test_day_of_year(self):\n        self.assertEqual(core.day_of_year(2023, 3, 1), 60)\n\n    def test_april(self):\n        self.assertEqual(core.days_in_month(2023, 4), 30)\n\n    def test_format_iso(self):\n        self.assertEqual(core.format_iso(7, 3, 9), \"0007-03-09\")\n\n    def test_weekday(self):\n        self.assertEqual(core.weekday(2024, 1, 1), 0)\n\n    def test_parse_strip(self):\n        self.assertEqual(core.parse_iso_date(\" 1999-12-31 \"), (1999, 12, 31))\n\n    def test_add_days(self):\n        self.assertEqual(core.add_days(2023, 12, 30, 3), (2024, 1, 2))\n\n    def test_bad_month(self):\n        with self.assertRaises(ValueError):\n            core.parse_iso_date(\"2020-13-01\")\n\n    def test_is_weekend(self):\n        self.assertTrue(core.is_weekend(2024, 1, 6))\n\n    def test_leap_1600(self):\n        self.assertTrue(core.is_leap(1600))\n"
+   },
+   "date": "2025-04-14T16:21:00Z",
+   "id": "361d136ac6",
+   "message": "test: cover century years",
+   "parent": "fed2a991c0"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how days_in_month behaves on edge inputs\n- note how weekday behaves on edge inputs\n- note how weekday behaves on edge inputs\n- note how days_in_month behaves on edge inputs\n- note how is_leap behaves on edge inputs\n- note how weekday behaves on edge inputs\n- note how is_leap behaves on edge inputs\n- note how days_in_month behaves on edge inputs\n- note how day_of_year behaves on edge inputs\n- note how days_in_month behaves on edge inputs\n- note how weekday behaves on edge inputs\n- note how parse_iso_date behaves on edge inputs\n"
+   },
+   "date": "2025-04-15T17:01:00Z",
+   "id": "145eb4d7c6",
+   "message": "docs: changelog entry for parse_iso_date",
+   "parent": "361d136ac6"
+  }
+ ],
+ "repo": "dateparse"
+}

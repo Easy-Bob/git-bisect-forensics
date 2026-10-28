@@ -1,0 +1,15 @@
+{
+  "description": "git_log only, then the right answer: no run_tests receipts.",
+  "repo": "moneyfmt",
+  "calls": [],
+  "submit": {
+    "first_bad": 37,
+    "last_good": 36,
+    "skipped_between": []
+  },
+  "expect": {
+    "valid": false,
+    "score": 0.0,
+    "check": "receipts-integrity"
+  }
+}

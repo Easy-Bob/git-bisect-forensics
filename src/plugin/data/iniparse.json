@@ -1,0 +1,655 @@
+{
+ "commits": [
+  {
+   "author": "Chen Li",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n",
+    "README.md": "# iniparse\n\nRead INI text into {section: {key: value}}.\n",
+    "iniparse/__init__.py": "\"\"\"Read INI text into {section: {key: value}}.\"\"\"\n\n__version__ = \"0.1.0\"\n",
+    "iniparse/core.py": "\"\"\"Read INI text into {section: {key: value}}.\"\"\"\n\n\ndef unquote(value):\n    if len(value) >= 2 and value[0] == value[-1] and value[0] in \"\\\"'\":\n        return value[1:-1]\n    return value\n\n\ndef parse_ini(text):\n    sections = {}\n    current = None\n    for number, raw in enumerate(text.splitlines(), start=1):\n        line = raw.strip()\n        if not line or line[0] in \"#;\":\n            continue\n        if line.startswith(\"[\") and line.endswith(\"]\"):\n            current = sections.setdefault(line[1:-1].strip(), {})\n        elif \"=\" in line and current is not None:\n            key, _, value = line.partition(\"=\")\n            current[key.strip().lower()] = unquote(value.strip())\n        else:\n            raise ValueError(f\"line {number}: {raw!r} is not a section, key or comment\")\n    return sections\n",
+    "tests/__init__.py": "",
+    "tests/test_core.py": "import unittest\n\nfrom iniparse import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_parse_ini(self):\n        text = \"; settings\\n[server]\\nHost = example.org\\n# port below\\nport = 8080\\n\"\n        self.assertEqual(core.parse_ini(text), {\"server\": {\"host\": \"example.org\", \"port\": \"8080\"}})\n\n    def test_unquote(self):\n        self.assertEqual(core.parse_ini(\"[a]\\nname = 'Ada'\\n\"), {\"a\": {\"name\": \"Ada\"}})\n"
+   },
+   "date": "2025-03-04T13:45:00Z",
+   "id": "b6fc4d5220",
+   "message": "Initial import",
+   "parent": ""
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "README.md": "# iniparse\n\nRead INI text into {section: {key: value}}.\n\n## get_int\n\nSee `tests/test_core.py` for get_int examples.\n"
+   },
+   "date": "2025-03-04T21:40:00Z",
+   "id": "435063e0b4",
+   "message": "docs: document get_int",
+   "parent": "b6fc4d5220"
+  },
+  {
+   "author": "Ada Park",
+   "changes": {
+    "README.md": "# iniparse\n\nRead INI text into {section: {key: value}}.\n\n## get_int\n\nSee `tests/test_core.py` for get_int examples.\n\n## to_ini\n\nSee `tests/test_core.py` for to_ini examples.\n"
+   },
+   "date": "2025-03-05T01:03:00Z",
+   "id": "dc45dff6c5",
+   "message": "docs: document to_ini",
+   "parent": "435063e0b4"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "README.md": "# iniparse\n\nRead INI text into {section: {key: value}}.\n\n## get_int\n\nSee `tests/test_core.py` for get_int examples.\n\n## to_ini\n\nSee `tests/test_core.py` for to_ini examples.\n\n## comments\n\nSee `tests/test_core.py` for comments examples.\n"
+   },
+   "date": "2025-03-05T06:13:00Z",
+   "id": "c8d2190d03",
+   "message": "docs: document comments",
+   "parent": "dc45dff6c5"
+  },
+  {
+   "author": "Ada Park",
+   "changes": {
+    "README.md": "# iniparse\n\nRead INI text into {section: {key: value}}.\n\n## get_int\n\nSee `tests/test_core.py` for get_int examples.\n\n## to_ini\n\nSee `tests/test_core.py` for to_ini examples.\n\n## comments\n\nSee `tests/test_core.py` for comments examples.\n\n## get_bool\n\nSee `tests/test_core.py` for get_bool examples.\n"
+   },
+   "date": "2025-03-05T08:20:00Z",
+   "id": "648bc464e5",
+   "message": "docs: document get_bool",
+   "parent": "c8d2190d03"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how parse_ini behaves on edge inputs\n"
+   },
+   "date": "2025-03-06T03:55:00Z",
+   "id": "32f90c49e8",
+   "message": "docs: changelog entry for parse_ini",
+   "parent": "648bc464e5"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "iniparse/core.py": "\"\"\"Read INI text into {section: {key: value}}.\"\"\"\n\n\ndef unquote(value):\n    if len(value) >= 2 and value[0] == value[-1] and value[0] in \"\\\"'\":\n        return value[1:-1]\n    return value\n\n\ndef parse_ini(text):\n    sections = {}\n    current = None\n    for number, raw in enumerate(text.splitlines(), start=1):\n        line = raw.strip()\n        if not line or line[0] in \"#;\":\n            continue\n        if line.startswith(\"[\") and line.endswith(\"]\"):\n            current = sections.setdefault(line[1:-1].strip(), {})\n        elif \"=\" in line and current is not None:\n            key, _, value = line.partition(\"=\")\n            current[key.strip().lower()] = unquote(value.strip())\n        else:\n            raise ValueError(f\"line {number}: {raw!r} is not a section, key or comment\")\n    return sections\n\n# parse_ini: keep this module free of I/O\n"
+   },
+   "date": "2025-03-06T17:25:00Z",
+   "id": "fd2109bba3",
+   "message": "style: note on parse_ini",
+   "parent": "32f90c49e8"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "README.md": "# iniparse\n\nRead INI text into {section: {key: value}}.\n\n## get_int\n\nSee `tests/test_core.py` for get_int examples.\n\n## to_ini\n\nSee `tests/test_core.py` for to_ini examples.\n\n## comments\n\nSee `tests/test_core.py` for comments examples.\n\n## get_bool\n\nSee `tests/test_core.py` for get_bool examples.\n\n## unquote\n\nSee `tests/test_core.py` for unquote examples.\n"
+   },
+   "date": "2025-03-06T22:03:00Z",
+   "id": "c3ab533f84",
+   "message": "docs: document unquote",
+   "parent": "fd2109bba3"
+  },
+  {
+   "author": "Farah Haddad",
+   "changes": {
+    "tests/test_core.py": "import unittest\n\nfrom iniparse import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_parse_ini(self):\n        text = \"; settings\\n[server]\\nHost = example.org\\n# port below\\nport = 8080\\n\"\n        self.assertEqual(core.parse_ini(text), {\"server\": {\"host\": \"example.org\", \"port\": \"8080\"}})\n\n    def test_unquote(self):\n        self.assertEqual(core.parse_ini(\"[a]\\nname = 'Ada'\\n\"), {\"a\": {\"name\": \"Ada\"}})\n\n    def test_empty(self):\n        self.assertEqual(core.parse_ini(\"\"), {})\n"
+   },
+   "date": "2025-03-08T03:14:00Z",
+   "id": "5d86a900ad",
+   "message": "test: cover empty text",
+   "parent": "c3ab533f84"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how parse_ini behaves on edge inputs\n- note how comments behaves on edge inputs\n"
+   },
+   "date": "2025-03-08T09:40:00Z",
+   "id": "23d4de3578",
+   "message": "docs: changelog entry for comments",
+   "parent": "5d86a900ad"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "iniparse/__init__.py": "\"\"\"Read INI text into {section: {key: value}}.\"\"\"\n\n__version__ = \"0.1.1\"\n"
+   },
+   "date": "2025-03-09T00:02:00Z",
+   "id": "633a8572c6",
+   "message": "chore: bump version to 0.1.1",
+   "parent": "23d4de3578"
+  },
+  {
+   "author": "Farah Haddad",
+   "changes": {
+    "iniparse/core.py": "\"\"\"Read INI text into {section: {key: value}}.\"\"\"\n\n\ndef unquote(value):\n    if len(value) >= 2 and value[0] == value[-1] and value[0] in \"\\\"'\":\n        return value[1:-1]\n    return value\n\n\ndef parse_ini(text):\n    sections = {}\n    current = None\n    for number, raw in enumerate(text.splitlines(), start=1):\n        line = raw.strip()\n        if not line or line[0] in \"#;\":\n            continue\n        if line.startswith(\"[\") and line.endswith(\"]\"):\n            current = sections.setdefault(line[1:-1].strip(), {})\n        elif \"=\" in line and current is not None:\n            key, _, value = line.partition(\"=\")\n            current[key.strip().lower()] = unquote(value.strip())\n        else:\n            raise ValueError(f\"line {number}: {raw!r} is not a section, key or comment\")\n    return sections\n\n# parse_ini: keep this module free of I/O\n\n\ndef get(sections, section, key, default=None):\n    return sections.get(section, {}).get(key.lower(), default)\n",
+    "tests/test_core.py": "import unittest\n\nfrom iniparse import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_parse_ini(self):\n        text = \"; settings\\n[server]\\nHost = example.org\\n# port below\\nport = 8080\\n\"\n        self.assertEqual(core.parse_ini(text), {\"server\": {\"host\": \"example.org\", \"port\": \"8080\"}})\n\n    def test_unquote(self):\n        self.assertEqual(core.parse_ini(\"[a]\\nname = 'Ada'\\n\"), {\"a\": {\"name\": \"Ada\"}})\n\n    def test_empty(self):\n        self.assertEqual(core.parse_ini(\"\"), {})\n\n    def test_get(self):\n        self.assertEqual(core.get({\"a\": {\"k\": \"v\"}}, \"a\", \"K\"), \"v\")\n"
+   },
+   "date": "2025-03-09T02:43:00Z",
+   "id": "beac07a970",
+   "message": "feat: get with a default",
+   "parent": "633a8572c6"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "iniparse/__init__.py": "\"\"\"Read INI text into {section: {key: value}}.\"\"\"\n\n__version__ = \"0.1.2\"\n"
+   },
+   "date": "2025-03-09T12:09:00Z",
+   "id": "f892afb921",
+   "message": "chore: bump version to 0.1.2",
+   "parent": "beac07a970"
+  },
+  {
+   "author": "Ada Park",
+   "changes": {
+    "iniparse/core.py": "\"\"\"Read INI text into {section: {key: value}}.\"\"\"\n\n\ndef unquote(value):\n    if len(value) >= 2 and value[0] == value[-1] and value[0] in \"\\\"'\":\n        return value[1:-1]\n    return value\n\n\ndef parse_ini(text):\n    sections = {}\n    current = None\n    for number, raw in enumerate(text.splitlines(), start=1):\n        line = raw.strip()\n        if not line or line[0] in \"#;\":\n            continue\n        if line.startswith(\"[\") and line.endswith(\"]\"):\n            current = sections.setdefault(line[1:-1].strip(), {})\n        elif \"=\" in line and current is not None:\n            key, _, value = line.partition(\"=\")\n            current[key.strip().lower()] = unquote(value.strip())\n        else:\n            raise ValueError(f\"line {number}: {raw!r} is not a section, key or comment\")\n    return sections\n\n# parse_ini: keep this module free of I/O\n\n\ndef get(sections, section, key, default=None):\n    return sections.get(section, {}).get(key.lower(), default)\n\n# get_int: keep this module free of I/O\n"
+   },
+   "date": "2025-03-09T18:09:00Z",
+   "id": "55315f96da",
+   "message": "style: note on get_int",
+   "parent": "f892afb921"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how parse_ini behaves on edge inputs\n- note how comments behaves on edge inputs\n- note how get behaves on edge inputs\n"
+   },
+   "date": "2025-03-09T22:45:00Z",
+   "id": "2520bbfdd7",
+   "message": "docs: changelog entry for get",
+   "parent": "55315f96da"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "iniparse/core.py": "\"\"\"Read INI text into {section: {key: value}}.\"\"\"\n\n\ndef unquote(value):\n    if len(value) >= 2 and value[0] == value[-1] and value[0] in \"\\\"'\":\n        return value[1:-1]\n    return value\n\n\ndef parse_ini(text):\n    sections = {}\n    current = None\n    for number, raw in enumerate(text.splitlines(), start=1):\n        line = raw.strip()\n        if not line or line[0] in \"#;\":\n            continue\n        if line.startswith(\"[\") and line.endswith(\"]\"):\n            current = sections.setdefault(line[1:-1].strip(), {})\n        elif \"=\" in line and current is not None:\n            key, _, value = line.partition(\"=\")\n            current[key.strip().lower()] = unquote(value.strip())\n        else:\n            raise ValueError(f\"line {number}: {raw!r} is not a section, key or comment\")\n    return sections\n\n# parse_ini: keep this module free of I/O\n\n\ndef get(sections, section, key, default=None):\n    return sections.get(section, {}).get(key.lower(), default)\n\n# get_int: keep this module free of I/O\n\n# parse_ini: keep this module free of I/O\n"
+   },
+   "date": "2025-03-10T20:32:00Z",
+   "id": "90be97df1f",
+   "message": "style: note on parse_ini",
+   "parent": "2520bbfdd7"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how parse_ini behaves on edge inputs\n- note how comments behaves on edge inputs\n- note how get behaves on edge inputs\n- note how unquote behaves on edge inputs\n"
+   },
+   "date": "2025-03-11T04:45:00Z",
+   "id": "76c9000c02",
+   "message": "docs: changelog entry for unquote",
+   "parent": "90be97df1f"
+  },
+  {
+   "author": "Farah Haddad",
+   "changes": {
+    "iniparse/core.py": "\"\"\"Read INI text into {section: {key: value}}.\"\"\"\n\n\ndef unquote(value):\n    if len(value) >= 2 and value[0] == value[-1] and value[0] in \"\\\"'\":\n        return value[1:-1]\n    return value\n\n\ndef parse_ini(text):\n    sections = {}\n    current = None\n    for number, raw in enumerate(text.splitlines(), start=1):\n        line = raw.strip()\n        if not line or line[0] in \"#;\":\n            continue\n        if line.startswith(\"[\") and line.endswith(\"]\"):\n            current = sections.setdefault(line[1:-1].strip(), {})\n        elif \"=\" in line and current is not None:\n            key, _, value = line.partition(\"=\")\n            current[key.strip().lower()] = unquote(value.strip())\n        else:\n            raise ValueError(f\"line {number}: {raw!r} is not a section, key or comment\")\n    return sections\n\n# parse_ini: keep this module free of I/O\n\n\ndef get(sections, section, key, default=None):\n    return sections.get(section, {}).get(key.lower(), default)\n\n# get_int: keep this module free of I/O\n\n# parse_ini: keep this module free of I/O\n\n# get_bool: keep this module free of I/O\n"
+   },
+   "date": "2025-03-12T06:51:00Z",
+   "id": "b377b7893e",
+   "message": "style: note on get_bool",
+   "parent": "76c9000c02"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "iniparse/__init__.py": "\"\"\"Read INI text into {section: {key: value}}.\"\"\"\n\n__version__ = \"0.1.3\"\n"
+   },
+   "date": "2025-03-13T12:56:00Z",
+   "id": "27d4b7a526",
+   "message": "chore: bump version to 0.1.3",
+   "parent": "b377b7893e"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "iniparse/__init__.py": "\"\"\"Read INI text into {section: {key: value}}.\"\"\"\n\n__version__ = \"0.1.4\"\n"
+   },
+   "date": "2025-03-13T14:59:00Z",
+   "id": "81a4305dcc",
+   "message": "chore: bump version to 0.1.4",
+   "parent": "27d4b7a526"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "iniparse/core.py": "\"\"\"Read INI text into {section: {key: value}}.\"\"\"\n\n\ndef unquote(value):\n    if len(value) >= 2 and value[0] == value[-1] and value[0] in \"\\\"'\":\n        return value[1:-1]\n    return value\n\n\ndef parse_ini(text):\n    sections = {}\n    current = None\n    for number, raw in enumerate(text.splitlines(), start=1):\n        line = raw.strip()\n        if not line or line[0] in \"#;\":\n            continue\n        if line.startswith(\"[\") and line.endswith(\"]\"):\n            current = sections.setdefault(line[1:-1].strip(), {})\n        elif \"=\" in line and current is not None:\n            key, _, value = line.partition(\"=\")\n            current[key.strip().lower()] = unquote(value.strip())\n        else:\n            raise ValueError(f\"line {number}: {raw!r} is not a section, key or comment\")\n    return sections\n\n# parse_ini: keep this module free of I/O\n\n\ndef get(sections, section, key, default=None):\n    return sections.get(section, {}).get(key.lower(), default)\n\n# get_int: keep this module free of I/O\n\n# parse_ini: keep this module free of I/O\n\n# get_bool: keep this module free of I/O\n\n# comments: keep this module free of I/O\n"
+   },
+   "date": "2025-03-13T22:23:00Z",
+   "id": "d651a703c1",
+   "message": "style: note on comments",
+   "parent": "81a4305dcc"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "iniparse/core.py": "\"\"\"Read INI text into {section: {key: value}}.\"\"\"\n\n\ndef unquote(value):\n    if len(value) >= 2 and value[0] == value[-1] and value[0] in \"\\\"'\":\n        return value[1:-1]\n    return value\n\n\ndef parse_ini(text):\n    sections = {}\n    current = None\n    for number, raw in enumerate(text.splitlines(), start=1):\n        line = raw.strip()\n        if not line or line[0] in \"#;\":\n            continue\n        if line.startswith(\"[\") and line.endswith(\"]\"):\n            current = sections.setdefault(line[1:-1].strip(), {})\n        elif \"=\" in line and current is not None:\n            key, _, value = line.partition(\"=\")\n            current[key.strip().lower()] = unquote(value.strip())\n        else:\n            raise ValueError(f\"line {number}: {raw!r} is not a section, key or comment\")\n    return sections\n\n# parse_ini: keep this module free of I/O\n\n\ndef get(sections, section, key, default=None):\n    return sections.get(section, {}).get(key.lower(), default)\n\n# get_int: keep this module free of I/O\n\n# parse_ini: keep this module free of I/O\n\n# get_bool: keep this module free of I/O\n\n# comments: keep this module free of I/O\n\n# to_ini: keep this module free of I/O\n"
+   },
+   "date": "2025-03-14T12:08:00Z",
+   "id": "217235fb05",
+   "message": "style: note on to_ini",
+   "parent": "d651a703c1"
+  },
+  {
+   "author": "Farah Haddad",
+   "changes": {
+    "iniparse/core.py": "\"\"\"Read INI text into {section: {key: value}}.\"\"\"\n\n\ndef unquote(value):\n    if len(value) >= 2 and value[0] == value[-1] and value[0] in \"\\\"'\":\n        return value[1:-1]\n    return value\n\n\ndef parse_ini(text):\n    sections = {}\n    current = None\n    for number, raw in enumerate(text.splitlines(), start=1):\n        line = raw.strip()\n        if not line or line[0] in \"#;\":\n            continue\n        if line.startswith(\"[\") and line.endswith(\"]\"):\n            current = sections.setdefault(line[1:-1].strip(), {})\n        elif \"=\" in line and current is not None:\n            key, _, value = line.partition(\"=\")\n            current[key.strip().lower()] = unquote(value.strip())\n        else:\n            raise ValueError(f\"line {number}: {raw!r} is not a section, key or comment\")\n    return sections\n\n# parse_ini: keep this module free of I/O\n\n\ndef get(sections, section, key, default=None):\n    return sections.get(section, {}).get(key.lower(), default)\n\n# get_int: keep this module free of I/O\n\n# parse_ini: keep this module free of I/O\n\n# get_bool: keep this module free of I/O\n\n# comments: keep this module free of I/O\n\n# to_ini: keep this module free of I/O\n\n\ndef get_int(sections, section, key, default=0):\n    value = get(sections, section, key)\n    return default if value is None else int(value)\n",
+    "tests/test_core.py": "import unittest\n\nfrom iniparse import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_parse_ini(self):\n        text = \"; settings\\n[server]\\nHost = example.org\\n# port below\\nport = 8080\\n\"\n        self.assertEqual(core.parse_ini(text), {\"server\": {\"host\": \"example.org\", \"port\": \"8080\"}})\n\n    def test_unquote(self):\n        self.assertEqual(core.parse_ini(\"[a]\\nname = 'Ada'\\n\"), {\"a\": {\"name\": \"Ada\"}})\n\n    def test_empty(self):\n        self.assertEqual(core.parse_ini(\"\"), {})\n\n    def test_get(self):\n        self.assertEqual(core.get({\"a\": {\"k\": \"v\"}}, \"a\", \"K\"), \"v\")\n\n    def test_get_int(self):\n        self.assertEqual(core.get_int({\"a\": {\"n\": \"7\"}}, \"a\", \"n\"), 7)\n"
+   },
+   "date": "2025-03-14T23:40:00Z",
+   "id": "b02c1c23a5",
+   "message": "feat: get_int",
+   "parent": "217235fb05"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "iniparse/__init__.py": "\"\"\"Read INI text into {section: {key: value}}.\"\"\"\n\n__version__ = \"0.1.5\"\n"
+   },
+   "date": "2025-03-16T06:09:00Z",
+   "id": "06a3c5b056",
+   "message": "chore: bump version to 0.1.5",
+   "parent": "b02c1c23a5"
+  },
+  {
+   "author": "Ada Park",
+   "changes": {
+    "iniparse/__init__.py": "\"\"\"Read INI text into {section: {key: value}}.\"\"\"\n\n__version__ = \"0.1.6\"\n"
+   },
+   "date": "2025-03-17T11:41:00Z",
+   "id": "2ed1f37f6e",
+   "message": "chore: bump version to 0.1.6",
+   "parent": "06a3c5b056"
+  },
+  {
+   "author": "Farah Haddad",
+   "changes": {
+    "iniparse/__init__.py": "\"\"\"Read INI text into {section: {key: value}}.\"\"\"\n\n__version__ = \"0.1.7\"\n"
+   },
+   "date": "2025-03-17T18:23:00Z",
+   "id": "e0ae52206b",
+   "message": "chore: bump version to 0.1.7",
+   "parent": "2ed1f37f6e"
+  },
+  {
+   "author": "Ada Park",
+   "changes": {
+    "iniparse/core.py": "\"\"\"Read INI text into {section: {key: value}}.\"\"\"\n\n\ndef unquote(value):\n    if len(value) >= 2 and value[0] == value[-1] and value[0] in \"\\\"'\":\n        return value[1:-1]\n    return value\n\n\ndef parse_ini(text):\n    sections = {}\n    current = None\n    for number, raw in enumerate(text.splitlines(), start=1):\n        line = raw.strip()\n        if not line or line[0] in \"#;\":\n            continue\n        if line.startswith(\"[\") and line.endswith(\"]\"):\n            current = sections.setdefault(line[1:-1].strip(), {})\n        elif \"=\" in line and current is not None:\n            key, _, value = line.partition(\"=\")\n            current[key.strip().lower()] = unquote(value.strip())\n        else:\n            raise ValueError(f\"line {number}: {raw!r} is not a section, key or comment\")\n    return sections\n\n# parse_ini: keep this module free of I/O\n\n\ndef get(sections, section, key, default=None):\n    return sections.get(section, {}).get(key.lower(), default)\n\n# get_int: keep this module free of I/O\n\n# parse_ini: keep this module free of I/O\n\n# get_bool: keep this module free of I/O\n\n# comments: keep this module free of I/O\n\n# to_ini: keep this module free of I/O\n\n\ndef get_int(sections, section, key, default=0):\n    value = get(sections, section, key)\n    return default if value is None else int(value)\n\n# get: keep this module free of I/O\n"
+   },
+   "date": "2025-03-17T20:39:00Z",
+   "id": "717c8b2036",
+   "message": "style: note on get",
+   "parent": "e0ae52206b"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "README.md": "# iniparse\n\nRead INI text into {section: {key: value}}.\n\n## get_int\n\nSee `tests/test_core.py` for get_int examples.\n\n## to_ini\n\nSee `tests/test_core.py` for to_ini examples.\n\n## comments\n\nSee `tests/test_core.py` for comments examples.\n\n## get_bool\n\nSee `tests/test_core.py` for get_bool examples.\n\n## unquote\n\nSee `tests/test_core.py` for unquote examples.\n\n## get_int\n\nSee `tests/test_core.py` for get_int examples.\n"
+   },
+   "date": "2025-03-19T03:12:00Z",
+   "id": "1baf7aa055",
+   "message": "docs: document get_int",
+   "parent": "717c8b2036"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how parse_ini behaves on edge inputs\n- note how comments behaves on edge inputs\n- note how get behaves on edge inputs\n- note how unquote behaves on edge inputs\n- note how comments behaves on edge inputs\n"
+   },
+   "date": "2025-03-20T05:35:00Z",
+   "id": "1336547a8e",
+   "message": "docs: changelog entry for comments",
+   "parent": "1baf7aa055"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "iniparse/__init__.py": "\"\"\"Read INI text into {section: {key: value}}.\"\"\"\n\n__version__ = \"0.1.8\"\n"
+   },
+   "date": "2025-03-20T12:08:00Z",
+   "id": "7f549af55a",
+   "message": "chore: bump version to 0.1.8",
+   "parent": "1336547a8e"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "iniparse/core.py": "\"\"\"Read INI text into {section: {key: value}}.\"\"\"\n\n\ndef unquote(value):\n    if len(value) >= 2 and value[0] == value[-1] and value[0] in \"\\\"'\":\n        return value[1:-1]\n    return value\n\n\ndef parse_ini(text):\n    sections = {}\n    current = None\n    for number, raw in enumerate(text.splitlines(), start=1):\n        line = raw.strip()\n        if not line or line[0] in \"#;\":\n            continue\n        if line.startswith(\"[\") and line.endswith(\"]\"):\n            current = sections.setdefault(line[1:-1].strip(), {})\n        elif \"=\" in line and current is not None:\n            key, _, value = line.partition(\"=\")\n            current[key.strip().lower()] = unquote(value.strip())\n        else:\n            raise ValueError(f\"line {number}: {raw!r} is not a section, key or comment\")\n    return sections\n\n# parse_ini: keep this module free of I/O\n\n\ndef get(sections, section, key, default=None):\n    return sections.get(section, {}).get(key.lower(), default)\n\n# get_int: keep this module free of I/O\n\n# parse_ini: keep this module free of I/O\n\n# get_bool: keep this module free of I/O\n\n# comments: keep this module free of I/O\n\n# to_ini: keep this module free of I/O\n\n\ndef get_int(sections, section, key, default=0):\n    value = get(sections, section, key)\n    return default if value is None else int(value)\n\n# get: keep this module free of I/O\n\n# to_ini: keep this module free of I/O\n"
+   },
+   "date": "2025-03-21T10:09:00Z",
+   "id": "ab692358ff",
+   "message": "style: note on to_ini",
+   "parent": "7f549af55a"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "iniparse/core.py": "\"\"\"Read INI text into {section: {key: value}}.\"\"\"\n\n\ndef unquote(value):\n    if len(value) >= 2 and value[0] == value[-1] and value[0] in \"\\\"'\":\n        return value[1:-1]\n    return value\n\n\ndef parse_ini(text):\n    sections = {}\n    current = None\n    for number, raw in enumerate(text.splitlines(), start=1):\n        line = raw.strip()\n        if not line or line[0] in \"#;\":\n            continue\n        if line.startswith(\"[\") and line.endswith(\"]\"):\n            current = sections.setdefault(line[1:-1].strip(), {})\n        elif \"=\" in line and current is not None:\n            key, _, value = line.partition(\"=\")\n            current[key.strip().lower()] = unquote(value.strip())\n        else:\n            raise ValueError(f\"line {number}: {raw!r} is not a section, key or comment\")\n    return sections\n\n# parse_ini: keep this module free of I/O\n\n\ndef get(sections, section, key, default=None):\n    return sections.get(section, {}).get(key.lower(), default)\n\n# get_int: keep this module free of I/O\n\n# parse_ini: keep this module free of I/O\n\n# get_bool: keep this module free of I/O\n\n# comments: keep this module free of I/O\n\n# to_ini: keep this module free of I/O\n\n\ndef get_int(sections, section, key, default=0):\n    value = get(sections, section, key)\n    return default if value is None else int(value)\n\n# get: keep this module free of I/O\n\n# to_ini: keep this module free of I/O\n\n# get_int: keep this module free of I/O\n"
+   },
+   "date": "2025-03-22T07:33:00Z",
+   "id": "a4609c0155",
+   "message": "style: note on get_int",
+   "parent": "ab692358ff"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "iniparse/core.py": "\"\"\"Read INI text into {section: {key: value}}.\"\"\"\n\n\ndef unquote(value):\n    if len(value) >= 2 and value[0] == value[-1] and value[0] in \"\\\"'\":\n        return value[1:-1]\n    return value\n\n\ndef parse_ini(text):\n    sections = {}\n    current = None\n    for number, raw in enumerate(text.splitlines(), start=1):\n        line = raw.strip()\n        if not line or line[0] in \"#;\":\n            continue\n        if line.startswith(\"[\") and line.endswith(\"]\"):\n            current = sections.setdefault(line[1:-1].strip(), {})\n        elif \"=\" in line and current is not None:\n            key, _, value = line.partition(\"=\")\n            current[key.strip().lower()] = unquote(value.strip())\n        else:\n            raise ValueError(f\"line {number}: {raw!r} is not a section, key or comment\")\n    return sections\n\n# parse_ini: keep this module free of I/O\n\n\ndef get(sections, section, key, default=None):\n    return sections.get(section, {}).get(key.lower(), default)\n\n# get_int: keep this module free of I/O\n\n# parse_ini: keep this module free of I/O\n\n# get_bool: keep this module free of I/O\n\n# comments: keep this module free of I/O\n\n# to_ini: keep this module free of I/O\n\n\ndef get_int(sections, section, key, default=0):\n    value = get(sections, section, key)\n    return default if value is None else int(value)\n\n# get: keep this module free of I/O\n\n# to_ini: keep this module free of I/O\n\n# get_int: keep this module free of I/O\n\n\ndef get_bool(sections, section, key, default=False):\n    value = get(sections, section, key)\n    return default if value is None else value.lower() in (\"1\", \"true\", \"yes\", \"on\")\n",
+    "tests/test_core.py": "import unittest\n\nfrom iniparse import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_parse_ini(self):\n        text = \"; settings\\n[server]\\nHost = example.org\\n# port below\\nport = 8080\\n\"\n        self.assertEqual(core.parse_ini(text), {\"server\": {\"host\": \"example.org\", \"port\": \"8080\"}})\n\n    def test_unquote(self):\n        self.assertEqual(core.parse_ini(\"[a]\\nname = 'Ada'\\n\"), {\"a\": {\"name\": \"Ada\"}})\n\n    def test_empty(self):\n        self.assertEqual(core.parse_ini(\"\"), {})\n\n    def test_get(self):\n        self.assertEqual(core.get({\"a\": {\"k\": \"v\"}}, \"a\", \"K\"), \"v\")\n\n    def test_get_int(self):\n        self.assertEqual(core.get_int({\"a\": {\"n\": \"7\"}}, \"a\", \"n\"), 7)\n\n    def test_get_bool(self):\n        self.assertTrue(core.get_bool({\"a\": {\"on\": \"Yes\"}}, \"a\", \"on\"))\n"
+   },
+   "date": "2025-03-22T21:51:00Z",
+   "id": "67bdb5db14",
+   "message": "feat: get_bool",
+   "parent": "a4609c0155"
+  },
+  {
+   "author": "Farah Haddad",
+   "changes": {
+    "tests/test_core.py": "import unittest\n\nfrom iniparse import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_parse_ini(self):\n        text = \"; settings\\n[server]\\nHost = example.org\\n# port below\\nport = 8080\\n\"\n        self.assertEqual(core.parse_ini(text), {\"server\": {\"host\": \"example.org\", \"port\": \"8080\"}})\n\n    def test_unquote(self):\n        self.assertEqual(core.parse_ini(\"[a]\\nname = 'Ada'\\n\"), {\"a\": {\"name\": \"Ada\"}})\n\n    def test_empty(self):\n        self.assertEqual(core.parse_ini(\"\"), {})\n\n    def test_get(self):\n        self.assertEqual(core.get({\"a\": {\"k\": \"v\"}}, \"a\", \"K\"), \"v\")\n\n    def test_get_int(self):\n        self.assertEqual(core.get_int({\"a\": {\"n\": \"7\"}}, \"a\", \"n\"), 7)\n\n    def test_get_bool(self):\n        self.assertTrue(core.get_bool({\"a\": {\"on\": \"Yes\"}}, \"a\", \"on\"))\n\n    def test_stray_line(self):\n        with self.assertRaises(ValueError):\n            core.parse_ini(\"[a]\\noops\\n\")\n"
+   },
+   "date": "2025-03-23T22:24:00Z",
+   "id": "a209d1b7e3",
+   "message": "test: cover stray lines",
+   "parent": "67bdb5db14"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "iniparse/__init__.py": "\"\"\"Read INI text into {section: {key: value}}.\"\"\"\n\n__version__ = \"0.1.9\"\n"
+   },
+   "date": "2025-03-24T23:24:00Z",
+   "id": "09c677c5ed",
+   "message": "chore: bump version to 0.1.9",
+   "parent": "a209d1b7e3"
+  },
+  {
+   "author": "Ada Park",
+   "changes": {
+    "README.md": "# iniparse\n\nRead INI text into {section: {key: value}}.\n\n## get_int\n\nSee `tests/test_core.py` for get_int examples.\n\n## to_ini\n\nSee `tests/test_core.py` for to_ini examples.\n\n## comments\n\nSee `tests/test_core.py` for comments examples.\n\n## get_bool\n\nSee `tests/test_core.py` for get_bool examples.\n\n## unquote\n\nSee `tests/test_core.py` for unquote examples.\n\n## get_int\n\nSee `tests/test_core.py` for get_int examples.\n\n## comments\n\nSee `tests/test_core.py` for comments examples.\n"
+   },
+   "date": "2025-03-25T00:44:00Z",
+   "id": "6f9acb5cb8",
+   "message": "docs: document comments",
+   "parent": "09c677c5ed"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "iniparse/__init__.py": "\"\"\"Read INI text into {section: {key: value}}.\"\"\"\n\n__version__ = \"0.1.10\"\n"
+   },
+   "date": "2025-03-25T06:42:00Z",
+   "id": "35a2836aff",
+   "message": "chore: bump version to 0.1.10",
+   "parent": "6f9acb5cb8"
+  },
+  {
+   "author": "Farah Haddad",
+   "changes": {
+    "iniparse/__init__.py": "\"\"\"Read INI text into {section: {key: value}}.\"\"\"\n\n__version__ = \"0.1.11\"\n"
+   },
+   "date": "2025-03-25T09:22:00Z",
+   "id": "993820de6a",
+   "message": "chore: bump version to 0.1.11",
+   "parent": "35a2836aff"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how parse_ini behaves on edge inputs\n- note how comments behaves on edge inputs\n- note how get behaves on edge inputs\n- note how unquote behaves on edge inputs\n- note how comments behaves on edge inputs\n- note how comments behaves on edge inputs\n"
+   },
+   "date": "2025-03-25T20:51:00Z",
+   "id": "f57b50f6ef",
+   "message": "docs: changelog entry for comments",
+   "parent": "993820de6a"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how parse_ini behaves on edge inputs\n- note how comments behaves on edge inputs\n- note how get behaves on edge inputs\n- note how unquote behaves on edge inputs\n- note how comments behaves on edge inputs\n- note how comments behaves on edge inputs\n- note how get behaves on edge inputs\n"
+   },
+   "date": "2025-03-26T14:06:00Z",
+   "id": "1bdd79b607",
+   "message": "docs: changelog entry for get",
+   "parent": "f57b50f6ef"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "iniparse/core.py": "\"\"\"Read INI text into {section: {key: value}}.\"\"\"\n\n\ndef unquote(value):\n    if len(value) >= 2 and value[0] == value[-1] and value[0] in \"\\\"'\":\n        return value[1:-1]\n    return value\n\n\ndef parse_ini(text):\n    sections = {}\n    current = None\n    for number, raw in enumerate(text.splitlines(), start=1):\n        line = raw.strip()\n        if not line or line[0] in \"#;\":\n            continue\n        if line.startswith(\"[\") and line.endswith(\"]\"):\n            current = sections.setdefault(line[1:-1].strip(), {})\n        elif \"=\" in line and current is not None:\n            key, _, value = line.partition(\"=\")\n            current[key.strip().lower()] = unquote(value.strip())\n        else:\n            raise ValueError(f\"line {number}: {raw!r} is not a section, key or comment\")\n    return sections\n\n# parse_ini: keep this module free of I/O\n\n\ndef get(sections, section, key, default=None):\n    return sections.get(section, {}).get(key.lower(), default)\n\n# get_int: keep this module free of I/O\n\n# parse_ini: keep this module free of I/O\n\n# get_bool: keep this module free of I/O\n\n# comments: keep this module free of I/O\n\n# to_ini: keep this module free of I/O\n\n\ndef get_int(sections, section, key, default=0):\n    value = get(sections, section, key)\n    return default if value is None else int(value)\n\n# get: keep this module free of I/O\n\n# to_ini: keep this module free of I/O\n\n# get_int: keep this module free of I/O\n\n\ndef get_bool(sections, section, key, default=False):\n    value = get(sections, section, key)\n    return default if value is None else value.lower() in (\"1\", \"true\", \"yes\", \"on\")\n\n# unquote: keep this module free of I/O\n"
+   },
+   "date": "2025-03-26T21:06:00Z",
+   "id": "75037f8208",
+   "message": "style: note on unquote",
+   "parent": "1bdd79b607"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "README.md": "# iniparse\n\nRead INI text into {section: {key: value}}.\n\n## get_int\n\nSee `tests/test_core.py` for get_int examples.\n\n## to_ini\n\nSee `tests/test_core.py` for to_ini examples.\n\n## comments\n\nSee `tests/test_core.py` for comments examples.\n\n## get_bool\n\nSee `tests/test_core.py` for get_bool examples.\n\n## unquote\n\nSee `tests/test_core.py` for unquote examples.\n\n## get_int\n\nSee `tests/test_core.py` for get_int examples.\n\n## comments\n\nSee `tests/test_core.py` for comments examples.\n\n## to_ini\n\nSee `tests/test_core.py` for to_ini examples.\n"
+   },
+   "date": "2025-03-28T01:30:00Z",
+   "id": "52534e9811",
+   "message": "docs: document to_ini",
+   "parent": "75037f8208"
+  },
+  {
+   "author": "Farah Haddad",
+   "changes": {
+    "iniparse/core.py": "\"\"\"Read INI text into {section: {key: value}}.\"\"\"\n\n\ndef unquote(value):\n    if len(value) >= 2 and value[0] == value[-1] and value[0] in \"\\\"'\":\n        return value[1:-1]\n    return value\n\n\ndef parse_ini(text):\n    sections = {}\n    current = None\n    for number, raw in enumerate(text.splitlines(), start=1):\n        line = raw.strip()\n        if not line or line[0] in \"#;\":\n            continue\n        if line.startswith(\"[\") and line.endswith(\"]\"):\n            current = sections.setdefault(line[1:-1].strip(), {})\n        elif \"=\" in line and current is not None:\n            key, _, value = line.partition(\"=\")\n            current[key.strip().lower()] = unquote(value.strip())\n        else:\n            raise ValueError(f\"line {number}: {raw!r} is not a section, key or comment\")\n    return sections\n\n# parse_ini: keep this module free of I/O\n\n\ndef get(sections, section, key, default=None):\n    return sections.get(section, {}).get(key.lower(), default)\n\n# get_int: keep this module free of I/O\n\n# parse_ini: keep this module free of I/O\n\n# get_bool: keep this module free of I/O\n\n# comments: keep this module free of I/O\n\n# to_ini: keep this module free of I/O\n\n\ndef get_int(sections, section, key, default=0):\n    value = get(sections, section, key)\n    return default if value is None else int(value)\n\n# get: keep this module free of I/O\n\n# to_ini: keep this module free of I/O\n\n# get_int: keep this module free of I/O\n\n\ndef get_bool(sections, section, key, default=False):\n    value = get(sections, section, key)\n    return default if value is None else value.lower() in (\"1\", \"true\", \"yes\", \"on\")\n\n# unquote: keep this module free of I/O\n\n\ndef to_ini(sections):\n    lines = []\n    for name, values in sections.items():\n        lines.append(f\"[{name}]\")\n        lines.extend(f\"{key} = {value}\" for key, value in values.items())\n    return \"\\n\".join(lines) + \"\\n\"\n",
+    "tests/test_core.py": "import unittest\n\nfrom iniparse import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_parse_ini(self):\n        text = \"; settings\\n[server]\\nHost = example.org\\n# port below\\nport = 8080\\n\"\n        self.assertEqual(core.parse_ini(text), {\"server\": {\"host\": \"example.org\", \"port\": \"8080\"}})\n\n    def test_unquote(self):\n        self.assertEqual(core.parse_ini(\"[a]\\nname = 'Ada'\\n\"), {\"a\": {\"name\": \"Ada\"}})\n\n    def test_empty(self):\n        self.assertEqual(core.parse_ini(\"\"), {})\n\n    def test_get(self):\n        self.assertEqual(core.get({\"a\": {\"k\": \"v\"}}, \"a\", \"K\"), \"v\")\n\n    def test_get_int(self):\n        self.assertEqual(core.get_int({\"a\": {\"n\": \"7\"}}, \"a\", \"n\"), 7)\n\n    def test_get_bool(self):\n        self.assertTrue(core.get_bool({\"a\": {\"on\": \"Yes\"}}, \"a\", \"on\"))\n\n    def test_stray_line(self):\n        with self.assertRaises(ValueError):\n            core.parse_ini(\"[a]\\noops\\n\")\n\n    def test_to_ini(self):\n        self.assertEqual(core.to_ini({\"a\": {\"k\": \"v\"}}), \"[a]\\nk = v\\n\")\n"
+   },
+   "date": "2025-03-28T17:01:00Z",
+   "id": "9f0682fe9c",
+   "message": "feat: to_ini",
+   "parent": "52534e9811"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "iniparse/__init__.py": "\"\"\"Read INI text into {section: {key: value}}.\"\"\"\n\n__version__ = \"0.1.12\"\n"
+   },
+   "date": "2025-03-29T13:18:00Z",
+   "id": "3de45cfebb",
+   "message": "chore: bump version to 0.1.12",
+   "parent": "9f0682fe9c"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "README.md": "# iniparse\n\nRead INI text into {section: {key: value}}.\n\n## get_int\n\nSee `tests/test_core.py` for get_int examples.\n\n## to_ini\n\nSee `tests/test_core.py` for to_ini examples.\n\n## comments\n\nSee `tests/test_core.py` for comments examples.\n\n## get_bool\n\nSee `tests/test_core.py` for get_bool examples.\n\n## unquote\n\nSee `tests/test_core.py` for unquote examples.\n\n## get_int\n\nSee `tests/test_core.py` for get_int examples.\n\n## comments\n\nSee `tests/test_core.py` for comments examples.\n\n## to_ini\n\nSee `tests/test_core.py` for to_ini examples.\n\n## unquote\n\nSee `tests/test_core.py` for unquote examples.\n"
+   },
+   "date": "2025-03-29T16:24:00Z",
+   "id": "6a40cd7494",
+   "message": "docs: document unquote",
+   "parent": "3de45cfebb"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how parse_ini behaves on edge inputs\n- note how comments behaves on edge inputs\n- note how get behaves on edge inputs\n- note how unquote behaves on edge inputs\n- note how comments behaves on edge inputs\n- note how comments behaves on edge inputs\n- note how get behaves on edge inputs\n- note how get_int behaves on edge inputs\n"
+   },
+   "date": "2025-03-30T03:59:00Z",
+   "id": "399347e911",
+   "message": "docs: changelog entry for get_int",
+   "parent": "6a40cd7494"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "tests/test_core.py": "import unittest\n\nfrom iniparse import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_parse_ini(self):\n        text = \"; settings\\n[server]\\nHost = example.org\\n# port below\\nport = 8080\\n\"\n        self.assertEqual(core.parse_ini(text), {\"server\": {\"host\": \"example.org\", \"port\": \"8080\"}})\n\n    def test_unquote(self):\n        self.assertEqual(core.parse_ini(\"[a]\\nname = 'Ada'\\n\"), {\"a\": {\"name\": \"Ada\"}})\n\n    def test_empty(self):\n        self.assertEqual(core.parse_ini(\"\"), {})\n\n    def test_get(self):\n        self.assertEqual(core.get({\"a\": {\"k\": \"v\"}}, \"a\", \"K\"), \"v\")\n\n    def test_get_int(self):\n        self.assertEqual(core.get_int({\"a\": {\"n\": \"7\"}}, \"a\", \"n\"), 7)\n\n    def test_get_bool(self):\n        self.assertTrue(core.get_bool({\"a\": {\"on\": \"Yes\"}}, \"a\", \"on\"))\n\n    def test_stray_line(self):\n        with self.assertRaises(ValueError):\n            core.parse_ini(\"[a]\\noops\\n\")\n\n    def test_to_ini(self):\n        self.assertEqual(core.to_ini({\"a\": {\"k\": \"v\"}}), \"[a]\\nk = v\\n\")\n\n    def test_key_case(self):\n        self.assertEqual(core.parse_ini(\"[a]\\nKEY=1\\n\"), {\"a\": {\"key\": \"1\"}})\n"
+   },
+   "date": "2025-03-30T06:58:00Z",
+   "id": "09a0dc0dbe",
+   "message": "test: cover key case",
+   "parent": "399347e911"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "README.md": "# iniparse\n\nRead INI text into {section: {key: value}}.\n\n## get_int\n\nSee `tests/test_core.py` for get_int examples.\n\n## to_ini\n\nSee `tests/test_core.py` for to_ini examples.\n\n## comments\n\nSee `tests/test_core.py` for comments examples.\n\n## get_bool\n\nSee `tests/test_core.py` for get_bool examples.\n\n## unquote\n\nSee `tests/test_core.py` for unquote examples.\n\n## get_int\n\nSee `tests/test_core.py` for get_int examples.\n\n## comments\n\nSee `tests/test_core.py` for comments examples.\n\n## to_ini\n\nSee `tests/test_core.py` for to_ini examples.\n\n## unquote\n\nSee `tests/test_core.py` for unquote examples.\n\n## parse_ini\n\nSee `tests/test_core.py` for parse_ini examples.\n"
+   },
+   "date": "2025-03-31T04:26:00Z",
+   "id": "17680e8a43",
+   "message": "docs: document parse_ini",
+   "parent": "09a0dc0dbe"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "tests/test_core.py": "import unittest\n\nfrom iniparse import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_parse_ini(self):\n        text = \"; settings\\n[server]\\nHost = example.org\\n# port below\\nport = 8080\\n\"\n        self.assertEqual(core.parse_ini(text), {\"server\": {\"host\": \"example.org\", \"port\": \"8080\"}})\n\n    def test_unquote(self):\n        self.assertEqual(core.parse_ini(\"[a]\\nname = 'Ada'\\n\"), {\"a\": {\"name\": \"Ada\"}})\n\n    def test_empty(self):\n        self.assertEqual(core.parse_ini(\"\"), {})\n\n    def test_get(self):\n        self.assertEqual(core.get({\"a\": {\"k\": \"v\"}}, \"a\", \"K\"), \"v\")\n\n    def test_get_int(self):\n        self.assertEqual(core.get_int({\"a\": {\"n\": \"7\"}}, \"a\", \"n\"), 7)\n\n    def test_get_bool(self):\n        self.assertTrue(core.get_bool({\"a\": {\"on\": \"Yes\"}}, \"a\", \"on\"))\n\n    def test_stray_line(self):\n        with self.assertRaises(ValueError):\n            core.parse_ini(\"[a]\\noops\\n\")\n\n    def test_to_ini(self):\n        self.assertEqual(core.to_ini({\"a\": {\"k\": \"v\"}}), \"[a]\\nk = v\\n\")\n\n    def test_key_case(self):\n        self.assertEqual(core.parse_ini(\"[a]\\nKEY=1\\n\"), {\"a\": {\"key\": \"1\"}})\n\n    def test_double_quotes(self):\n        self.assertEqual(core.unquote('\"x\"'), \"x\")\n"
+   },
+   "date": "2025-04-01T06:29:00Z",
+   "id": "39bd00bcf3",
+   "message": "test: cover double quotes",
+   "parent": "17680e8a43"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "iniparse/__init__.py": "\"\"\"Read INI text into {section: {key: value}}.\"\"\"\n\n__version__ = \"0.1.13\"\n"
+   },
+   "date": "2025-04-01T19:36:00Z",
+   "id": "a6343bc25e",
+   "message": "chore: bump version to 0.1.13",
+   "parent": "39bd00bcf3"
+  },
+  {
+   "author": "Farah Haddad",
+   "changes": {
+    "iniparse/__init__.py": "\"\"\"Read INI text into {section: {key: value}}.\"\"\"\n\n__version__ = \"0.1.14\"\n"
+   },
+   "date": "2025-04-02T22:17:00Z",
+   "id": "dbdd7946ed",
+   "message": "chore: bump version to 0.1.14",
+   "parent": "a6343bc25e"
+  },
+  {
+   "author": "Ada Park",
+   "changes": {
+    "iniparse/core.py": "\"\"\"Read INI text into {section: {key: value}}.\"\"\"\n\n\ndef unquote(value):\n    if len(value) >= 2 and value[0] == value[-1] and value[0] in \"\\\"'\":\n        return value[1:-1]\n    return value\n\n\ndef parse_ini(text):\n    sections = {}\n    current = None\n    for number, raw in enumerate(text.splitlines(), start=1):\n        line = raw.strip()\n        if not line or line[0] in \"#;\":\n            continue\n        if line.startswith(\"[\") and line.endswith(\"]\"):\n            current = sections.setdefault(line[1:-1].strip(), {})\n        elif \"=\" in line and current is not None:\n            key, _, value = line.partition(\"=\")\n            current[key.strip().lower()] = unquote(value.strip())\n        else:\n            raise ValueError(f\"line {number}: {raw!r} is not a section, key or comment\")\n    return sections\n\n# parse_ini: keep this module free of I/O\n\n\ndef get(sections, section, key, default=None):\n    return sections.get(section, {}).get(key.lower(), default)\n\n# get_int: keep this module free of I/O\n\n# parse_ini: keep this module free of I/O\n\n# get_bool: keep this module free of I/O\n\n# comments: keep this module free of I/O\n\n# to_ini: keep this module free of I/O\n\n\ndef get_int(sections, section, key, default=0):\n    value = get(sections, section, key)\n    return default if value is None else int(value)\n\n# get: keep this module free of I/O\n\n# to_ini: keep this module free of I/O\n\n# get_int: keep this module free of I/O\n\n\ndef get_bool(sections, section, key, default=False):\n    value = get(sections, section, key)\n    return default if value is None else value.lower() in (\"1\", \"true\", \"yes\", \"on\")\n\n# unquote: keep this module free of I/O\n\n\ndef to_ini(sections):\n    lines = []\n    for name, values in sections.items():\n        lines.append(f\"[{name}]\")\n        lines.extend(f\"{key} = {value}\" for key, value in values.items())\n    return \"\\n\".join(lines) + \"\\n\"\n\n# get: keep this module free of I/O\n"
+   },
+   "date": "2025-04-03T22:53:00Z",
+   "id": "ee68463cc3",
+   "message": "style: note on get",
+   "parent": "dbdd7946ed"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "iniparse/core.py": "\"\"\"Read INI text into {section: {key: value}}.\"\"\"\n\n\ndef unquote(value):\n    if len(value) >= 2 and value[0] == value[-1] and value[0] in \"\\\"'\":\n        return value[1:-1]\n    return value\n\n\ndef parse_ini(text):\n    sections = {}\n    current = None\n    for number, raw in enumerate(text.splitlines(), start=1):\n        line = raw.strip()\n        if not line or line[0] in \"#;\":\n            continue\n        if line.startswith(\"[\") and line.endswith(\"]\"):\n            current = sections.setdefault(line[1:-1].strip(), {})\n        elif \"=\" in line and current is not None:\n            key, _, value = line.partition(\"=\")\n            current[key.strip().lower()] = unquote(value.strip())\n        else:\n            raise ValueError(f\"line {number}: {raw!r} is not a section, key or comment\")\n    return sections\n\n# parse_ini: keep this module free of I/O\n\n\ndef get(sections, section, key, default=None):\n    return sections.get(section, {}).get(key.lower(), default)\n\n# get_int: keep this module free of I/O\n\n# parse_ini: keep this module free of I/O\n\n# get_bool: keep this module free of I/O\n\n# comments: keep this module free of I/O\n\n# to_ini: keep this module free of I/O\n\n\ndef get_int(sections, section, key, default=0):\n    value = get(sections, section, key)\n    return default if value is None else int(value)\n\n# get: keep this module free of I/O\n\n# to_ini: keep this module free of I/O\n\n# get_int: keep this module free of I/O\n\n\ndef get_bool(sections, section, key, default=False):\n    value = get(sections, section, key)\n    return default if value is None else value.lower() in (\"1\", \"true\", \"yes\", \"on\")\n\n# unquote: keep this module free of I/O\n\n\ndef to_ini(sections):\n    lines = []\n    for name, values in sections.items():\n        lines.append(f\"[{name}]\")\n        lines.extend(f\"{key} = {value}\" for key, value in values.items())\n    return \"\\n\".join(lines) + \"\\n\"\n\n# get: keep this module free of I/O\n\n# get_bool: keep this module free of I/O\n"
+   },
+   "date": "2025-04-04T18:41:00Z",
+   "id": "749bf947f7",
+   "message": "style: note on get_bool",
+   "parent": "ee68463cc3"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "iniparse/core.py": "\"\"\"Read INI text into {section: {key: value}}.\"\"\"\n\n\ndef unquote(value):\n    if len(value) >= 2 and value[0] == value[-1] and value[0] in \"\\\"'\":\n        return value[1:-1]\n    return value\n\n\ndef parse_ini(text):\n    sections = {}\n    current = None\n    for number, raw in enumerate(text.splitlines(), start=1):\n        line = raw.strip()\n        if not line or line[0] in \"#;\":\n            continue\n        if line.startswith(\"[\") and line.endswith(\"]\"):\n            current = sections.setdefault(line[1:-1].strip(), {})\n        elif \"=\" in line and current is not None:\n            key, _, value = line.partition(\"=\")\n            current[key.strip().lower()] = unquote(value.strip())\n        else:\n            raise ValueError(f\"line {number}: {raw!r} is not a section, key or comment\")\n    return sections\n\n# parse_ini: keep this module free of I/O\n\n\ndef get(sections, section, key, default=None):\n    return sections.get(section, {}).get(key.lower(), default)\n\n# get_int: keep this module free of I/O\n\n# parse_ini: keep this module free of I/O\n\n# get_bool: keep this module free of I/O\n\n# comments: keep this module free of I/O\n\n# to_ini: keep this module free of I/O\n\n\ndef get_int(sections, section, key, default=0):\n    value = get(sections, section, key)\n    return default if value is None else int(value)\n\n# get: keep this module free of I/O\n\n# to_ini: keep this module free of I/O\n\n# get_int: keep this module free of I/O\n\n\ndef get_bool(sections, section, key, default=False):\n    value = get(sections, section, key)\n    return default if value is None else value.lower() in (\"1\", \"true\", \"yes\", \"on\")\n\n# unquote: keep this module free of I/O\n\n\ndef to_ini(sections):\n    lines = []\n    for name, values in sections.items():\n        lines.append(f\"[{name}]\")\n        lines.extend(f\"{key} = {value}\" for key, value in values.items())\n    return \"\\n\".join(lines) + \"\\n\"\n\n# get: keep this module free of I/O\n\n# get_bool: keep this module free of I/O\n\n\ndef section_names(text):\n    return list(parse_ini(text))\n",
+    "tests/test_core.py": "import unittest\n\nfrom iniparse import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_parse_ini(self):\n        text = \"; settings\\n[server]\\nHost = example.org\\n# port below\\nport = 8080\\n\"\n        self.assertEqual(core.parse_ini(text), {\"server\": {\"host\": \"example.org\", \"port\": \"8080\"}})\n\n    def test_unquote(self):\n        self.assertEqual(core.parse_ini(\"[a]\\nname = 'Ada'\\n\"), {\"a\": {\"name\": \"Ada\"}})\n\n    def test_empty(self):\n        self.assertEqual(core.parse_ini(\"\"), {})\n\n    def test_get(self):\n        self.assertEqual(core.get({\"a\": {\"k\": \"v\"}}, \"a\", \"K\"), \"v\")\n\n    def test_get_int(self):\n        self.assertEqual(core.get_int({\"a\": {\"n\": \"7\"}}, \"a\", \"n\"), 7)\n\n    def test_get_bool(self):\n        self.assertTrue(core.get_bool({\"a\": {\"on\": \"Yes\"}}, \"a\", \"on\"))\n\n    def test_stray_line(self):\n        with self.assertRaises(ValueError):\n            core.parse_ini(\"[a]\\noops\\n\")\n\n    def test_to_ini(self):\n        self.assertEqual(core.to_ini({\"a\": {\"k\": \"v\"}}), \"[a]\\nk = v\\n\")\n\n    def test_key_case(self):\n        self.assertEqual(core.parse_ini(\"[a]\\nKEY=1\\n\"), {\"a\": {\"key\": \"1\"}})\n\n    def test_double_quotes(self):\n        self.assertEqual(core.unquote('\"x\"'), \"x\")\n\n    def test_section_names(self):\n        self.assertEqual(core.section_names(\"[b]\\n[a]\\n\"), [\"b\", \"a\"])\n"
+   },
+   "date": "2025-04-05T18:14:00Z",
+   "id": "b2daeddde3",
+   "message": "feat: section_names",
+   "parent": "749bf947f7"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "README.md": "# iniparse\n\nRead INI text into {section: {key: value}}.\n\n## get_int\n\nSee `tests/test_core.py` for get_int examples.\n\n## to_ini\n\nSee `tests/test_core.py` for to_ini examples.\n\n## comments\n\nSee `tests/test_core.py` for comments examples.\n\n## get_bool\n\nSee `tests/test_core.py` for get_bool examples.\n\n## unquote\n\nSee `tests/test_core.py` for unquote examples.\n\n## get_int\n\nSee `tests/test_core.py` for get_int examples.\n\n## comments\n\nSee `tests/test_core.py` for comments examples.\n\n## to_ini\n\nSee `tests/test_core.py` for to_ini examples.\n\n## unquote\n\nSee `tests/test_core.py` for unquote examples.\n\n## parse_ini\n\nSee `tests/test_core.py` for parse_ini examples.\n\n## comments\n\nSee `tests/test_core.py` for comments examples.\n"
+   },
+   "date": "2025-04-06T22:16:00Z",
+   "id": "f155e241af",
+   "message": "docs: document comments",
+   "parent": "b2daeddde3"
+  },
+  {
+   "author": "Ada Park",
+   "changes": {
+    "iniparse/core.py": "\"\"\"Read INI text into {section: {key: value}}.\"\"\"\n\n\ndef unquote(value):\n    if len(value) >= 2 and value[0] == value[-1] and value[0] in \"\\\"'\":\n        return value[1:-1]\n    return value\n\n\ndef parse_ini(text):\n    sections = {}\n    current = None\n    for number, raw in enumerate(text.splitlines(), start=1):\n        line = raw.strip()\n        if not line or line[0] in \"#;\":\n            continue\n        if line.startswith(\"[\") and line.endswith(\"]\"):\n            current = sections.setdefault(line[1:-1].strip(), {})\n        elif \"=\" in line and current is not None:\n            key, _, value = line.partition(\"=\")\n            current[key.strip().lower()] = unquote(value.strip())\n        else:\n            raise ValueError(f\"line {number}: {raw!r} is not a section, key or comment\")\n    return sections\n\n# parse_ini: keep this module free of I/O\n\n\ndef get(sections, section, key, default=None):\n    return sections.get(section, {}).get(key.lower(), default)\n\n# get_int: keep this module free of I/O\n\n# parse_ini: keep this module free of I/O\n\n# get_bool: keep this module free of I/O\n\n# comments: keep this module free of I/O\n\n# to_ini: keep this module free of I/O\n\n\ndef get_int(sections, section, key, default=0):\n    value = get(sections, section, key)\n    return default if value is None else int(value)\n\n# get: keep this module free of I/O\n\n# to_ini: keep this module free of I/O\n\n# get_int: keep this module free of I/O\n\n\ndef get_bool(sections, section, key, default=False):\n    value = get(sections, section, key)\n    return default if value is None else value.lower() in (\"1\", \"true\", \"yes\", \"on\")\n\n# unquote: keep this module free of I/O\n\n\ndef to_ini(sections):\n    lines = []\n    for name, values in sections.items():\n        lines.append(f\"[{name}]\")\n        lines.extend(f\"{key} = {value}\" for key, value in values.items())\n    return \"\\n\".join(lines) + \"\\n\"\n\n# get: keep this module free of I/O\n\n# get_bool: keep this module free of I/O\n\n\ndef section_names(text):\n    return list(parse_ini(text))\n\n# unquote: keep this module free of I/O\n"
+   },
+   "date": "2025-04-07T08:55:00Z",
+   "id": "3b5038b07d",
+   "message": "style: note on unquote",
+   "parent": "f155e241af"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how parse_ini behaves on edge inputs\n- note how comments behaves on edge inputs\n- note how get behaves on edge inputs\n- note how unquote behaves on edge inputs\n- note how comments behaves on edge inputs\n- note how comments behaves on edge inputs\n- note how get behaves on edge inputs\n- note how get_int behaves on edge inputs\n- note how get behaves on edge inputs\n"
+   },
+   "date": "2025-04-07T17:12:00Z",
+   "id": "cdb19ebaa3",
+   "message": "docs: changelog entry for get",
+   "parent": "3b5038b07d"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "README.md": "# iniparse\n\nRead INI text into {section: {key: value}}.\n\n## get_int\n\nSee `tests/test_core.py` for get_int examples.\n\n## to_ini\n\nSee `tests/test_core.py` for to_ini examples.\n\n## comments\n\nSee `tests/test_core.py` for comments examples.\n\n## get_bool\n\nSee `tests/test_core.py` for get_bool examples.\n\n## unquote\n\nSee `tests/test_core.py` for unquote examples.\n\n## get_int\n\nSee `tests/test_core.py` for get_int examples.\n\n## comments\n\nSee `tests/test_core.py` for comments examples.\n\n## to_ini\n\nSee `tests/test_core.py` for to_ini examples.\n\n## unquote\n\nSee `tests/test_core.py` for unquote examples.\n\n## parse_ini\n\nSee `tests/test_core.py` for parse_ini examples.\n\n## comments\n\nSee `tests/test_core.py` for comments examples.\n\n## get_bool\n\nSee `tests/test_core.py` for get_bool examples.\n"
+   },
+   "date": "2025-04-07T23:28:00Z",
+   "id": "76fa4b19c7",
+   "message": "docs: document get_bool",
+   "parent": "cdb19ebaa3"
+  },
+  {
+   "author": "Farah Haddad",
+   "changes": {
+    "iniparse/__init__.py": "\"\"\"Read INI text into {section: {key: value}}.\"\"\"\n\n__version__ = \"0.1.15\"\n"
+   },
+   "date": "2025-04-08T00:49:00Z",
+   "id": "329334b8bd",
+   "message": "chore: bump version to 0.1.15",
+   "parent": "76fa4b19c7"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "README.md": "# iniparse\n\nRead INI text into {section: {key: value}}.\n\n## get_int\n\nSee `tests/test_core.py` for get_int examples.\n\n## to_ini\n\nSee `tests/test_core.py` for to_ini examples.\n\n## comments\n\nSee `tests/test_core.py` for comments examples.\n\n## get_bool\n\nSee `tests/test_core.py` for get_bool examples.\n\n## unquote\n\nSee `tests/test_core.py` for unquote examples.\n\n## get_int\n\nSee `tests/test_core.py` for get_int examples.\n\n## comments\n\nSee `tests/test_core.py` for comments examples.\n\n## to_ini\n\nSee `tests/test_core.py` for to_ini examples.\n\n## unquote\n\nSee `tests/test_core.py` for unquote examples.\n\n## parse_ini\n\nSee `tests/test_core.py` for parse_ini examples.\n\n## comments\n\nSee `tests/test_core.py` for comments examples.\n\n## get_bool\n\nSee `tests/test_core.py` for get_bool examples.\n\n## to_ini\n\nSee `tests/test_core.py` for to_ini examples.\n"
+   },
+   "date": "2025-04-08T10:34:00Z",
+   "id": "10442cdf46",
+   "message": "docs: document to_ini",
+   "parent": "329334b8bd"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "README.md": "# iniparse\n\nRead INI text into {section: {key: value}}.\n\n## get_int\n\nSee `tests/test_core.py` for get_int examples.\n\n## to_ini\n\nSee `tests/test_core.py` for to_ini examples.\n\n## comments\n\nSee `tests/test_core.py` for comments examples.\n\n## get_bool\n\nSee `tests/test_core.py` for get_bool examples.\n\n## unquote\n\nSee `tests/test_core.py` for unquote examples.\n\n## get_int\n\nSee `tests/test_core.py` for get_int examples.\n\n## comments\n\nSee `tests/test_core.py` for comments examples.\n\n## to_ini\n\nSee `tests/test_core.py` for to_ini examples.\n\n## unquote\n\nSee `tests/test_core.py` for unquote examples.\n\n## parse_ini\n\nSee `tests/test_core.py` for parse_ini examples.\n\n## comments\n\nSee `tests/test_core.py` for comments examples.\n\n## get_bool\n\nSee `tests/test_core.py` for get_bool examples.\n\n## to_ini\n\nSee `tests/test_core.py` for to_ini examples.\n\n## get_int\n\nSee `tests/test_core.py` for get_int examples.\n"
+   },
+   "date": "2025-04-09T02:46:00Z",
+   "id": "659e2f32dc",
+   "message": "docs: document get_int",
+   "parent": "10442cdf46"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how parse_ini behaves on edge inputs\n- note how comments behaves on edge inputs\n- note how get behaves on edge inputs\n- note how unquote behaves on edge inputs\n- note how comments behaves on edge inputs\n- note how comments behaves on edge inputs\n- note how get behaves on edge inputs\n- note how get_int behaves on edge inputs\n- note how get behaves on edge inputs\n- note how get_bool behaves on edge inputs\n"
+   },
+   "date": "2025-04-10T07:49:00Z",
+   "id": "54727dab8c",
+   "message": "docs: changelog entry for get_bool",
+   "parent": "659e2f32dc"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how parse_ini behaves on edge inputs\n- note how comments behaves on edge inputs\n- note how get behaves on edge inputs\n- note how unquote behaves on edge inputs\n- note how comments behaves on edge inputs\n- note how comments behaves on edge inputs\n- note how get behaves on edge inputs\n- note how get_int behaves on edge inputs\n- note how get behaves on edge inputs\n- note how get_bool behaves on edge inputs\n- note how comments behaves on edge inputs\n"
+   },
+   "date": "2025-04-11T05:14:00Z",
+   "id": "fb420075ac",
+   "message": "docs: changelog entry for comments",
+   "parent": "54727dab8c"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "iniparse/core.py": "\"\"\"Read INI text into {section: {key: value}}.\"\"\"\n\n\ndef unquote(value):\n    if len(value) >= 2 and value[0] == value[-1] and value[0] in \"\\\"'\":\n        return value[1:-1]\n    return value\n\n\ndef parse_ini(text):\n    sections = {}\n    current = None\n    for number, raw in enumerate(text.splitlines(), start=1):\n        line = raw.strip()\n        if not line or line.startswith(\"#\"):\n            continue\n        if line.startswith(\"[\") and line.endswith(\"]\"):\n            current = sections.setdefault(line[1:-1].strip(), {})\n        elif \"=\" in line and current is not None:\n            key, _, value = line.partition(\"=\")\n            current[key.strip().lower()] = unquote(value.strip())\n        else:\n            raise ValueError(f\"line {number}: {raw!r} is not a section, key or comment\")\n    return sections\n\n# parse_ini: keep this module free of I/O\n\n\ndef get(sections, section, key, default=None):\n    return sections.get(section, {}).get(key.lower(), default)\n\n# get_int: keep this module free of I/O\n\n# parse_ini: keep this module free of I/O\n\n# get_bool: keep this module free of I/O\n\n# comments: keep this module free of I/O\n\n# to_ini: keep this module free of I/O\n\n\ndef get_int(sections, section, key, default=0):\n    value = get(sections, section, key)\n    return default if value is None else int(value)\n\n# get: keep this module free of I/O\n\n# to_ini: keep this module free of I/O\n\n# get_int: keep this module free of I/O\n\n\ndef get_bool(sections, section, key, default=False):\n    value = get(sections, section, key)\n    return default if value is None else value.lower() in (\"1\", \"true\", \"yes\", \"on\")\n\n# unquote: keep this module free of I/O\n\n\ndef to_ini(sections):\n    lines = []\n    for name, values in sections.items():\n        lines.append(f\"[{name}]\")\n        lines.extend(f\"{key} = {value}\" for key, value in values.items())\n    return \"\\n\".join(lines) + \"\\n\"\n\n# get: keep this module free of I/O\n\n# get_bool: keep this module free of I/O\n\n\ndef section_names(text):\n    return list(parse_ini(text))\n\n# unquote: keep this module free of I/O\n"
+   },
+   "date": "2025-04-11T16:23:00Z",
+   "id": "6eac5ca8fb",
+   "message": "refactor: use startswith for comments",
+   "parent": "fb420075ac"
+  }
+ ],
+ "repo": "iniparse"
+}

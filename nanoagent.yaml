@@ -1,0 +1,46 @@
+_ > nanoagent.plugin.v0001.ManifestConfig:
+id: git-bisect-forensics
+name: Git Bisect Forensics
+version: 0.1.0
+status: in-development
+spec: nanoagent.plugin/v0001
+
+runtime > nanoagent.plugin.v0001.RuntimeConfig:
+  type: mcp_stdio
+  command: [uv, run, --frozen, python, -m, plugin]
+
+permissions > nanoagent.plugin.v0001.PermissionsConfig:
+  network > nanoagent.plugin.v0001.NetworkConfig:
+    hosts: []
+  filesystem > nanoagent.plugin.v0001.FilesystemConfig:
+    write: [workspace]
+
+# One entry per contract.Tool; its input and output classes are contract.TOOLS's.
+tools > dict[contract.Tool, nanoagent.plugin.v0001.ToolConfig]:
+  pin_truth:
+    description: Pin the bisect task's answer key, every commit of a bundled repo's history tested, good, bad or skip
+  git_log:
+    description: List a bundled repo's commits, oldest first, by position, id, date, author and message, and start a new bisect run
+  show_commit:
+    description: Show one commit's message, changed files and unified diff against its parent, without running anything
+  run_tests:
+    description: Run a bundled repo's test suite at up to 7 commits by position, giving each one good, bad or skip, in at most 3 calls per run, each call receipted
+
+# One entry per contract.Task; its input class is contract.TASKS's.
+tasks > dict[contract.Task, nanoagent.plugin.v0001.TaskConfig]:
+  bisect:
+    description: Find the first commit in a bundled repo's history whose tests fail, and prove it with the agent's own test runs
+    runner: agent
+    tools: [git_log, show_commit, run_tests]
+    reference: pin_truth
+    instructions: |-
+      History. The repo's commits run from position 1 (the oldest, its tests pass) to position N (the newest, its tests fail). Exactly one commit along the way made the tests fail, and they fail from then on. Find the first bad commit.
+      Statuses. run_tests gives each commit good (every test passes), bad (a test fails) or skip (the commit does not load, so it is neither good nor bad).
+      Plan. One tool call per step, at most 3 run_tests calls of at most 7 positions each, then submit:
+      (1) git_log once, to learn N. Call it only once: each call starts a new run, and only the latest run's tests count.
+      (2) run_tests with 7 positions spread evenly over 1 to N, e.g. N = 64 gives 8, 16, 24, 32, 40, 48, 56.
+      (3) Take the newest good position g and the oldest bad position b so far (1 and N when none is good or bad yet). run_tests with every position from g + 1 to b - 1, at most 7, nearest the middle first; include g itself when it is 1 and b when it is N if they are not tested yet.
+      (4) If the answer is not proven yet, one last run_tests with the positions it still needs.
+      Proof. The answer counts only with its proof in this run's results: first_bad tested bad, last_good tested good, and every position between them tested skip. A commit message is never evidence: test the commit.
+      Submit. repo as given; first_bad the oldest bad commit; last_good the newest good commit before it; skipped_between the skip commits between them, oldest first ([] when none). Copy every id exactly as run_tests returned it.
+      show_commit is optional and costs a step: use it only if a step is spare.

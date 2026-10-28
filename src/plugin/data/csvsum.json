@@ -1,0 +1,343 @@
+{
+ "commits": [
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n",
+    "README.md": "# csvsum\n\nSum columns of simple CSV text.\n",
+    "csvsum/__init__.py": "\"\"\"Sum columns of simple CSV text.\"\"\"\n\n__version__ = \"0.1.0\"\n",
+    "csvsum/core.py": "\"\"\"Sum columns of simple CSV text.\"\"\"\n\nfrom decimal import ROUND_HALF_UP, Decimal\n\n\ndef parse_csv_line(line):\n    \"\"\"One CSV line's fields; inside quotes, a doubled quote is one quote.\"\"\"\n    fields, field, quoted, index = [], [], False, 0\n    while index < len(line):\n        char = line[index]\n        if quoted:\n            if char == '\"' and index + 1 < len(line) and line[index + 1] == '\"':\n                field.append('\"')\n                index += 1\n            elif char == '\"':\n                quoted = False\n            else:\n                field.append(char)\n        elif char == '\"':\n            quoted = True\n        elif char == \",\":\n            fields.append(\"\".join(field))\n            field = []\n        else:\n            field.append(char)\n        index += 1\n    fields.append(\"\".join(field))\n    return fields\n\n\ndef column_total(rows, column):\n    \"\"\"The sum of one column's numbers, as a string with 2 decimals, halves rounded up.\"\"\"\n    total = sum((Decimal(row[column]) for row in rows), Decimal(0))\n    return str(total.quantize(Decimal(\"0.01\"), rounding=ROUND_HALF_UP))\n",
+    "tests/__init__.py": "",
+    "tests/test_core.py": "import unittest\n\nfrom csvsum import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_parse_csv_line(self):\n        self.assertEqual(core.parse_csv_line('a,\"b \"\"c\\\"\\\"\",d'), [\"a\", 'b \"c\"', \"d\"])\n\n    def test_column_total(self):\n        self.assertEqual(core.column_total([[\"1.005\"], [\"2\"]], 0), \"3.01\")\n"
+   },
+   "date": "2025-03-04T15:31:00Z",
+   "id": "001f97c2b7",
+   "message": "Initial import",
+   "parent": ""
+  },
+  {
+   "author": "Ada Park",
+   "changes": {
+    "tests/test_core.py": "import unittest\n\nfrom csvsum import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_parse_csv_line(self):\n        self.assertEqual(core.parse_csv_line('a,\"b \"\"c\\\"\\\"\",d'), [\"a\", 'b \"c\"', \"d\"])\n\n    def test_column_total(self):\n        self.assertEqual(core.column_total([[\"1.005\"], [\"2\"]], 0), \"3.01\")\n\n    def test_empty_fields(self):\n        self.assertEqual(core.parse_csv_line(\",,\"), [\"\", \"\", \"\"])\n"
+   },
+   "date": "2025-03-05T07:50:00Z",
+   "id": "469cc1bad4",
+   "message": "test: cover empty fields",
+   "parent": "001f97c2b7"
+  },
+  {
+   "author": "Farah Haddad",
+   "changes": {
+    "csvsum/core.py": "\"\"\"Sum columns of simple CSV text.\"\"\"\n\nfrom decimal import ROUND_HALF_UP, Decimal\n\n\ndef parse_csv_line(line):\n    \"\"\"One CSV line's fields; inside quotes, a doubled quote is one quote.\"\"\"\n    fields, field, quoted, index = [], [], False, 0\n    while index < len(line):\n        char = line[index]\n        if quoted:\n            if char == '\"' and index + 1 < len(line) and line[index + 1] == '\"':\n                field.append('\"')\n                index += 1\n            elif char == '\"':\n                quoted = False\n            else:\n                field.append(char)\n        elif char == '\"':\n            quoted = True\n        elif char == \",\":\n            fields.append(\"\".join(field))\n            field = []\n        else:\n            field.append(char)\n        index += 1\n    fields.append(\"\".join(field))\n    return fields\n\n\ndef column_total(rows, column):\n    \"\"\"The sum of one column's numbers, as a string with 2 decimals, halves rounded up.\"\"\"\n    total = sum((Decimal(row[column]) for row in rows), Decimal(0))\n    return str(total.quantize(Decimal(\"0.01\"), rounding=ROUND_HALF_UP))\n\n# column_total: keep this module free of I/O\n"
+   },
+   "date": "2025-03-06T10:59:00Z",
+   "id": "38b6ca7dc1",
+   "message": "style: note on column_total",
+   "parent": "469cc1bad4"
+  },
+  {
+   "author": "Farah Haddad",
+   "changes": {
+    "csvsum/core.py": "\"\"\"Sum columns of simple CSV text.\"\"\"\n\nfrom decimal import ROUND_HALF_UP, Decimal\n\n\ndef parse_csv_line(line):\n    \"\"\"One CSV line's fields; inside quotes, a doubled quote is one quote.\"\"\"\n    fields, field, quoted, index = [], [], False, 0\n    while index < len(line):\n        char = line[index]\n        if quoted:\n            if char == '\"' and index + 1 < len(line) and line[index + 1] == '\"':\n                field.append('\"')\n                index += 1\n            elif char == '\"':\n                quoted = False\n            else:\n                field.append(char)\n        elif char == '\"':\n            quoted = True\n        elif char == \",\":\n            fields.append(\"\".join(field))\n            field = []\n        else:\n            field.append(char)\n        index += 1\n    fields.append(\"\".join(field))\n    return fields\n\n\ndef column_total(rows, column):\n    \"\"\"The sum of one column's numbers, as a string with 2 decimals, halves rounded up.\"\"\"\n    total = sum((Decimal(row[column]) for row in rows), Decimal(0))\n    return str(total.quantize(Decimal(\"0.01\"), rounding=ROUND_HALF_UP))\n\n# column_total: keep this module free of I/O\n\n# parse_csv: keep this module free of I/O\n"
+   },
+   "date": "2025-03-07T04:42:00Z",
+   "id": "4c1d75641a",
+   "message": "style: note on parse_csv",
+   "parent": "38b6ca7dc1"
+  },
+  {
+   "author": "Ada Park",
+   "changes": {
+    "README.md": "# csvsum\n\nSum columns of simple CSV text.\n\n## header_index\n\nSee `tests/test_core.py` for header_index examples.\n"
+   },
+   "date": "2025-03-08T11:20:00Z",
+   "id": "e9c0d92bad",
+   "message": "docs: document header_index",
+   "parent": "4c1d75641a"
+  },
+  {
+   "author": "Farah Haddad",
+   "changes": {
+    "README.md": "# csvsum\n\nSum columns of simple CSV text.\n\n## header_index\n\nSee `tests/test_core.py` for header_index examples.\n\n## parse_csv\n\nSee `tests/test_core.py` for parse_csv examples.\n"
+   },
+   "date": "2025-03-09T10:48:00Z",
+   "id": "8e2bb37458",
+   "message": "docs: document parse_csv",
+   "parent": "e9c0d92bad"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "csvsum/core.py": "\"\"\"Sum columns of simple CSV text.\"\"\"\n\nfrom decimal import ROUND_HALF_UP, Decimal\n\n\ndef parse_csv_line(line):\n    \"\"\"One CSV line's fields; inside quotes, a doubled quote is one quote.\"\"\"\n    fields, field, quoted, index = [], [], False, 0\n    while index < len(line):\n        char = line[index]\n        if quoted:\n            if char == '\"' and index + 1 < len(line) and line[index + 1] == '\"':\n                field.append('\"')\n                index += 1\n            elif char == '\"':\n                quoted = False\n            else:\n                field.append(char)\n        elif char == '\"':\n            quoted = True\n        elif char == \",\":\n            fields.append(\"\".join(field))\n            field = []\n        else:\n            field.append(char)\n        index += 1\n    fields.append(\"\".join(field))\n    return fields\n\n\ndef column_total(rows, column):\n    \"\"\"The sum of one column's numbers, as a string with 2 decimals, halves rounded up.\"\"\"\n    total = sum((Decimal(row[column]) for row in rows), Decimal(0))\n    return str(total.quantize(Decimal(\"0.01\"), rounding=ROUND_HALF_UP))\n\n# column_total: keep this module free of I/O\n\n# parse_csv: keep this module free of I/O\n\n# column_total: keep this module free of I/O\n"
+   },
+   "date": "2025-03-10T17:40:00Z",
+   "id": "cbae0fa5ca",
+   "message": "style: note on column_total",
+   "parent": "8e2bb37458"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "csvsum/core.py": "\"\"\"Sum columns of simple CSV text.\"\"\"\n\nfrom decimal import ROUND_HALF_UP, Decimal\n\n\ndef parse_csv_line(line):\n    \"\"\"One CSV line's fields; inside quotes, a doubled quote is one quote.\"\"\"\n    fields, field, quoted, index = [], [], False, 0\n    while index < len(line):\n        char = line[index]\n        if quoted:\n            if char == '\"' and index + 1 < len(line) and line[index + 1] == '\"':\n                field.append('\"')\n                index += 1\n            elif char == '\"':\n                quoted = False\n            else:\n                field.append(char)\n        elif char == '\"':\n            quoted = True\n        elif char == \",\":\n            fields.append(\"\".join(field))\n            field = []\n        else:\n            field.append(char)\n        index += 1\n    fields.append(\"\".join(field))\n    return fields\n\n\ndef column_total(rows, column):\n    \"\"\"The sum of one column's numbers, as a string with 2 decimals, halves rounded up.\"\"\"\n    total = sum((Decimal(row[column]) for row in rows), Decimal(0))\n    return str(total.quantize(Decimal(\"0.01\"), rounding=ROUND_HALF_UP))\n\n# column_total: keep this module free of I/O\n\n# parse_csv: keep this module free of I/O\n\n# column_total: keep this module free of I/O\n\n# parse_csv: keep this module free of I/O\n"
+   },
+   "date": "2025-03-11T04:50:00Z",
+   "id": "6c707d1449",
+   "message": "style: note on parse_csv",
+   "parent": "cbae0fa5ca"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "README.md": "# csvsum\n\nSum columns of simple CSV text.\n\n## header_index\n\nSee `tests/test_core.py` for header_index examples.\n\n## parse_csv\n\nSee `tests/test_core.py` for parse_csv examples.\n\n## parse_csv_line\n\nSee `tests/test_core.py` for parse_csv_line examples.\n"
+   },
+   "date": "2025-03-11T15:43:00Z",
+   "id": "9f5a901e75",
+   "message": "docs: document parse_csv_line",
+   "parent": "6c707d1449"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "csvsum/core.py": "\"\"\"Sum columns of simple CSV text.\"\"\"\n\nfrom decimal import ROUND_HALF_UP, Decimal\n\n\ndef parse_csv_line(line):\n    \"\"\"One CSV line's fields; inside quotes, a doubled quote is one quote.\"\"\"\n    fields, field, quoted, index = [], [], False, 0\n    while index < len(line):\n        char = line[index]\n        if quoted:\n            if char == '\"' and index + 1 < len(line) and line[index + 1] == '\"':\n                field.append('\"')\n                index += 1\n            elif char == '\"':\n                quoted = False\n            else:\n                field.append(char)\n        elif char == '\"':\n            quoted = True\n        elif char == \",\":\n            fields.append(\"\".join(field))\n            field = []\n        else:\n            field.append(char)\n        index += 1\n    fields.append(\"\".join(field))\n    return fields\n\n\ndef column_total(rows, column):\n    \"\"\"The sum of one column's numbers, as a string with 2 decimals, halves rounded up.\"\"\"\n    total = sum((Decimal(row[column]) for row in rows), Decimal(0))\n    return str(total.quantize(Decimal(\"0.01\"), rounding=ROUND_HALF_UP))\n\n# column_total: keep this module free of I/O\n\n# parse_csv: keep this module free of I/O\n\n# column_total: keep this module free of I/O\n\n# parse_csv: keep this module free of I/O\n\n\ndef parse_csv(text):\n    return [parse_csv_line(line) for line in text.splitlines() if line]\n",
+    "tests/test_core.py": "import unittest\n\nfrom csvsum import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_parse_csv_line(self):\n        self.assertEqual(core.parse_csv_line('a,\"b \"\"c\\\"\\\"\",d'), [\"a\", 'b \"c\"', \"d\"])\n\n    def test_column_total(self):\n        self.assertEqual(core.column_total([[\"1.005\"], [\"2\"]], 0), \"3.01\")\n\n    def test_empty_fields(self):\n        self.assertEqual(core.parse_csv_line(\",,\"), [\"\", \"\", \"\"])\n\n    def test_parse_csv(self):\n        self.assertEqual(core.parse_csv(\"a,b\\n1,2\\n\"), [[\"a\", \"b\"], [\"1\", \"2\"]])\n"
+   },
+   "date": "2025-03-12T06:20:00Z",
+   "id": "0b7e6383c1",
+   "message": "feat: parse_csv",
+   "parent": "9f5a901e75"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "README.md": "# csvsum\n\nSum columns of simple CSV text.\n\n## header_index\n\nSee `tests/test_core.py` for header_index examples.\n\n## parse_csv\n\nSee `tests/test_core.py` for parse_csv examples.\n\n## parse_csv_line\n\nSee `tests/test_core.py` for parse_csv_line examples.\n\n## parse_csv\n\nSee `tests/test_core.py` for parse_csv examples.\n"
+   },
+   "date": "2025-03-12T22:21:00Z",
+   "id": "55c7e6b378",
+   "message": "docs: document parse_csv",
+   "parent": "0b7e6383c1"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "csvsum/__init__.py": "\"\"\"Sum columns of simple CSV text.\"\"\"\n\n__version__ = \"0.1.1\"\n"
+   },
+   "date": "2025-03-13T23:41:00Z",
+   "id": "6a08129242",
+   "message": "chore: bump version to 0.1.1",
+   "parent": "55c7e6b378"
+  },
+  {
+   "author": "Farah Haddad",
+   "changes": {
+    "README.md": "# csvsum\n\nSum columns of simple CSV text.\n\n## header_index\n\nSee `tests/test_core.py` for header_index examples.\n\n## parse_csv\n\nSee `tests/test_core.py` for parse_csv examples.\n\n## parse_csv_line\n\nSee `tests/test_core.py` for parse_csv_line examples.\n\n## parse_csv\n\nSee `tests/test_core.py` for parse_csv examples.\n\n## column_total\n\nSee `tests/test_core.py` for column_total examples.\n"
+   },
+   "date": "2025-03-15T00:42:00Z",
+   "id": "2ad96bba76",
+   "message": "docs: document column_total",
+   "parent": "6a08129242"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "csvsum/__init__.py": "\"\"\"Sum columns of simple CSV text.\"\"\"\n\n__version__ = \"0.1.2\"\n"
+   },
+   "date": "2025-03-15T07:03:00Z",
+   "id": "3f6a8c7b90",
+   "message": "chore: bump version to 0.1.2",
+   "parent": "2ad96bba76"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "csvsum/core.py": "\"\"\"Sum columns of simple CSV text.\"\"\"\n\nfrom decimal import ROUND_HALF_UP, Decimal\n\n\ndef parse_csv_line(line):\n    \"\"\"One CSV line's fields; inside quotes, a doubled quote is one quote.\"\"\"\n    fields, field, quoted, index = [], [], False, 0\n    while index < len(line):\n        char = line[index]\n        if quoted:\n            if char == '\"' and index + 1 < len(line) and line[index + 1] == '\"':\n                field.append('\"')\n                index += 1\n            elif char == '\"':\n                quoted = False\n            else:\n                field.append(char)\n        elif char == '\"':\n            quoted = True\n        elif char == \",\":\n            fields.append(\"\".join(field))\n            field = []\n        else:\n            field.append(char)\n        index += 1\n    fields.append(\"\".join(field))\n    return fields\n\n\ndef column_total(rows, column):\n    \"\"\"The sum of one column's numbers, as a string with 2 decimals, halves rounded up.\"\"\"\n    total = sum((Decimal(row[column]) for row in rows), Decimal(0))\n    return str(total.quantize(Decimal(\"0.01\"), rounding=ROUND_HALF_UP))\n\n# column_total: keep this module free of I/O\n\n# parse_csv: keep this module free of I/O\n\n# column_total: keep this module free of I/O\n\n# parse_csv: keep this module free of I/O\n\n\ndef parse_csv(text):\n    return [parse_csv_line(line) for line in text.splitlines() if line]\n\n# quoting: keep this module free of I/O\n"
+   },
+   "date": "2025-03-16T04:12:00Z",
+   "id": "9df36f21d7",
+   "message": "style: note on quoting",
+   "parent": "3f6a8c7b90"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "csvsum/core.py": "\"\"\"Sum columns of simple CSV text.\"\"\"\n\nfrom decimal import ROUND_HALF_UP, Decimal\n\n\ndef parse_csv_line(line):\n    \"\"\"One CSV line's fields; inside quotes, a doubled quote is one quote.\"\"\"\n    fields, field, quoted, index = [], [], False, 0\n    while index < len(line):\n        char = line[index]\n        if quoted:\n            if char == '\"' and index + 1 < len(line) and line[index + 1] == '\"':\n                field.append('\"')\n                index += 1\n            elif char == '\"':\n                quoted = False\n            else:\n                field.append(char)\n        elif char == '\"':\n            quoted = True\n        elif char == \",\":\n            fields.append(\"\".join(field))\n            field = []\n        else:\n            field.append(char)\n        index += 1\n    fields.append(\"\".join(field))\n    return fields\n\n\ndef column_total(rows, column):\n    \"\"\"The sum of one column's numbers, as a string with 2 decimals, halves rounded up.\"\"\"\n    total = sum((Decimal(row[column]) for row in rows), Decimal(0))\n    return str(total.quantize(Decimal(\"0.01\"), rounding=ROUND_HALF_UP))\n\n# column_total: keep this module free of I/O\n\n# parse_csv: keep this module free of I/O\n\n# column_total: keep this module free of I/O\n\n# parse_csv: keep this module free of I/O\n\n\ndef parse_csv(text):\n    return [parse_csv_line(line) for line in text.splitlines() if line]\n\n# quoting: keep this module free of I/O\n\n# rounding: totals are rounded half up to cents\n"
+   },
+   "date": "2025-03-16T12:58:00Z",
+   "id": "9ffaa754d8",
+   "message": "fix rounding in totals",
+   "parent": "9df36f21d7"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "csvsum/core.py": "\"\"\"Sum columns of simple CSV text.\"\"\"\n\nfrom decimal import ROUND_HALF_UP, Decimal\n\n\ndef parse_csv_line(line):\n    \"\"\"One CSV line's fields; inside quotes, a doubled quote is one quote.\"\"\"\n    fields, field, quoted, index = [], [], False, 0\n    while index < len(line):\n        char = line[index]\n        if quoted:\n            if char == '\"' and index + 1 < len(line) and line[index + 1] == '\"':\n                field.append('\"')\n                index += 1\n            elif char == '\"':\n                quoted = False\n            else:\n                field.append(char)\n        elif char == '\"':\n            quoted = True\n        elif char == \",\":\n            fields.append(\"\".join(field))\n            field = []\n        else:\n            field.append(char)\n        index += 1\n    fields.append(\"\".join(field))\n    return fields\n\n\ndef column_total(rows, column):\n    \"\"\"The sum of one column's numbers, as a string with 2 decimals, halves rounded up.\"\"\"\n    total = sum((Decimal(row[column]) for row in rows), Decimal(0))\n    return str(total.quantize(Decimal(\"0.01\")))\n\n# column_total: keep this module free of I/O\n\n# parse_csv: keep this module free of I/O\n\n# column_total: keep this module free of I/O\n\n# parse_csv: keep this module free of I/O\n\n\ndef parse_csv(text):\n    return [parse_csv_line(line) for line in text.splitlines() if line]\n\n# quoting: keep this module free of I/O\n\n# rounding: totals are rounded half up to cents\n"
+   },
+   "date": "2025-03-16T17:59:00Z",
+   "id": "6a48b25dc0",
+   "message": "tidy: drop a redundant quantize argument",
+   "parent": "9ffaa754d8"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how column_total behaves on edge inputs\n"
+   },
+   "date": "2025-03-17T23:23:00Z",
+   "id": "14de28d325",
+   "message": "docs: changelog entry for column_total",
+   "parent": "6a48b25dc0"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "csvsum/core.py": "\"\"\"Sum columns of simple CSV text.\"\"\"\n\nfrom decimal import ROUND_HALF_UP, Decimal\n\n\ndef parse_csv_line(line):\n    \"\"\"One CSV line's fields; inside quotes, a doubled quote is one quote.\"\"\"\n    fields, field, quoted, index = [], [], False, 0\n    while index < len(line):\n        char = line[index]\n        if quoted:\n            if char == '\"' and index + 1 < len(line) and line[index + 1] == '\"':\n                field.append('\"')\n                index += 1\n            elif char == '\"':\n                quoted = False\n            else:\n                field.append(char)\n        elif char == '\"':\n            quoted = True\n        elif char == \",\":\n            fields.append(\"\".join(field))\n            field = []\n        else:\n            field.append(char)\n        index += 1\n    fields.append(\"\".join(field))\n    return fields\n\n\ndef column_total(rows, column):\n    \"\"\"The sum of one column's numbers, as a string with 2 decimals, halves rounded up.\"\"\"\n    total = sum((Decimal(row[column]) for row in rows), Decimal(0))\n    return str(total.quantize(Decimal(\"0.01\")))\n\n# column_total: keep this module free of I/O\n\n# parse_csv: keep this module free of I/O\n\n# column_total: keep this module free of I/O\n\n# parse_csv: keep this module free of I/O\n\n\ndef parse_csv(text):\n    return [parse_csv_line(line) for line in text.splitlines() if line]\n\n# quoting: keep this module free of I/O\n\n# rounding: totals are rounded half up to cents\n\n\ndef header_index(header, name):\n    return [cell.strip().lower() for cell in header].index(name.lower())\n",
+    "tests/test_core.py": "import unittest\n\nfrom csvsum import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_parse_csv_line(self):\n        self.assertEqual(core.parse_csv_line('a,\"b \"\"c\\\"\\\"\",d'), [\"a\", 'b \"c\"', \"d\"])\n\n    def test_column_total(self):\n        self.assertEqual(core.column_total([[\"1.005\"], [\"2\"]], 0), \"3.01\")\n\n    def test_empty_fields(self):\n        self.assertEqual(core.parse_csv_line(\",,\"), [\"\", \"\", \"\"])\n\n    def test_parse_csv(self):\n        self.assertEqual(core.parse_csv(\"a,b\\n1,2\\n\"), [[\"a\", \"b\"], [\"1\", \"2\"]])\n\n    def test_header_index(self):\n        self.assertEqual(core.header_index([\"Id\", \" Amount\"], \"amount\"), 1)\n"
+   },
+   "date": "2025-03-18T01:34:00Z",
+   "id": "8720c7ae4c",
+   "message": "feat: header_index",
+   "parent": "14de28d325"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how column_total behaves on edge inputs\n- note how quoting behaves on edge inputs\n"
+   },
+   "date": "2025-03-18T10:09:00Z",
+   "id": "d2cc1da894",
+   "message": "docs: changelog entry for quoting",
+   "parent": "8720c7ae4c"
+  },
+  {
+   "author": "Ada Park",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how column_total behaves on edge inputs\n- note how quoting behaves on edge inputs\n- note how column_total behaves on edge inputs\n"
+   },
+   "date": "2025-03-19T10:23:00Z",
+   "id": "ea9032bd8a",
+   "message": "docs: changelog entry for column_total",
+   "parent": "d2cc1da894"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how column_total behaves on edge inputs\n- note how quoting behaves on edge inputs\n- note how column_total behaves on edge inputs\n- note how parse_csv behaves on edge inputs\n"
+   },
+   "date": "2025-03-19T13:46:00Z",
+   "id": "9c1b6d3d14",
+   "message": "docs: changelog entry for parse_csv",
+   "parent": "ea9032bd8a"
+  },
+  {
+   "author": "Ada Park",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how column_total behaves on edge inputs\n- note how quoting behaves on edge inputs\n- note how column_total behaves on edge inputs\n- note how parse_csv behaves on edge inputs\n- note how header_index behaves on edge inputs\n"
+   },
+   "date": "2025-03-20T07:17:00Z",
+   "id": "48825a96c7",
+   "message": "docs: changelog entry for header_index",
+   "parent": "9c1b6d3d14"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "tests/test_core.py": "import unittest\n\nfrom csvsum import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_parse_csv_line(self):\n        self.assertEqual(core.parse_csv_line('a,\"b \"\"c\\\"\\\"\",d'), [\"a\", 'b \"c\"', \"d\"])\n\n    def test_column_total(self):\n        self.assertEqual(core.column_total([[\"1.005\"], [\"2\"]], 0), \"3.01\")\n\n    def test_empty_fields(self):\n        self.assertEqual(core.parse_csv_line(\",,\"), [\"\", \"\", \"\"])\n\n    def test_parse_csv(self):\n        self.assertEqual(core.parse_csv(\"a,b\\n1,2\\n\"), [[\"a\", \"b\"], [\"1\", \"2\"]])\n\n    def test_header_index(self):\n        self.assertEqual(core.header_index([\"Id\", \" Amount\"], \"amount\"), 1)\n\n    def test_negative(self):\n        self.assertEqual(core.column_total([[\"-1.5\"], [\"0.25\"]], 0), \"-1.25\")\n"
+   },
+   "date": "2025-03-21T01:28:00Z",
+   "id": "6b3e81e1fd",
+   "message": "test: cover negative numbers",
+   "parent": "48825a96c7"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "csvsum/core.py": "\"\"\"Sum columns of simple CSV text.\"\"\"\n\nfrom decimal import ROUND_HALF_UP, Decimal\n\n\ndef parse_csv_line(line):\n    \"\"\"One CSV line's fields; inside quotes, a doubled quote is one quote.\"\"\"\n    fields, field, quoted, index = [], [], False, 0\n    while index < len(line):\n        char = line[index]\n        if quoted:\n            if char == '\"' and index + 1 < len(line) and line[index + 1] == '\"':\n                field.append('\"')\n                index += 1\n            elif char == '\"':\n                quoted = False\n            else:\n                field.append(char)\n        elif char == '\"':\n            quoted = True\n        elif char == \",\":\n            fields.append(\"\".join(field))\n            field = []\n        else:\n            field.append(char)\n        index += 1\n    fields.append(\"\".join(field))\n    return fields\n\n\ndef column_total(rows, column):\n    \"\"\"The sum of one column's numbers, as a string with 2 decimals, halves rounded up.\"\"\"\n    total = sum((Decimal(row[column]) for row in rows), Decimal(0))\n    return str(total.quantize(Decimal(\"0.01\")))\n\n# column_total: keep this module free of I/O\n\n# parse_csv: keep this module free of I/O\n\n# column_total: keep this module free of I/O\n\n# parse_csv: keep this module free of I/O\n\n\ndef parse_csv(text):\n    return [parse_csv_line(line) for line in text.splitlines() if line]\n\n# quoting: keep this module free of I/O\n\n# rounding: totals are rounded half up to cents\n\n\ndef header_index(header, name):\n    return [cell.strip().lower() for cell in header].index(name.lower())\n\n# parse_csv_line: keep this module free of I/O\n"
+   },
+   "date": "2025-03-21T12:37:00Z",
+   "id": "d654743961",
+   "message": "style: note on parse_csv_line",
+   "parent": "6b3e81e1fd"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "csvsum/core.py": "\"\"\"Sum columns of simple CSV text.\"\"\"\n\nfrom decimal import ROUND_HALF_UP, Decimal\n\n\ndef parse_csv_line(line):\n    \"\"\"One CSV line's fields; inside quotes, a doubled quote is one quote.\"\"\"\n    fields, field, quoted, index = [], [], False, 0\n    while index < len(line):\n        char = line[index]\n        if quoted:\n            if char == '\"' and index + 1 < len(line) and line[index + 1] == '\"':\n                field.append('\"')\n                index += 1\n            elif char == '\"':\n                quoted = False\n            else:\n                field.append(char)\n        elif char == '\"':\n            quoted = True\n        elif char == \",\":\n            fields.append(\"\".join(field))\n            field = []\n        else:\n            field.append(char)\n        index += 1\n    fields.append(\"\".join(field))\n    return fields\n\n\ndef column_total(rows, column):\n    \"\"\"The sum of one column's numbers, as a string with 2 decimals, halves rounded up.\"\"\"\n    total = sum((Decimal(row[column]) for row in rows), Decimal(0))\n    return str(total.quantize(Decimal(\"0.01\")))\n\n# column_total: keep this module free of I/O\n\n# parse_csv: keep this module free of I/O\n\n# column_total: keep this module free of I/O\n\n# parse_csv: keep this module free of I/O\n\n\ndef parse_csv(text):\n    return [parse_csv_line(line) for line in text.splitlines() if line]\n\n# quoting: keep this module free of I/O\n\n# rounding: totals are rounded half up to cents\n\n\ndef header_index(header, name):\n    return [cell.strip().lower() for cell in header].index(name.lower())\n\n# parse_csv_line: keep this module free of I/O\n\n\ndef sum_named(text, name):\n    header, *rows = parse_csv(text)\n    return column_total(rows, header_index(header, name))\n",
+    "tests/test_core.py": "import unittest\n\nfrom csvsum import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_parse_csv_line(self):\n        self.assertEqual(core.parse_csv_line('a,\"b \"\"c\\\"\\\"\",d'), [\"a\", 'b \"c\"', \"d\"])\n\n    def test_column_total(self):\n        self.assertEqual(core.column_total([[\"1.005\"], [\"2\"]], 0), \"3.01\")\n\n    def test_empty_fields(self):\n        self.assertEqual(core.parse_csv_line(\",,\"), [\"\", \"\", \"\"])\n\n    def test_parse_csv(self):\n        self.assertEqual(core.parse_csv(\"a,b\\n1,2\\n\"), [[\"a\", \"b\"], [\"1\", \"2\"]])\n\n    def test_header_index(self):\n        self.assertEqual(core.header_index([\"Id\", \" Amount\"], \"amount\"), 1)\n\n    def test_negative(self):\n        self.assertEqual(core.column_total([[\"-1.5\"], [\"0.25\"]], 0), \"-1.25\")\n\n    def test_sum_named(self):\n        self.assertEqual(core.sum_named(\"id,amt\\n1,2.5\\n2,0.25\\n\", \"amt\"), \"2.75\")\n"
+   },
+   "date": "2025-03-21T22:59:00Z",
+   "id": "baf3818c53",
+   "message": "feat: sum a column by name",
+   "parent": "d654743961"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "csvsum/core.py": "\"\"\"Sum columns of simple CSV text.\"\"\"\n\nfrom decimal import ROUND_HALF_UP, Decimal\n\n\ndef parse_csv_line(line):\n    \"\"\"One CSV line's fields; inside quotes, a doubled quote is one quote.\"\"\"\n    fields, field, quoted, index = [], [], False, 0\n    while index < len(line):\n        char = line[index]\n        if quoted:\n            if char == '\"' and index + 1 < len(line) and line[index + 1] == '\"':\n                field.append('\"')\n                index += 1\n            elif char == '\"':\n                quoted = False\n            else:\n                field.append(char)\n        elif char == '\"':\n            quoted = True\n        elif char == \",\":\n            fields.append(\"\".join(field))\n            field = []\n        else:\n            field.append(char)\n        index += 1\n    fields.append(\"\".join(field))\n    return fields\n\n\ndef column_total(rows, column):\n    \"\"\"The sum of one column's numbers, as a string with 2 decimals, halves rounded up.\"\"\"\n    total = sum((Decimal(row[column]) for row in rows), Decimal(0))\n    return str(total.quantize(Decimal(\"0.01\")))\n\n# column_total: keep this module free of I/O\n\n# parse_csv: keep this module free of I/O\n\n# column_total: keep this module free of I/O\n\n# parse_csv: keep this module free of I/O\n\n\ndef parse_csv(text):\n    return [parse_csv_line(line) for line in text.splitlines() if line]\n\n# quoting: keep this module free of I/O\n\n# rounding: totals are rounded half up to cents\n\n\ndef header_index(header, name):\n    return [cell.strip().lower() for cell in header].index(name.lower())\n\n# parse_csv_line: keep this module free of I/O\n\n\ndef sum_named(text, name):\n    header, *rows = parse_csv(text)\n    return column_total(rows, header_index(header, name))\n\n# parse_csv: keep this module free of I/O\n"
+   },
+   "date": "2025-03-22T23:58:00Z",
+   "id": "304d3cc6f1",
+   "message": "style: note on parse_csv",
+   "parent": "baf3818c53"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how column_total behaves on edge inputs\n- note how quoting behaves on edge inputs\n- note how column_total behaves on edge inputs\n- note how parse_csv behaves on edge inputs\n- note how header_index behaves on edge inputs\n- note how quoting behaves on edge inputs\n"
+   },
+   "date": "2025-03-23T05:04:00Z",
+   "id": "763121ce89",
+   "message": "docs: changelog entry for quoting",
+   "parent": "304d3cc6f1"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "tests/test_core.py": "import unittest\n\nfrom csvsum import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_parse_csv_line(self):\n        self.assertEqual(core.parse_csv_line('a,\"b \"\"c\\\"\\\"\",d'), [\"a\", 'b \"c\"', \"d\"])\n\n    def test_column_total(self):\n        self.assertEqual(core.column_total([[\"1.005\"], [\"2\"]], 0), \"3.01\")\n\n    def test_empty_fields(self):\n        self.assertEqual(core.parse_csv_line(\",,\"), [\"\", \"\", \"\"])\n\n    def test_parse_csv(self):\n        self.assertEqual(core.parse_csv(\"a,b\\n1,2\\n\"), [[\"a\", \"b\"], [\"1\", \"2\"]])\n\n    def test_header_index(self):\n        self.assertEqual(core.header_index([\"Id\", \" Amount\"], \"amount\"), 1)\n\n    def test_negative(self):\n        self.assertEqual(core.column_total([[\"-1.5\"], [\"0.25\"]], 0), \"-1.25\")\n\n    def test_sum_named(self):\n        self.assertEqual(core.sum_named(\"id,amt\\n1,2.5\\n2,0.25\\n\", \"amt\"), \"2.75\")\n\n    def test_quoted_comma(self):\n        self.assertEqual(core.parse_csv_line('\"a,b\",c'), [\"a,b\", \"c\"])\n"
+   },
+   "date": "2025-03-23T13:16:00Z",
+   "id": "08b818c0a1",
+   "message": "test: cover quoted commas",
+   "parent": "763121ce89"
+  },
+  {
+   "author": "Farah Haddad",
+   "changes": {
+    "README.md": "# csvsum\n\nSum columns of simple CSV text.\n\n## header_index\n\nSee `tests/test_core.py` for header_index examples.\n\n## parse_csv\n\nSee `tests/test_core.py` for parse_csv examples.\n\n## parse_csv_line\n\nSee `tests/test_core.py` for parse_csv_line examples.\n\n## parse_csv\n\nSee `tests/test_core.py` for parse_csv examples.\n\n## column_total\n\nSee `tests/test_core.py` for column_total examples.\n\n## quoting\n\nSee `tests/test_core.py` for quoting examples.\n"
+   },
+   "date": "2025-03-23T20:14:00Z",
+   "id": "92933979c7",
+   "message": "docs: document quoting",
+   "parent": "08b818c0a1"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "csvsum/core.py": "\"\"\"Sum columns of simple CSV text.\"\"\"\n\nfrom decimal import ROUND_HALF_UP, Decimal\n\n\ndef parse_csv_line(line):\n    \"\"\"One CSV line's fields; inside quotes, a doubled quote is one quote.\"\"\"\n    fields, field, quoted, index = [], [], False, 0\n    while index < len(line):\n        char = line[index]\n        if quoted:\n            if char == '\"' and index + 1 < len(line) and line[index + 1] == '\"':\n                field.append('\"')\n                index += 1\n            elif char == '\"':\n                quoted = False\n            else:\n                field.append(char)\n        elif char == '\"':\n            quoted = True\n        elif char == \",\":\n            fields.append(\"\".join(field))\n            field = []\n        else:\n            field.append(char)\n        index += 1\n    fields.append(\"\".join(field))\n    return fields\n\n\ndef column_total(rows, column):\n    \"\"\"The sum of one column's numbers, as a string with 2 decimals, halves rounded up.\"\"\"\n    total = sum((Decimal(row[column]) for row in rows), Decimal(0))\n    return str(total.quantize(Decimal(\"0.01\")))\n\n# column_total: keep this module free of I/O\n\n# parse_csv: keep this module free of I/O\n\n# column_total: keep this module free of I/O\n\n# parse_csv: keep this module free of I/O\n\n\ndef parse_csv(text):\n    return [parse_csv_line(line) for line in text.splitlines() if line]\n\n# quoting: keep this module free of I/O\n\n# rounding: totals are rounded half up to cents\n\n\ndef header_index(header, name):\n    return [cell.strip().lower() for cell in header].index(name.lower())\n\n# parse_csv_line: keep this module free of I/O\n\n\ndef sum_named(text, name):\n    header, *rows = parse_csv(text)\n    return column_total(rows, header_index(header, name))\n\n# parse_csv: keep this module free of I/O\n\n# quoting: keep this module free of I/O\n"
+   },
+   "date": "2025-03-24T20:59:00Z",
+   "id": "8935f03635",
+   "message": "style: note on quoting",
+   "parent": "92933979c7"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "csvsum/core.py": "\"\"\"Sum columns of simple CSV text.\"\"\"\n\nfrom decimal import ROUND_HALF_UP, Decimal\n\n\ndef parse_csv_line(line):\n    \"\"\"One CSV line's fields; inside quotes, a doubled quote is one quote.\"\"\"\n    fields, field, quoted, index = [], [], False, 0\n    while index < len(line):\n        char = line[index]\n        if quoted:\n            if char == '\"' and index + 1 < len(line) and line[index + 1] == '\"':\n                field.append('\"')\n                index += 1\n            elif char == '\"':\n                quoted = False\n            else:\n                field.append(char)\n        elif char == '\"':\n            quoted = True\n        elif char == \",\":\n            fields.append(\"\".join(field))\n            field = []\n        else:\n            field.append(char)\n        index += 1\n    fields.append(\"\".join(field))\n    return fields\n\n\ndef column_total(rows, column):\n    \"\"\"The sum of one column's numbers, as a string with 2 decimals, halves rounded up.\"\"\"\n    total = sum((Decimal(row[column]) for row in rows), Decimal(0))\n    return str(total.quantize(Decimal(\"0.01\")))\n\n# column_total: keep this module free of I/O\n\n# parse_csv: keep this module free of I/O\n\n# column_total: keep this module free of I/O\n\n# parse_csv: keep this module free of I/O\n\n\ndef parse_csv(text):\n    return [parse_csv_line(line) for line in text.splitlines() if line]\n\n# quoting: keep this module free of I/O\n\n# rounding: totals are rounded half up to cents\n\n\ndef header_index(header, name):\n    return [cell.strip().lower() for cell in header].index(name.lower())\n\n# parse_csv_line: keep this module free of I/O\n\n\ndef sum_named(text, name):\n    header, *rows = parse_csv(text)\n    return column_total(rows, header_index(header, name))\n\n# parse_csv: keep this module free of I/O\n\n# quoting: keep this module free of I/O\n\n# quoting: keep this module free of I/O\n"
+   },
+   "date": "2025-03-25T02:46:00Z",
+   "id": "a428345cc9",
+   "message": "style: note on quoting",
+   "parent": "8935f03635"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "csvsum/core.py": "\"\"\"Sum columns of simple CSV text.\"\"\"\n\nfrom decimal import ROUND_HALF_UP, Decimal\n\n\ndef parse_csv_line(line):\n    \"\"\"One CSV line's fields; inside quotes, a doubled quote is one quote.\"\"\"\n    fields, field, quoted, index = [], [], False, 0\n    while index < len(line):\n        char = line[index]\n        if quoted:\n            if char == '\"' and index + 1 < len(line) and line[index + 1] == '\"':\n                field.append('\"')\n                index += 1\n            elif char == '\"':\n                quoted = False\n            else:\n                field.append(char)\n        elif char == '\"':\n            quoted = True\n        elif char == \",\":\n            fields.append(\"\".join(field))\n            field = []\n        else:\n            field.append(char)\n        index += 1\n    fields.append(\"\".join(field))\n    return fields\n\n\ndef column_total(rows, column):\n    \"\"\"The sum of one column's numbers, as a string with 2 decimals, halves rounded up.\"\"\"\n    total = sum((Decimal(row[column]) for row in rows), Decimal(0))\n    return str(total.quantize(Decimal(\"0.01\")))\n\n# column_total: keep this module free of I/O\n\n# parse_csv: keep this module free of I/O\n\n# column_total: keep this module free of I/O\n\n# parse_csv: keep this module free of I/O\n\n\ndef parse_csv(text):\n    return [parse_csv_line(line) for line in text.splitlines() if line]\n\n# quoting: keep this module free of I/O\n\n# rounding: totals are rounded half up to cents\n\n\ndef header_index(header, name):\n    return [cell.strip().lower() for cell in header].index(name.lower())\n\n# parse_csv_line: keep this module free of I/O\n\n\ndef sum_named(text, name):\n    header, *rows = parse_csv(text)\n    return column_total(rows, header_index(header, name))\n\n# parse_csv: keep this module free of I/O\n\n# quoting: keep this module free of I/O\n\n# quoting: keep this module free of I/O\n\n# column_total: keep this module free of I/O\n"
+   },
+   "date": "2025-03-25T09:52:00Z",
+   "id": "fd3e4b0e88",
+   "message": "style: note on column_total",
+   "parent": "a428345cc9"
+  }
+ ],
+ "repo": "csvsum"
+}

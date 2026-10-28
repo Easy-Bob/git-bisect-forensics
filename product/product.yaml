@@ -1,0 +1,11 @@
+_ > nanoagent.plugin.v0001.ProductConfig:
+tagline: "Find the commit that broke the tests, and prove it"
+summary: "Pick a small project whose newest commit fails its tests. An agent searches its history with a budget of three test runs and names the first bad commit, and a verifier checks the answer against every commit's tested status and the agent's own receipted runs."
+highlights:
+  - "Five bundled histories, with skipped commits, boundary cases and a misleading commit message"
+  - "An answer only counts when the agent's own test runs prove it"
+  - "Runs offline: no network, no git, the same result on every computer"
+steps:
+  - "Ask to bisect one of the repos: moneyfmt, dateparse, iniparse, slugify or csvsum"
+  - "The agent reads the log and tests up to 7 commits at a time, at most 3 times"
+  - "It submits the first bad commit, and the verdict card shows which checks hold"

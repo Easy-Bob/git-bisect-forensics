@@ -1,0 +1,655 @@
+{
+ "commits": [
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n",
+    "README.md": "# moneyfmt\n\nMoney amounts held as integer cents.\n",
+    "moneyfmt/__init__.py": "\"\"\"Money amounts held as integer cents.\"\"\"\n\n__version__ = \"0.1.0\"\n",
+    "moneyfmt/core.py": "\"\"\"Money amounts held as integer cents.\"\"\"\n\n\ndef round_half_up(numerator, denominator):\n    \"\"\"numerator / denominator to the nearest integer, halves away from zero.\"\"\"\n    negative = (numerator < 0) != (denominator < 0)\n    whole, remainder = divmod(abs(numerator), abs(denominator))\n    if 2 * remainder >= abs(denominator):\n        whole += 1\n    return -whole if negative else whole\n\n\ndef format_cents(cents, symbol=\"$\"):\n    \"\"\"1234567 -> '$12,345.67'.\"\"\"\n    sign = \"-\" if cents < 0 else \"\"\n    dollars, rest = divmod(abs(cents), 100)\n    return f\"{sign}{symbol}{dollars:,}.{rest:02d}\"\n\n\ndef parse_amount(text):\n    \"\"\"'-$1,234.5' -> -123450.\"\"\"\n    cleaned = text.strip().replace(\",\", \"\")\n    negative = cleaned.startswith(\"-\")\n    cleaned = cleaned.lstrip(\"-\").lstrip(\"$\")\n    dollars, _, cents = cleaned.partition(\".\")\n    value = int(dollars or \"0\") * 100 + int((cents + \"00\")[:2])\n    return -value if negative else value\n",
+    "tests/__init__.py": "",
+    "tests/test_core.py": "import unittest\n\nfrom moneyfmt import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_round_half_up(self):\n        self.assertEqual(core.round_half_up(5, 10), 1)\n        self.assertEqual(core.round_half_up(-15, 10), -2)\n        self.assertEqual(core.round_half_up(14, 10), 1)\n\n    def test_format_cents(self):\n        self.assertEqual(core.format_cents(1234567), \"$12,345.67\")\n        self.assertEqual(core.format_cents(-5), \"-$0.05\")\n\n    def test_parse_amount(self):\n        self.assertEqual(core.parse_amount(\"-$1,234.5\"), -123450)\n        self.assertEqual(core.parse_amount(\"$0.07\"), 7)\n"
+   },
+   "date": "2025-03-04T07:58:00Z",
+   "id": "2c641857c3",
+   "message": "Initial import",
+   "parent": ""
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "moneyfmt/__init__.py": "\"\"\"Money amounts held as integer cents.\"\"\"\n\n__version__ = \"0.1.1\"\n"
+   },
+   "date": "2025-03-05T09:51:00Z",
+   "id": "d18db35bc5",
+   "message": "chore: bump version to 0.1.1",
+   "parent": "2c641857c3"
+  },
+  {
+   "author": "Farah Haddad",
+   "changes": {
+    "tests/test_core.py": "import unittest\n\nfrom moneyfmt import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_round_half_up(self):\n        self.assertEqual(core.round_half_up(5, 10), 1)\n        self.assertEqual(core.round_half_up(-15, 10), -2)\n        self.assertEqual(core.round_half_up(14, 10), 1)\n\n    def test_format_cents(self):\n        self.assertEqual(core.format_cents(1234567), \"$12,345.67\")\n        self.assertEqual(core.format_cents(-5), \"-$0.05\")\n\n    def test_parse_amount(self):\n        self.assertEqual(core.parse_amount(\"-$1,234.5\"), -123450)\n        self.assertEqual(core.parse_amount(\"$0.07\"), 7)\n\n    def test_format_zero(self):\n        self.assertEqual(core.format_cents(0), \"$0.00\")\n"
+   },
+   "date": "2025-03-05T22:54:00Z",
+   "id": "81b0145e44",
+   "message": "test: cover format_cents zero",
+   "parent": "d18db35bc5"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "moneyfmt/core.py": "\"\"\"Money amounts held as integer cents.\"\"\"\n\n\ndef round_half_up(numerator, denominator):\n    \"\"\"numerator / denominator to the nearest integer, halves away from zero.\"\"\"\n    negative = (numerator < 0) != (denominator < 0)\n    whole, remainder = divmod(abs(numerator), abs(denominator))\n    if 2 * remainder >= abs(denominator):\n        whole += 1\n    return -whole if negative else whole\n\n\ndef format_cents(cents, symbol=\"$\"):\n    \"\"\"1234567 -> '$12,345.67'.\"\"\"\n    sign = \"-\" if cents < 0 else \"\"\n    dollars, rest = divmod(abs(cents), 100)\n    return f\"{sign}{symbol}{dollars:,}.{rest:02d}\"\n\n\ndef parse_amount(text):\n    \"\"\"'-$1,234.5' -> -123450.\"\"\"\n    cleaned = text.strip().replace(\",\", \"\")\n    negative = cleaned.startswith(\"-\")\n    cleaned = cleaned.lstrip(\"-\").lstrip(\"$\")\n    dollars, _, cents = cleaned.partition(\".\")\n    value = int(dollars or \"0\") * 100 + int((cents + \"00\")[:2])\n    return -value if negative else value\n\n# parse_amount: keep this module free of I/O\n"
+   },
+   "date": "2025-03-06T12:04:00Z",
+   "id": "f464d5f687",
+   "message": "style: note on parse_amount",
+   "parent": "81b0145e44"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how round_half_up behaves on edge inputs\n"
+   },
+   "date": "2025-03-06T13:26:00Z",
+   "id": "58aee42e70",
+   "message": "docs: changelog entry for round_half_up",
+   "parent": "f464d5f687"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "README.md": "# moneyfmt\n\nMoney amounts held as integer cents.\n\n## parse_amount\n\nSee `tests/test_core.py` for parse_amount examples.\n"
+   },
+   "date": "2025-03-07T07:30:00Z",
+   "id": "0cba2923f3",
+   "message": "docs: document parse_amount",
+   "parent": "58aee42e70"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "README.md": "# moneyfmt\n\nMoney amounts held as integer cents.\n\n## parse_amount\n\nSee `tests/test_core.py` for parse_amount examples.\n\n## split_evenly\n\nSee `tests/test_core.py` for split_evenly examples.\n"
+   },
+   "date": "2025-03-07T13:45:00Z",
+   "id": "a179ae5c0f",
+   "message": "docs: document split_evenly",
+   "parent": "0cba2923f3"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "moneyfmt/core.py": "\"\"\"Money amounts held as integer cents.\"\"\"\n\n\ndef round_half_up(numerator, denominator):\n    \"\"\"numerator / denominator to the nearest integer, halves away from zero.\"\"\"\n    negative = (numerator < 0) != (denominator < 0)\n    whole, remainder = divmod(abs(numerator), abs(denominator))\n    if 2 * remainder >= abs(denominator):\n        whole += 1\n    return -whole if negative else whole\n\n\ndef format_cents(cents, symbol=\"$\"):\n    \"\"\"1234567 -> '$12,345.67'.\"\"\"\n    sign = \"-\" if cents < 0 else \"\"\n    dollars, rest = divmod(abs(cents), 100)\n    return f\"{sign}{symbol}{dollars:,}.{rest:02d}\"\n\n\ndef parse_amount(text):\n    \"\"\"'-$1,234.5' -> -123450.\"\"\"\n    cleaned = text.strip().replace(\",\", \"\")\n    negative = cleaned.startswith(\"-\")\n    cleaned = cleaned.lstrip(\"-\").lstrip(\"$\")\n    dollars, _, cents = cleaned.partition(\".\")\n    value = int(dollars or \"0\") * 100 + int((cents + \"00\")[:2])\n    return -value if negative else value\n\n# parse_amount: keep this module free of I/O\n\n# parse_amount: keep this module free of I/O\n"
+   },
+   "date": "2025-03-07T18:57:00Z",
+   "id": "ea28e19924",
+   "message": "style: note on parse_amount",
+   "parent": "a179ae5c0f"
+  },
+  {
+   "author": "Ada Park",
+   "changes": {
+    "moneyfmt/core.py": "\"\"\"Money amounts held as integer cents.\"\"\"\n\n\ndef round_half_up(numerator, denominator):\n    \"\"\"numerator / denominator to the nearest integer, halves away from zero.\"\"\"\n    negative = (numerator < 0) != (denominator < 0)\n    whole, remainder = divmod(abs(numerator), abs(denominator))\n    if 2 * remainder >= abs(denominator):\n        whole += 1\n    return -whole if negative else whole\n\n\ndef format_cents(cents, symbol=\"$\"):\n    \"\"\"1234567 -> '$12,345.67'.\"\"\"\n    sign = \"-\" if cents < 0 else \"\"\n    dollars, rest = divmod(abs(cents), 100)\n    return f\"{sign}{symbol}{dollars:,}.{rest:02d}\"\n\n\ndef parse_amount(text):\n    \"\"\"'-$1,234.5' -> -123450.\"\"\"\n    cleaned = text.strip().replace(\",\", \"\")\n    negative = cleaned.startswith(\"-\")\n    cleaned = cleaned.lstrip(\"-\").lstrip(\"$\")\n    dollars, _, cents = cleaned.partition(\".\")\n    value = int(dollars or \"0\") * 100 + int((cents + \"00\")[:2])\n    return -value if negative else value\n\n# parse_amount: keep this module free of I/O\n\n# parse_amount: keep this module free of I/O\n\n# round_half_up: keep this module free of I/O\n"
+   },
+   "date": "2025-03-08T10:24:00Z",
+   "id": "36e4aa1f18",
+   "message": "style: note on round_half_up",
+   "parent": "ea28e19924"
+  },
+  {
+   "author": "Ada Park",
+   "changes": {
+    "README.md": "# moneyfmt\n\nMoney amounts held as integer cents.\n\n## parse_amount\n\nSee `tests/test_core.py` for parse_amount examples.\n\n## split_evenly\n\nSee `tests/test_core.py` for split_evenly examples.\n\n## add_tax\n\nSee `tests/test_core.py` for add_tax examples.\n"
+   },
+   "date": "2025-03-08T16:12:00Z",
+   "id": "a58ba30d24",
+   "message": "docs: document add_tax",
+   "parent": "36e4aa1f18"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "moneyfmt/__init__.py": "\"\"\"Money amounts held as integer cents.\"\"\"\n\n__version__ = \"0.1.2\"\n"
+   },
+   "date": "2025-03-09T10:47:00Z",
+   "id": "5c93b19d85",
+   "message": "chore: bump version to 0.1.2",
+   "parent": "a58ba30d24"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "moneyfmt/core.py": "\"\"\"Money amounts held as integer cents.\"\"\"\n\n\ndef round_half_up(numerator, denominator):\n    \"\"\"numerator / denominator to the nearest integer, halves away from zero.\"\"\"\n    negative = (numerator < 0) != (denominator < 0)\n    whole, remainder = divmod(abs(numerator), abs(denominator))\n    if 2 * remainder >= abs(denominator):\n        whole += 1\n    return -whole if negative else whole\n\n\ndef format_cents(cents, symbol=\"$\"):\n    \"\"\"1234567 -> '$12,345.67'.\"\"\"\n    sign = \"-\" if cents < 0 else \"\"\n    dollars, rest = divmod(abs(cents), 100)\n    return f\"{sign}{symbol}{dollars:,}.{rest:02d}\"\n\n\ndef parse_amount(text):\n    \"\"\"'-$1,234.5' -> -123450.\"\"\"\n    cleaned = text.strip().replace(\",\", \"\")\n    negative = cleaned.startswith(\"-\")\n    cleaned = cleaned.lstrip(\"-\").lstrip(\"$\")\n    dollars, _, cents = cleaned.partition(\".\")\n    value = int(dollars or \"0\") * 100 + int((cents + \"00\")[:2])\n    return -value if negative else value\n\n# parse_amount: keep this module free of I/O\n\n# parse_amount: keep this module free of I/O\n\n# round_half_up: keep this module free of I/O\n\n\ndef split_evenly(cents, parts):\n    \"\"\"Split cents into parts that differ by at most one cent.\"\"\"\n    share, extra = divmod(cents, parts)\n    return [share + (1 if k < extra else 0) for k in range(parts)]\n",
+    "tests/test_core.py": "import unittest\n\nfrom moneyfmt import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_round_half_up(self):\n        self.assertEqual(core.round_half_up(5, 10), 1)\n        self.assertEqual(core.round_half_up(-15, 10), -2)\n        self.assertEqual(core.round_half_up(14, 10), 1)\n\n    def test_format_cents(self):\n        self.assertEqual(core.format_cents(1234567), \"$12,345.67\")\n        self.assertEqual(core.format_cents(-5), \"-$0.05\")\n\n    def test_parse_amount(self):\n        self.assertEqual(core.parse_amount(\"-$1,234.5\"), -123450)\n        self.assertEqual(core.parse_amount(\"$0.07\"), 7)\n\n    def test_format_zero(self):\n        self.assertEqual(core.format_cents(0), \"$0.00\")\n\n    def test_split_evenly(self):\n        self.assertEqual(core.split_evenly(100, 3), [34, 33, 33])\n"
+   },
+   "date": "2025-03-10T17:39:00Z",
+   "id": "2f719464fb",
+   "message": "feat: split_evenly",
+   "parent": "5c93b19d85"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "tests/test_core.py": "import unittest\n\nfrom moneyfmt import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_round_half_up(self):\n        self.assertEqual(core.round_half_up(5, 10), 1)\n        self.assertEqual(core.round_half_up(-15, 10), -2)\n        self.assertEqual(core.round_half_up(14, 10), 1)\n\n    def test_format_cents(self):\n        self.assertEqual(core.format_cents(1234567), \"$12,345.67\")\n        self.assertEqual(core.format_cents(-5), \"-$0.05\")\n\n    def test_parse_amount(self):\n        self.assertEqual(core.parse_amount(\"-$1,234.5\"), -123450)\n        self.assertEqual(core.parse_amount(\"$0.07\"), 7)\n\n    def test_format_zero(self):\n        self.assertEqual(core.format_cents(0), \"$0.00\")\n\n    def test_split_evenly(self):\n        self.assertEqual(core.split_evenly(100, 3), [34, 33, 33])\n\n    def test_parse_whole(self):\n        self.assertEqual(core.parse_amount(\"12\"), 1200)\n"
+   },
+   "date": "2025-03-10T18:39:00Z",
+   "id": "97f275ee0c",
+   "message": "test: cover parse_amount whole",
+   "parent": "2f719464fb"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "README.md": "# moneyfmt\n\nMoney amounts held as integer cents.\n\n## parse_amount\n\nSee `tests/test_core.py` for parse_amount examples.\n\n## split_evenly\n\nSee `tests/test_core.py` for split_evenly examples.\n\n## add_tax\n\nSee `tests/test_core.py` for add_tax examples.\n\n## parse_amount\n\nSee `tests/test_core.py` for parse_amount examples.\n"
+   },
+   "date": "2025-03-11T11:58:00Z",
+   "id": "c9ddde99a5",
+   "message": "docs: document parse_amount",
+   "parent": "97f275ee0c"
+  },
+  {
+   "author": "Ada Park",
+   "changes": {
+    "moneyfmt/__init__.py": "\"\"\"Money amounts held as integer cents.\"\"\"\n\n__version__ = \"0.1.3\"\n"
+   },
+   "date": "2025-03-12T10:45:00Z",
+   "id": "77e5cca7f5",
+   "message": "chore: bump version to 0.1.3",
+   "parent": "c9ddde99a5"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "moneyfmt/core.py": "\"\"\"Money amounts held as integer cents.\"\"\"\n\n\ndef round_half_up(numerator, denominator):\n    \"\"\"numerator / denominator to the nearest integer, halves away from zero.\"\"\"\n    negative = (numerator < 0) != (denominator < 0)\n    whole, remainder = divmod(abs(numerator), abs(denominator))\n    if 2 * remainder >= abs(denominator):\n        whole += 1\n    return -whole if negative else whole\n\n\ndef format_cents(cents, symbol=\"$\"):\n    \"\"\"1234567 -> '$12,345.67'.\"\"\"\n    sign = \"-\" if cents < 0 else \"\"\n    dollars, rest = divmod(abs(cents), 100)\n    return f\"{sign}{symbol}{dollars:,}.{rest:02d}\"\n\n\ndef parse_amount(text):\n    \"\"\"'-$1,234.5' -> -123450.\"\"\"\n    cleaned = text.strip().replace(\",\", \"\")\n    negative = cleaned.startswith(\"-\")\n    cleaned = cleaned.lstrip(\"-\").lstrip(\"$\")\n    dollars, _, cents = cleaned.partition(\".\")\n    value = int(dollars or \"0\") * 100 + int((cents + \"00\")[:2])\n    return -value if negative else value\n\n# parse_amount: keep this module free of I/O\n\n# parse_amount: keep this module free of I/O\n\n# round_half_up: keep this module free of I/O\n\n\ndef split_evenly(cents, parts):\n    \"\"\"Split cents into parts that differ by at most one cent.\"\"\"\n    share, extra = divmod(cents, parts)\n    return [share + (1 if k < extra else 0) for k in range(parts)]\n\n# add_tax: keep this module free of I/O\n"
+   },
+   "date": "2025-03-13T12:15:00Z",
+   "id": "6dadb4e28c",
+   "message": "style: note on add_tax",
+   "parent": "77e5cca7f5"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "README.md": "# moneyfmt\n\nMoney amounts held as integer cents.\n\n## parse_amount\n\nSee `tests/test_core.py` for parse_amount examples.\n\n## split_evenly\n\nSee `tests/test_core.py` for split_evenly examples.\n\n## add_tax\n\nSee `tests/test_core.py` for add_tax examples.\n\n## parse_amount\n\nSee `tests/test_core.py` for parse_amount examples.\n\n## round_half_up\n\nSee `tests/test_core.py` for round_half_up examples.\n"
+   },
+   "date": "2025-03-13T13:53:00Z",
+   "id": "3a35521c41",
+   "message": "docs: document round_half_up",
+   "parent": "6dadb4e28c"
+  },
+  {
+   "author": "Farah Haddad",
+   "changes": {
+    "README.md": "# moneyfmt\n\nMoney amounts held as integer cents.\n\n## parse_amount\n\nSee `tests/test_core.py` for parse_amount examples.\n\n## split_evenly\n\nSee `tests/test_core.py` for split_evenly examples.\n\n## add_tax\n\nSee `tests/test_core.py` for add_tax examples.\n\n## parse_amount\n\nSee `tests/test_core.py` for parse_amount examples.\n\n## round_half_up\n\nSee `tests/test_core.py` for round_half_up examples.\n\n## round_half_up\n\nSee `tests/test_core.py` for round_half_up examples.\n"
+   },
+   "date": "2025-03-13T17:14:00Z",
+   "id": "f5e2122719",
+   "message": "docs: document round_half_up",
+   "parent": "3a35521c41"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "moneyfmt/__init__.py": "\"\"\"Money amounts held as integer cents.\"\"\"\n\n__version__ = \"0.1.4\"\n"
+   },
+   "date": "2025-03-13T21:49:00Z",
+   "id": "e73f9cc9a1",
+   "message": "chore: bump version to 0.1.4",
+   "parent": "f5e2122719"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how round_half_up behaves on edge inputs\n- note how add_tax behaves on edge inputs\n"
+   },
+   "date": "2025-03-14T13:07:00Z",
+   "id": "f07cad7e87",
+   "message": "docs: changelog entry for add_tax",
+   "parent": "e73f9cc9a1"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "moneyfmt/__init__.py": "\"\"\"Money amounts held as integer cents.\"\"\"\n\n__version__ = \"0.1.5\"\n"
+   },
+   "date": "2025-03-14T20:39:00Z",
+   "id": "f0a30e7ffb",
+   "message": "chore: bump version to 0.1.5",
+   "parent": "f07cad7e87"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "moneyfmt/__init__.py": "\"\"\"Money amounts held as integer cents.\"\"\"\n\n__version__ = \"0.1.6\"\n"
+   },
+   "date": "2025-03-15T07:49:00Z",
+   "id": "2132b925dd",
+   "message": "chore: bump version to 0.1.6",
+   "parent": "f0a30e7ffb"
+  },
+  {
+   "author": "Farah Haddad",
+   "changes": {
+    "moneyfmt/core.py": "\"\"\"Money amounts held as integer cents.\"\"\"\n\n\ndef round_half_up(numerator, denominator):\n    \"\"\"numerator / denominator to the nearest integer, halves away from zero.\"\"\"\n    negative = (numerator < 0) != (denominator < 0)\n    whole, remainder = divmod(abs(numerator), abs(denominator))\n    if 2 * remainder >= abs(denominator):\n        whole += 1\n    return -whole if negative else whole\n\n\ndef format_cents(cents, symbol=\"$\"):\n    \"\"\"1234567 -> '$12,345.67'.\"\"\"\n    sign = \"-\" if cents < 0 else \"\"\n    dollars, rest = divmod(abs(cents), 100)\n    return f\"{sign}{symbol}{dollars:,}.{rest:02d}\"\n\n\ndef parse_amount(text):\n    \"\"\"'-$1,234.5' -> -123450.\"\"\"\n    cleaned = text.strip().replace(\",\", \"\")\n    negative = cleaned.startswith(\"-\")\n    cleaned = cleaned.lstrip(\"-\").lstrip(\"$\")\n    dollars, _, cents = cleaned.partition(\".\")\n    value = int(dollars or \"0\") * 100 + int((cents + \"00\")[:2])\n    return -value if negative else value\n\n# parse_amount: keep this module free of I/O\n\n# parse_amount: keep this module free of I/O\n\n# round_half_up: keep this module free of I/O\n\n\ndef split_evenly(cents, parts):\n    \"\"\"Split cents into parts that differ by at most one cent.\"\"\"\n    share, extra = divmod(cents, parts)\n    return [share + (1 if k < extra else 0) for k in range(parts)]\n\n# add_tax: keep this module free of I/O\n\n\ndef percent_of(cents, percent):\n    \"\"\"percent % of cents, rounded half up.\"\"\"\n    return round_half_up(cents * percent, 100)\n",
+    "tests/test_core.py": "import unittest\n\nfrom moneyfmt import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_round_half_up(self):\n        self.assertEqual(core.round_half_up(5, 10), 1)\n        self.assertEqual(core.round_half_up(-15, 10), -2)\n        self.assertEqual(core.round_half_up(14, 10), 1)\n\n    def test_format_cents(self):\n        self.assertEqual(core.format_cents(1234567), \"$12,345.67\")\n        self.assertEqual(core.format_cents(-5), \"-$0.05\")\n\n    def test_parse_amount(self):\n        self.assertEqual(core.parse_amount(\"-$1,234.5\"), -123450)\n        self.assertEqual(core.parse_amount(\"$0.07\"), 7)\n\n    def test_format_zero(self):\n        self.assertEqual(core.format_cents(0), \"$0.00\")\n\n    def test_split_evenly(self):\n        self.assertEqual(core.split_evenly(100, 3), [34, 33, 33])\n\n    def test_parse_whole(self):\n        self.assertEqual(core.parse_amount(\"12\"), 1200)\n\n    def test_percent_of(self):\n        self.assertEqual(core.percent_of(250, 10), 25)\n"
+   },
+   "date": "2025-03-16T04:37:00Z",
+   "id": "df104a2948",
+   "message": "feat: percent_of",
+   "parent": "2132b925dd"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "README.md": "# moneyfmt\n\nMoney amounts held as integer cents.\n\n## parse_amount\n\nSee `tests/test_core.py` for parse_amount examples.\n\n## split_evenly\n\nSee `tests/test_core.py` for split_evenly examples.\n\n## add_tax\n\nSee `tests/test_core.py` for add_tax examples.\n\n## parse_amount\n\nSee `tests/test_core.py` for parse_amount examples.\n\n## round_half_up\n\nSee `tests/test_core.py` for round_half_up examples.\n\n## round_half_up\n\nSee `tests/test_core.py` for round_half_up examples.\n\n## percent_of\n\nSee `tests/test_core.py` for percent_of examples.\n"
+   },
+   "date": "2025-03-17T10:11:00Z",
+   "id": "b6878aacbf",
+   "message": "docs: document percent_of",
+   "parent": "df104a2948"
+  },
+  {
+   "author": "Farah Haddad",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how round_half_up behaves on edge inputs\n- note how add_tax behaves on edge inputs\n- note how parse_amount behaves on edge inputs\n"
+   },
+   "date": "2025-03-17T18:44:00Z",
+   "id": "32d6f5d091",
+   "message": "docs: changelog entry for parse_amount",
+   "parent": "b6878aacbf"
+  },
+  {
+   "author": "Ada Park",
+   "changes": {
+    "README.md": "# moneyfmt\n\nMoney amounts held as integer cents.\n\n## parse_amount\n\nSee `tests/test_core.py` for parse_amount examples.\n\n## split_evenly\n\nSee `tests/test_core.py` for split_evenly examples.\n\n## add_tax\n\nSee `tests/test_core.py` for add_tax examples.\n\n## parse_amount\n\nSee `tests/test_core.py` for parse_amount examples.\n\n## round_half_up\n\nSee `tests/test_core.py` for round_half_up examples.\n\n## round_half_up\n\nSee `tests/test_core.py` for round_half_up examples.\n\n## percent_of\n\nSee `tests/test_core.py` for percent_of examples.\n\n## format_cents\n\nSee `tests/test_core.py` for format_cents examples.\n"
+   },
+   "date": "2025-03-18T10:54:00Z",
+   "id": "c06cc94304",
+   "message": "docs: document format_cents",
+   "parent": "32d6f5d091"
+  },
+  {
+   "author": "Ada Park",
+   "changes": {
+    "moneyfmt/core.py": "\"\"\"Money amounts held as integer cents.\"\"\"\n\n\ndef round_half_up(numerator, denominator):\n    \"\"\"numerator / denominator to the nearest integer, halves away from zero.\"\"\"\n    negative = (numerator < 0) != (denominator < 0)\n    whole, remainder = divmod(abs(numerator), abs(denominator))\n    if 2 * remainder >= abs(denominator):\n        whole += 1\n    return -whole if negative else whole\n\n\ndef format_cents(cents, symbol=\"$\"):\n    \"\"\"1234567 -> '$12,345.67'.\"\"\"\n    sign = \"-\" if cents < 0 else \"\"\n    dollars, rest = divmod(abs(cents), 100)\n    return f\"{sign}{symbol}{dollars:,}.{rest:02d}\"\n\n\ndef parse_amount(text):\n    \"\"\"'-$1,234.5' -> -123450.\"\"\"\n    cleaned = text.strip().replace(\",\", \"\")\n    negative = cleaned.startswith(\"-\")\n    cleaned = cleaned.lstrip(\"-\").lstrip(\"$\")\n    dollars, _, cents = cleaned.partition(\".\")\n    value = int(dollars or \"0\") * 100 + int((cents + \"00\")[:2])\n    return -value if negative else value\n\n# parse_amount: keep this module free of I/O\n\n# parse_amount: keep this module free of I/O\n\n# round_half_up: keep this module free of I/O\n\n\ndef split_evenly(cents, parts):\n    \"\"\"Split cents into parts that differ by at most one cent.\"\"\"\n    share, extra = divmod(cents, parts)\n    return [share + (1 if k < extra else 0) for k in range(parts)]\n\n# add_tax: keep this module free of I/O\n\n\ndef percent_of(cents, percent):\n    \"\"\"percent % of cents, rounded half up.\"\"\"\n    return round_half_up(cents * percent, 100)\n\n# round_half_up: keep this module free of I/O\n"
+   },
+   "date": "2025-03-19T05:59:00Z",
+   "id": "754829316e",
+   "message": "style: note on round_half_up",
+   "parent": "c06cc94304"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "moneyfmt/core.py": "\"\"\"Money amounts held as integer cents.\"\"\"\n\n\ndef round_half_up(numerator, denominator):\n    \"\"\"numerator / denominator to the nearest integer, halves away from zero.\"\"\"\n    negative = (numerator < 0) != (denominator < 0)\n    whole, remainder = divmod(abs(numerator), abs(denominator))\n    if 2 * remainder >= abs(denominator):\n        whole += 1\n    return -whole if negative else whole\n\n\ndef format_cents(cents, symbol=\"$\"):\n    \"\"\"1234567 -> '$12,345.67'.\"\"\"\n    sign = \"-\" if cents < 0 else \"\"\n    dollars, rest = divmod(abs(cents), 100)\n    return f\"{sign}{symbol}{dollars:,}.{rest:02d}\"\n\n\ndef parse_amount(text):\n    \"\"\"'-$1,234.5' -> -123450.\"\"\"\n    cleaned = text.strip().replace(\",\", \"\")\n    negative = cleaned.startswith(\"-\")\n    cleaned = cleaned.lstrip(\"-\").lstrip(\"$\")\n    dollars, _, cents = cleaned.partition(\".\")\n    value = int(dollars or \"0\") * 100 + int((cents + \"00\")[:2])\n    return -value if negative else value\n\n# parse_amount: keep this module free of I/O\n\n# parse_amount: keep this module free of I/O\n\n# round_half_up: keep this module free of I/O\n\n\ndef split_evenly(cents, parts):\n    \"\"\"Split cents into parts that differ by at most one cent.\"\"\"\n    share, extra = divmod(cents, parts)\n    return [share + (1 if k < extra else 0) for k in range(parts)]\n\n# add_tax: keep this module free of I/O\n\n\ndef percent_of(cents, percent):\n    \"\"\"percent % of cents, rounded half up.\"\"\"\n    return round_half_up(cents * percent, 100)\n\n# round_half_up: keep this module free of I/O\n\n# split_evenly: keep this module free of I/O\n"
+   },
+   "date": "2025-03-19T13:14:00Z",
+   "id": "5e16421627",
+   "message": "style: note on split_evenly",
+   "parent": "754829316e"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "moneyfmt/__init__.py": "\"\"\"Money amounts held as integer cents.\"\"\"\n\n__version__ = \"0.1.7\"\n"
+   },
+   "date": "2025-03-20T08:37:00Z",
+   "id": "8eba6d2968",
+   "message": "chore: bump version to 0.1.7",
+   "parent": "5e16421627"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "tests/test_core.py": "import unittest\n\nfrom moneyfmt import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_round_half_up(self):\n        self.assertEqual(core.round_half_up(5, 10), 1)\n        self.assertEqual(core.round_half_up(-15, 10), -2)\n        self.assertEqual(core.round_half_up(14, 10), 1)\n\n    def test_format_cents(self):\n        self.assertEqual(core.format_cents(1234567), \"$12,345.67\")\n        self.assertEqual(core.format_cents(-5), \"-$0.05\")\n\n    def test_parse_amount(self):\n        self.assertEqual(core.parse_amount(\"-$1,234.5\"), -123450)\n        self.assertEqual(core.parse_amount(\"$0.07\"), 7)\n\n    def test_format_zero(self):\n        self.assertEqual(core.format_cents(0), \"$0.00\")\n\n    def test_split_evenly(self):\n        self.assertEqual(core.split_evenly(100, 3), [34, 33, 33])\n\n    def test_parse_whole(self):\n        self.assertEqual(core.parse_amount(\"12\"), 1200)\n\n    def test_percent_of(self):\n        self.assertEqual(core.percent_of(250, 10), 25)\n\n    def test_format_euro(self):\n        self.assertEqual(core.format_cents(150, \"\u20ac\"), \"\u20ac1.50\")\n"
+   },
+   "date": "2025-03-20T20:11:00Z",
+   "id": "6f450c735f",
+   "message": "test: cover other symbols",
+   "parent": "8eba6d2968"
+  },
+  {
+   "author": "Ada Park",
+   "changes": {
+    "README.md": "# moneyfmt\n\nMoney amounts held as integer cents.\n\n## parse_amount\n\nSee `tests/test_core.py` for parse_amount examples.\n\n## split_evenly\n\nSee `tests/test_core.py` for split_evenly examples.\n\n## add_tax\n\nSee `tests/test_core.py` for add_tax examples.\n\n## parse_amount\n\nSee `tests/test_core.py` for parse_amount examples.\n\n## round_half_up\n\nSee `tests/test_core.py` for round_half_up examples.\n\n## round_half_up\n\nSee `tests/test_core.py` for round_half_up examples.\n\n## percent_of\n\nSee `tests/test_core.py` for percent_of examples.\n\n## format_cents\n\nSee `tests/test_core.py` for format_cents examples.\n\n## add_tax\n\nSee `tests/test_core.py` for add_tax examples.\n"
+   },
+   "date": "2025-03-21T05:44:00Z",
+   "id": "13f957cc79",
+   "message": "docs: document add_tax",
+   "parent": "6f450c735f"
+  },
+  {
+   "author": "Farah Haddad",
+   "changes": {
+    "moneyfmt/core.py": "\"\"\"Money amounts held as integer cents.\"\"\"\n\n\ndef round_half_up(numerator, denominator):\n    \"\"\"numerator / denominator to the nearest integer, halves away from zero.\"\"\"\n    negative = (numerator < 0) != (denominator < 0)\n    whole, remainder = divmod(abs(numerator), abs(denominator))\n    if 2 * remainder >= abs(denominator):\n        whole += 1\n    return -whole if negative else whole\n\n\ndef format_cents(cents, symbol=\"$\"):\n    \"\"\"1234567 -> '$12,345.67'.\"\"\"\n    sign = \"-\" if cents < 0 else \"\"\n    dollars, rest = divmod(abs(cents), 100)\n    return f\"{sign}{symbol}{dollars:,}.{rest:02d}\"\n\n\ndef parse_amount(text):\n    \"\"\"'-$1,234.5' -> -123450.\"\"\"\n    cleaned = text.strip().replace(\",\", \"\")\n    negative = cleaned.startswith(\"-\")\n    cleaned = cleaned.lstrip(\"-\").lstrip(\"$\")\n    dollars, _, cents = cleaned.partition(\".\")\n    value = int(dollars or \"0\") * 100 + int((cents + \"00\")[:2])\n    return -value if negative else value\n\n# parse_amount: keep this module free of I/O\n\n# parse_amount: keep this module free of I/O\n\n# round_half_up: keep this module free of I/O\n\n\ndef split_evenly(cents, parts):\n    \"\"\"Split cents into parts that differ by at most one cent.\"\"\"\n    share, extra = divmod(cents, parts)\n    return [share + (1 if k < extra else 0) for k in range(parts)]\n\n# add_tax: keep this module free of I/O\n\n\ndef percent_of(cents, percent):\n    \"\"\"percent % of cents, rounded half up.\"\"\"\n    return round_half_up(cents * percent, 100)\n\n# round_half_up: keep this module free of I/O\n\n# split_evenly: keep this module free of I/O\n\n# percent_of: keep this module free of I/O\n"
+   },
+   "date": "2025-03-22T12:03:00Z",
+   "id": "4c9197d9b6",
+   "message": "style: note on percent_of",
+   "parent": "13f957cc79"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "moneyfmt/core.py": "\"\"\"Money amounts held as integer cents.\"\"\"\n\n\ndef round_half_up(numerator, denominator):\n    \"\"\"numerator / denominator to the nearest integer, halves away from zero.\"\"\"\n    negative = (numerator < 0) != (denominator < 0)\n    whole, remainder = divmod(abs(numerator), abs(denominator))\n    if 2 * remainder >= abs(denominator):\n        whole += 1\n    return -whole if negative else whole\n\n\ndef format_cents(cents, symbol=\"$\"):\n    \"\"\"1234567 -> '$12,345.67'.\"\"\"\n    sign = \"-\" if cents < 0 else \"\"\n    dollars, rest = divmod(abs(cents), 100)\n    return f\"{sign}{symbol}{dollars:,}.{rest:02d}\"\n\n\ndef parse_amount(text):\n    \"\"\"'-$1,234.5' -> -123450.\"\"\"\n    cleaned = text.strip().replace(\",\", \"\")\n    negative = cleaned.startswith(\"-\")\n    cleaned = cleaned.lstrip(\"-\").lstrip(\"$\")\n    dollars, _, cents = cleaned.partition(\".\")\n    value = int(dollars or \"0\") * 100 + int((cents + \"00\")[:2])\n    return -value if negative else value\n\n# parse_amount: keep this module free of I/O\n\n# parse_amount: keep this module free of I/O\n\n# round_half_up: keep this module free of I/O\n\n\ndef split_evenly(cents, parts):\n    \"\"\"Split cents into parts that differ by at most one cent.\"\"\"\n    share, extra = divmod(cents, parts)\n    return [share + (1 if k < extra else 0) for k in range(parts)]\n\n# add_tax: keep this module free of I/O\n\n\ndef percent_of(cents, percent):\n    \"\"\"percent % of cents, rounded half up.\"\"\"\n    return round_half_up(cents * percent, 100)\n\n# round_half_up: keep this module free of I/O\n\n# split_evenly: keep this module free of I/O\n\n# percent_of: keep this module free of I/O\n\n\ndef add_tax(cents, basis_points):\n    \"\"\"cents plus a tax given in basis points (825 = 8.25%).\"\"\"\n    return cents + round_half_up(cents * basis_points, 10000)\n",
+    "tests/test_core.py": "import unittest\n\nfrom moneyfmt import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_round_half_up(self):\n        self.assertEqual(core.round_half_up(5, 10), 1)\n        self.assertEqual(core.round_half_up(-15, 10), -2)\n        self.assertEqual(core.round_half_up(14, 10), 1)\n\n    def test_format_cents(self):\n        self.assertEqual(core.format_cents(1234567), \"$12,345.67\")\n        self.assertEqual(core.format_cents(-5), \"-$0.05\")\n\n    def test_parse_amount(self):\n        self.assertEqual(core.parse_amount(\"-$1,234.5\"), -123450)\n        self.assertEqual(core.parse_amount(\"$0.07\"), 7)\n\n    def test_format_zero(self):\n        self.assertEqual(core.format_cents(0), \"$0.00\")\n\n    def test_split_evenly(self):\n        self.assertEqual(core.split_evenly(100, 3), [34, 33, 33])\n\n    def test_parse_whole(self):\n        self.assertEqual(core.parse_amount(\"12\"), 1200)\n\n    def test_percent_of(self):\n        self.assertEqual(core.percent_of(250, 10), 25)\n\n    def test_format_euro(self):\n        self.assertEqual(core.format_cents(150, \"\u20ac\"), \"\u20ac1.50\")\n\n    def test_add_tax(self):\n        self.assertEqual(core.add_tax(1000, 800), 1080)\n"
+   },
+   "date": "2025-03-22T13:09:00Z",
+   "id": "56c7f7e5a9",
+   "message": "feat: add_tax",
+   "parent": "4c9197d9b6"
+  },
+  {
+   "author": "Farah Haddad",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how round_half_up behaves on edge inputs\n- note how add_tax behaves on edge inputs\n- note how parse_amount behaves on edge inputs\n- note how add_tax behaves on edge inputs\n"
+   },
+   "date": "2025-03-23T15:08:00Z",
+   "id": "d83c087db5",
+   "message": "docs: changelog entry for add_tax",
+   "parent": "56c7f7e5a9"
+  },
+  {
+   "author": "Ada Park",
+   "changes": {
+    "moneyfmt/__init__.py": "\"\"\"Money amounts held as integer cents.\"\"\"\n\n__version__ = \"0.1.8\"\n"
+   },
+   "date": "2025-03-23T23:47:00Z",
+   "id": "2f4f9adc36",
+   "message": "chore: bump version to 0.1.8",
+   "parent": "d83c087db5"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "moneyfmt/core.py": "\"\"\"Money amounts held as integer cents.\"\"\"\n\n\ndef round_half_up(numerator, denominator):\n    \"\"\"numerator / denominator to the nearest integer, halves away from zero.\"\"\"\n    negative = (numerator < 0) != (denominator < 0)\n    whole, remainder = divmod(abs(numerator), abs(denominator))\n    if 2 * remainder >= abs(denominator):\n        whole += 1\n    return -whole if negative else whole\n\n\ndef format_cents(cents, symbol=\"$\"):\n    \"\"\"1234567 -> '$12,345.67'.\"\"\"\n    sign = \"-\" if cents < 0 else \"\"\n    dollars, rest = divmod(abs(cents), 100)\n    return f\"{sign}{symbol}{dollars:,}.{rest:02d}\"\n\n\ndef parse_amount(text):\n    \"\"\"'-$1,234.5' -> -123450.\"\"\"\n    cleaned = text.strip().replace(\",\", \"\")\n    negative = cleaned.startswith(\"-\")\n    cleaned = cleaned.lstrip(\"-\").lstrip(\"$\")\n    dollars, _, cents = cleaned.partition(\".\")\n    value = int(dollars or \"0\") * 100 + int((cents + \"00\")[:2])\n    return -value if negative else value\n\n# parse_amount: keep this module free of I/O\n\n# parse_amount: keep this module free of I/O\n\n# round_half_up: keep this module free of I/O\n\n\ndef split_evenly(cents, parts):\n    \"\"\"Split cents into parts that differ by at most one cent.\"\"\"\n    share, extra = divmod(cents, parts)\n    return [share + (1 if k < extra else 0) for k in range(parts)]\n\n# add_tax: keep this module free of I/O\n\n\ndef percent_of(cents, percent):\n    \"\"\"percent % of cents, rounded half up.\"\"\"\n    return round_half_up(cents * percent, 100)\n\n# round_half_up: keep this module free of I/O\n\n# split_evenly: keep this module free of I/O\n\n# percent_of: keep this module free of I/O\n\n\ndef add_tax(cents, basis_points):\n    \"\"\"cents plus a tax given in basis points (825 = 8.25%).\"\"\"\n    return cents + round_half_up(cents * basis_points, 10000)\n\n# format_cents: keep this module free of I/O\n"
+   },
+   "date": "2025-03-25T01:58:00Z",
+   "id": "717fd286b4",
+   "message": "style: note on format_cents",
+   "parent": "2f4f9adc36"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "moneyfmt/core.py": "\"\"\"Money amounts held as integer cents.\"\"\"\n\n\ndef round_half_up(numerator, denominator):\n    \"\"\"numerator / denominator to the nearest integer, halves away from zero.\"\"\"\n    negative = (numerator < 0) != (denominator < 0)\n    whole, remainder = divmod(abs(numerator), abs(denominator))\n    if 2 * remainder > abs(denominator):\n        whole += 1\n    return -whole if negative else whole\n\n\ndef format_cents(cents, symbol=\"$\"):\n    \"\"\"1234567 -> '$12,345.67'.\"\"\"\n    sign = \"-\" if cents < 0 else \"\"\n    dollars, rest = divmod(abs(cents), 100)\n    return f\"{sign}{symbol}{dollars:,}.{rest:02d}\"\n\n\ndef parse_amount(text):\n    \"\"\"'-$1,234.5' -> -123450.\"\"\"\n    cleaned = text.strip().replace(\",\", \"\")\n    negative = cleaned.startswith(\"-\")\n    cleaned = cleaned.lstrip(\"-\").lstrip(\"$\")\n    dollars, _, cents = cleaned.partition(\".\")\n    value = int(dollars or \"0\") * 100 + int((cents + \"00\")[:2])\n    return -value if negative else value\n\n# parse_amount: keep this module free of I/O\n\n# parse_amount: keep this module free of I/O\n\n# round_half_up: keep this module free of I/O\n\n\ndef split_evenly(cents, parts):\n    \"\"\"Split cents into parts that differ by at most one cent.\"\"\"\n    share, extra = divmod(cents, parts)\n    return [share + (1 if k < extra else 0) for k in range(parts)]\n\n# add_tax: keep this module free of I/O\n\n\ndef percent_of(cents, percent):\n    \"\"\"percent % of cents, rounded half up.\"\"\"\n    return round_half_up(cents * percent, 100)\n\n# round_half_up: keep this module free of I/O\n\n# split_evenly: keep this module free of I/O\n\n# percent_of: keep this module free of I/O\n\n\ndef add_tax(cents, basis_points):\n    \"\"\"cents plus a tax given in basis points (825 = 8.25%).\"\"\"\n    return cents + round_half_up(cents * basis_points, 10000)\n\n# format_cents: keep this module free of I/O\n"
+   },
+   "date": "2025-03-26T07:20:00Z",
+   "id": "714313ec08",
+   "message": "perf: avoid a comparison in round_half_up",
+   "parent": "717fd286b4"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "moneyfmt/core.py": "\"\"\"Money amounts held as integer cents.\"\"\"\n\n\ndef round_half_up(numerator, denominator):\n    \"\"\"numerator / denominator to the nearest integer, halves away from zero.\"\"\"\n    negative = (numerator < 0) != (denominator < 0)\n    whole, remainder = divmod(abs(numerator), abs(denominator))\n    if 2 * remainder > abs(denominator):\n        whole += 1\n    return -whole if negative else whole\n\n\ndef format_cents(cents, symbol=\"$\"):\n    \"\"\"1234567 -> '$12,345.67'.\"\"\"\n    sign = \"-\" if cents < 0 else \"\"\n    dollars, rest = divmod(abs(cents), 100)\n    return f\"{sign}{symbol}{dollars:,}.{rest:02d}\"\n\n\ndef parse_amount(text):\n    \"\"\"'-$1,234.5' -> -123450.\"\"\"\n    cleaned = text.strip().replace(\",\", \"\")\n    negative = cleaned.startswith(\"-\")\n    cleaned = cleaned.lstrip(\"-\").lstrip(\"$\")\n    dollars, _, cents = cleaned.partition(\".\")\n    value = int(dollars or \"0\") * 100 + int((cents + \"00\")[:2])\n    return -value if negative else value\n\n# parse_amount: keep this module free of I/O\n\n# parse_amount: keep this module free of I/O\n\n# round_half_up: keep this module free of I/O\n\n\ndef split_evenly(cents, parts):\n    \"\"\"Split cents into parts that differ by at most one cent.\"\"\"\n    share, extra = divmod(cents, parts)\n    return [share + (1 if k < extra else 0) for k in range(parts)]\n\n# add_tax: keep this module free of I/O\n\n\ndef percent_of(cents, percent):\n    \"\"\"percent % of cents, rounded half up.\"\"\"\n    return round_half_up(cents * percent, 100)\n\n# round_half_up: keep this module free of I/O\n\n# split_evenly: keep this module free of I/O\n\n# percent_of: keep this module free of I/O\n\n\ndef add_tax(cents, basis_points):\n    \"\"\"cents plus a tax given in basis points (825 = 8.25%).\"\"\"\n    return cents + round_half_up(cents * basis_points, 10000)\n\n# format_cents: keep this module free of I/O\n\n# percent_of: keep this module free of I/O\n"
+   },
+   "date": "2025-03-27T11:01:00Z",
+   "id": "6971b4ce28",
+   "message": "style: note on percent_of",
+   "parent": "714313ec08"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "README.md": "# moneyfmt\n\nMoney amounts held as integer cents.\n\n## parse_amount\n\nSee `tests/test_core.py` for parse_amount examples.\n\n## split_evenly\n\nSee `tests/test_core.py` for split_evenly examples.\n\n## add_tax\n\nSee `tests/test_core.py` for add_tax examples.\n\n## parse_amount\n\nSee `tests/test_core.py` for parse_amount examples.\n\n## round_half_up\n\nSee `tests/test_core.py` for round_half_up examples.\n\n## round_half_up\n\nSee `tests/test_core.py` for round_half_up examples.\n\n## percent_of\n\nSee `tests/test_core.py` for percent_of examples.\n\n## format_cents\n\nSee `tests/test_core.py` for format_cents examples.\n\n## add_tax\n\nSee `tests/test_core.py` for add_tax examples.\n\n## format_cents\n\nSee `tests/test_core.py` for format_cents examples.\n"
+   },
+   "date": "2025-03-28T03:24:00Z",
+   "id": "7ac2261d51",
+   "message": "docs: document format_cents",
+   "parent": "6971b4ce28"
+  },
+  {
+   "author": "Ada Park",
+   "changes": {
+    "moneyfmt/core.py": "\"\"\"Money amounts held as integer cents.\"\"\"\n\n\ndef round_half_up(numerator, denominator):\n    \"\"\"numerator / denominator to the nearest integer, halves away from zero.\"\"\"\n    negative = (numerator < 0) != (denominator < 0)\n    whole, remainder = divmod(abs(numerator), abs(denominator))\n    if 2 * remainder > abs(denominator):\n        whole += 1\n    return -whole if negative else whole\n\n\ndef format_cents(cents, symbol=\"$\"):\n    \"\"\"1234567 -> '$12,345.67'.\"\"\"\n    sign = \"-\" if cents < 0 else \"\"\n    dollars, rest = divmod(abs(cents), 100)\n    return f\"{sign}{symbol}{dollars:,}.{rest:02d}\"\n\n\ndef parse_amount(text):\n    \"\"\"'-$1,234.5' -> -123450.\"\"\"\n    cleaned = text.strip().replace(\",\", \"\")\n    negative = cleaned.startswith(\"-\")\n    cleaned = cleaned.lstrip(\"-\").lstrip(\"$\")\n    dollars, _, cents = cleaned.partition(\".\")\n    value = int(dollars or \"0\") * 100 + int((cents + \"00\")[:2])\n    return -value if negative else value\n\n# parse_amount: keep this module free of I/O\n\n# parse_amount: keep this module free of I/O\n\n# round_half_up: keep this module free of I/O\n\n\ndef split_evenly(cents, parts):\n    \"\"\"Split cents into parts that differ by at most one cent.\"\"\"\n    share, extra = divmod(cents, parts)\n    return [share + (1 if k < extra else 0) for k in range(parts)]\n\n# add_tax: keep this module free of I/O\n\n\ndef percent_of(cents, percent):\n    \"\"\"percent % of cents, rounded half up.\"\"\"\n    return round_half_up(cents * percent, 100)\n\n# round_half_up: keep this module free of I/O\n\n# split_evenly: keep this module free of I/O\n\n# percent_of: keep this module free of I/O\n\n\ndef add_tax(cents, basis_points):\n    \"\"\"cents plus a tax given in basis points (825 = 8.25%).\"\"\"\n    return cents + round_half_up(cents * basis_points, 10000)\n\n# format_cents: keep this module free of I/O\n\n# percent_of: keep this module free of I/O\n\n# convert: keep this module free of I/O\n"
+   },
+   "date": "2025-03-29T07:14:00Z",
+   "id": "32c913198b",
+   "message": "style: note on convert",
+   "parent": "7ac2261d51"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "moneyfmt/core.py": "\"\"\"Money amounts held as integer cents.\"\"\"\n\n\ndef round_half_up(numerator, denominator):\n    \"\"\"numerator / denominator to the nearest integer, halves away from zero.\"\"\"\n    negative = (numerator < 0) != (denominator < 0)\n    whole, remainder = divmod(abs(numerator), abs(denominator))\n    if 2 * remainder > abs(denominator):\n        whole += 1\n    return -whole if negative else whole\n\n\ndef format_cents(cents, symbol=\"$\"):\n    \"\"\"1234567 -> '$12,345.67'.\"\"\"\n    sign = \"-\" if cents < 0 else \"\"\n    dollars, rest = divmod(abs(cents), 100)\n    return f\"{sign}{symbol}{dollars:,}.{rest:02d}\"\n\n\ndef parse_amount(text):\n    \"\"\"'-$1,234.5' -> -123450.\"\"\"\n    cleaned = text.strip().replace(\",\", \"\")\n    negative = cleaned.startswith(\"-\")\n    cleaned = cleaned.lstrip(\"-\").lstrip(\"$\")\n    dollars, _, cents = cleaned.partition(\".\")\n    value = int(dollars or \"0\") * 100 + int((cents + \"00\")[:2])\n    return -value if negative else value\n\n# parse_amount: keep this module free of I/O\n\n# parse_amount: keep this module free of I/O\n\n# round_half_up: keep this module free of I/O\n\n\ndef split_evenly(cents, parts):\n    \"\"\"Split cents into parts that differ by at most one cent.\"\"\"\n    share, extra = divmod(cents, parts)\n    return [share + (1 if k < extra else 0) for k in range(parts)]\n\n# add_tax: keep this module free of I/O\n\n\ndef percent_of(cents, percent):\n    \"\"\"percent % of cents, rounded half up.\"\"\"\n    return round_half_up(cents * percent, 100)\n\n# round_half_up: keep this module free of I/O\n\n# split_evenly: keep this module free of I/O\n\n# percent_of: keep this module free of I/O\n\n\ndef add_tax(cents, basis_points):\n    \"\"\"cents plus a tax given in basis points (825 = 8.25%).\"\"\"\n    return cents + round_half_up(cents * basis_points, 10000)\n\n# format_cents: keep this module free of I/O\n\n# percent_of: keep this module free of I/O\n\n# convert: keep this module free of I/O\n\n# percent_of: keep this module free of I/O\n"
+   },
+   "date": "2025-03-30T11:50:00Z",
+   "id": "72c70edbac",
+   "message": "style: note on percent_of",
+   "parent": "32c913198b"
+  },
+  {
+   "author": "Ada Park",
+   "changes": {
+    "moneyfmt/core.py": "\"\"\"Money amounts held as integer cents.\"\"\"\n\n\ndef round_half_up(numerator, denominator):\n    \"\"\"numerator / denominator to the nearest integer, halves away from zero.\"\"\"\n    negative = (numerator < 0) != (denominator < 0)\n    whole, remainder = divmod(abs(numerator), abs(denominator))\n    if 2 * remainder > abs(denominator):\n        whole += 1\n    return -whole if negative else whole\n\n\ndef format_cents(cents, symbol=\"$\"):\n    \"\"\"1234567 -> '$12,345.67'.\"\"\"\n    sign = \"-\" if cents < 0 else \"\"\n    dollars, rest = divmod(abs(cents), 100)\n    return f\"{sign}{symbol}{dollars:,}.{rest:02d}\"\n\n\ndef parse_amount(text):\n    \"\"\"'-$1,234.5' -> -123450.\"\"\"\n    cleaned = text.strip().replace(\",\", \"\")\n    negative = cleaned.startswith(\"-\")\n    cleaned = cleaned.lstrip(\"-\").lstrip(\"$\")\n    dollars, _, cents = cleaned.partition(\".\")\n    value = int(dollars or \"0\") * 100 + int((cents + \"00\")[:2])\n    return -value if negative else value\n\n# parse_amount: keep this module free of I/O\n\n# parse_amount: keep this module free of I/O\n\n# round_half_up: keep this module free of I/O\n\n\ndef split_evenly(cents, parts):\n    \"\"\"Split cents into parts that differ by at most one cent.\"\"\"\n    share, extra = divmod(cents, parts)\n    return [share + (1 if k < extra else 0) for k in range(parts)]\n\n# add_tax: keep this module free of I/O\n\n\ndef percent_of(cents, percent):\n    \"\"\"percent % of cents, rounded half up.\"\"\"\n    return round_half_up(cents * percent, 100)\n\n# round_half_up: keep this module free of I/O\n\n# split_evenly: keep this module free of I/O\n\n# percent_of: keep this module free of I/O\n\n\ndef add_tax(cents, basis_points):\n    \"\"\"cents plus a tax given in basis points (825 = 8.25%).\"\"\"\n    return cents + round_half_up(cents * basis_points, 10000)\n\n# format_cents: keep this module free of I/O\n\n# percent_of: keep this module free of I/O\n\n# convert: keep this module free of I/O\n\n# percent_of: keep this module free of I/O\n\n# parse_amount: keep this module free of I/O\n"
+   },
+   "date": "2025-03-31T02:35:00Z",
+   "id": "ee1cdb14a6",
+   "message": "style: note on parse_amount",
+   "parent": "72c70edbac"
+  },
+  {
+   "author": "Ada Park",
+   "changes": {
+    "moneyfmt/__init__.py": "\"\"\"Money amounts held as integer cents.\"\"\"\n\n__version__ = \"0.1.9\"\n"
+   },
+   "date": "2025-03-31T09:24:00Z",
+   "id": "da535bb0ad",
+   "message": "chore: bump version to 0.1.9",
+   "parent": "ee1cdb14a6"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "moneyfmt/core.py": "\"\"\"Money amounts held as integer cents.\"\"\"\n\n\ndef round_half_up(numerator, denominator):\n    \"\"\"numerator / denominator to the nearest integer, halves away from zero.\"\"\"\n    negative = (numerator < 0) != (denominator < 0)\n    whole, remainder = divmod(abs(numerator), abs(denominator))\n    if 2 * remainder > abs(denominator):\n        whole += 1\n    return -whole if negative else whole\n\n\ndef format_cents(cents, symbol=\"$\"):\n    \"\"\"1234567 -> '$12,345.67'.\"\"\"\n    sign = \"-\" if cents < 0 else \"\"\n    dollars, rest = divmod(abs(cents), 100)\n    return f\"{sign}{symbol}{dollars:,}.{rest:02d}\"\n\n\ndef parse_amount(text):\n    \"\"\"'-$1,234.5' -> -123450.\"\"\"\n    cleaned = text.strip().replace(\",\", \"\")\n    negative = cleaned.startswith(\"-\")\n    cleaned = cleaned.lstrip(\"-\").lstrip(\"$\")\n    dollars, _, cents = cleaned.partition(\".\")\n    value = int(dollars or \"0\") * 100 + int((cents + \"00\")[:2])\n    return -value if negative else value\n\n# parse_amount: keep this module free of I/O\n\n# parse_amount: keep this module free of I/O\n\n# round_half_up: keep this module free of I/O\n\n\ndef split_evenly(cents, parts):\n    \"\"\"Split cents into parts that differ by at most one cent.\"\"\"\n    share, extra = divmod(cents, parts)\n    return [share + (1 if k < extra else 0) for k in range(parts)]\n\n# add_tax: keep this module free of I/O\n\n\ndef percent_of(cents, percent):\n    \"\"\"percent % of cents, rounded half up.\"\"\"\n    return round_half_up(cents * percent, 100)\n\n# round_half_up: keep this module free of I/O\n\n# split_evenly: keep this module free of I/O\n\n# percent_of: keep this module free of I/O\n\n\ndef add_tax(cents, basis_points):\n    \"\"\"cents plus a tax given in basis points (825 = 8.25%).\"\"\"\n    return cents + round_half_up(cents * basis_points, 10000)\n\n# format_cents: keep this module free of I/O\n\n# percent_of: keep this module free of I/O\n\n# convert: keep this module free of I/O\n\n# percent_of: keep this module free of I/O\n\n# parse_amount: keep this module free of I/O\n\n\ndef convert(cents, rate_numerator, rate_denominator):\n    \"\"\"cents at an exchange rate given as a fraction.\"\"\"\n    return round_half_up(cents * rate_numerator, rate_denominator)\n",
+    "tests/test_core.py": "import unittest\n\nfrom moneyfmt import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_round_half_up(self):\n        self.assertEqual(core.round_half_up(5, 10), 1)\n        self.assertEqual(core.round_half_up(-15, 10), -2)\n        self.assertEqual(core.round_half_up(14, 10), 1)\n\n    def test_format_cents(self):\n        self.assertEqual(core.format_cents(1234567), \"$12,345.67\")\n        self.assertEqual(core.format_cents(-5), \"-$0.05\")\n\n    def test_parse_amount(self):\n        self.assertEqual(core.parse_amount(\"-$1,234.5\"), -123450)\n        self.assertEqual(core.parse_amount(\"$0.07\"), 7)\n\n    def test_format_zero(self):\n        self.assertEqual(core.format_cents(0), \"$0.00\")\n\n    def test_split_evenly(self):\n        self.assertEqual(core.split_evenly(100, 3), [34, 33, 33])\n\n    def test_parse_whole(self):\n        self.assertEqual(core.parse_amount(\"12\"), 1200)\n\n    def test_percent_of(self):\n        self.assertEqual(core.percent_of(250, 10), 25)\n\n    def test_format_euro(self):\n        self.assertEqual(core.format_cents(150, \"\u20ac\"), \"\u20ac1.50\")\n\n    def test_add_tax(self):\n        self.assertEqual(core.add_tax(1000, 800), 1080)\n\n    def test_convert(self):\n        self.assertEqual(core.convert(100, 3, 2), 150)\n"
+   },
+   "date": "2025-04-01T10:39:00Z",
+   "id": "8a8e92f63b",
+   "message": "feat: convert between currencies",
+   "parent": "da535bb0ad"
+  },
+  {
+   "author": "Farah Haddad",
+   "changes": {
+    "moneyfmt/core.py": "\"\"\"Money amounts held as integer cents.\"\"\"\n\n\ndef round_half_up(numerator, denominator):\n    \"\"\"numerator / denominator to the nearest integer, halves away from zero.\"\"\"\n    negative = (numerator < 0) != (denominator < 0)\n    whole, remainder = divmod(abs(numerator), abs(denominator))\n    if 2 * remainder > abs(denominator):\n        whole += 1\n    return -whole if negative else whole\n\n\ndef format_cents(cents, symbol=\"$\"):\n    \"\"\"1234567 -> '$12,345.67'.\"\"\"\n    sign = \"-\" if cents < 0 else \"\"\n    dollars, rest = divmod(abs(cents), 100)\n    return f\"{sign}{symbol}{dollars:,}.{rest:02d}\"\n\n\ndef parse_amount(text):\n    \"\"\"'-$1,234.5' -> -123450.\"\"\"\n    cleaned = text.strip().replace(\",\", \"\")\n    negative = cleaned.startswith(\"-\")\n    cleaned = cleaned.lstrip(\"-\").lstrip(\"$\")\n    dollars, _, cents = cleaned.partition(\".\")\n    value = int(dollars or \"0\") * 100 + int((cents + \"00\")[:2])\n    return -value if negative else value\n\n# parse_amount: keep this module free of I/O\n\n# parse_amount: keep this module free of I/O\n\n# round_half_up: keep this module free of I/O\n\n\ndef split_evenly(cents, parts):\n    \"\"\"Split cents into parts that differ by at most one cent.\"\"\"\n    share, extra = divmod(cents, parts)\n    return [share + (1 if k < extra else 0) for k in range(parts)]\n\n# add_tax: keep this module free of I/O\n\n\ndef percent_of(cents, percent):\n    \"\"\"percent % of cents, rounded half up.\"\"\"\n    return round_half_up(cents * percent, 100)\n\n# round_half_up: keep this module free of I/O\n\n# split_evenly: keep this module free of I/O\n\n# percent_of: keep this module free of I/O\n\n\ndef add_tax(cents, basis_points):\n    \"\"\"cents plus a tax given in basis points (825 = 8.25%).\"\"\"\n    return cents + round_half_up(cents * basis_points, 10000)\n\n# format_cents: keep this module free of I/O\n\n# percent_of: keep this module free of I/O\n\n# convert: keep this module free of I/O\n\n# percent_of: keep this module free of I/O\n\n# parse_amount: keep this module free of I/O\n\n\ndef convert(cents, rate_numerator, rate_denominator):\n    \"\"\"cents at an exchange rate given as a fraction.\"\"\"\n    return round_half_up(cents * rate_numerator, rate_denominator)\n\n# add_tax: keep this module free of I/O\n"
+   },
+   "date": "2025-04-02T07:38:00Z",
+   "id": "4567e0a9b7",
+   "message": "style: note on add_tax",
+   "parent": "8a8e92f63b"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "README.md": "# moneyfmt\n\nMoney amounts held as integer cents.\n\n## parse_amount\n\nSee `tests/test_core.py` for parse_amount examples.\n\n## split_evenly\n\nSee `tests/test_core.py` for split_evenly examples.\n\n## add_tax\n\nSee `tests/test_core.py` for add_tax examples.\n\n## parse_amount\n\nSee `tests/test_core.py` for parse_amount examples.\n\n## round_half_up\n\nSee `tests/test_core.py` for round_half_up examples.\n\n## round_half_up\n\nSee `tests/test_core.py` for round_half_up examples.\n\n## percent_of\n\nSee `tests/test_core.py` for percent_of examples.\n\n## format_cents\n\nSee `tests/test_core.py` for format_cents examples.\n\n## add_tax\n\nSee `tests/test_core.py` for add_tax examples.\n\n## format_cents\n\nSee `tests/test_core.py` for format_cents examples.\n\n## percent_of\n\nSee `tests/test_core.py` for percent_of examples.\n"
+   },
+   "date": "2025-04-02T11:01:00Z",
+   "id": "080a5d15fc",
+   "message": "docs: document percent_of",
+   "parent": "4567e0a9b7"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how round_half_up behaves on edge inputs\n- note how add_tax behaves on edge inputs\n- note how parse_amount behaves on edge inputs\n- note how add_tax behaves on edge inputs\n- note how split_evenly behaves on edge inputs\n"
+   },
+   "date": "2025-04-02T17:24:00Z",
+   "id": "af1be78ce3",
+   "message": "docs: changelog entry for split_evenly",
+   "parent": "080a5d15fc"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "moneyfmt/__init__.py": "\"\"\"Money amounts held as integer cents.\"\"\"\n\n__version__ = \"0.1.10\"\n"
+   },
+   "date": "2025-04-03T14:48:00Z",
+   "id": "8ad0213d75",
+   "message": "chore: bump version to 0.1.10",
+   "parent": "af1be78ce3"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how round_half_up behaves on edge inputs\n- note how add_tax behaves on edge inputs\n- note how parse_amount behaves on edge inputs\n- note how add_tax behaves on edge inputs\n- note how split_evenly behaves on edge inputs\n- note how round_half_up behaves on edge inputs\n"
+   },
+   "date": "2025-04-03T23:49:00Z",
+   "id": "eb70f0f8cf",
+   "message": "docs: changelog entry for round_half_up",
+   "parent": "8ad0213d75"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how round_half_up behaves on edge inputs\n- note how add_tax behaves on edge inputs\n- note how parse_amount behaves on edge inputs\n- note how add_tax behaves on edge inputs\n- note how split_evenly behaves on edge inputs\n- note how round_half_up behaves on edge inputs\n- note how percent_of behaves on edge inputs\n"
+   },
+   "date": "2025-04-05T03:25:00Z",
+   "id": "bb5c76a6e1",
+   "message": "docs: changelog entry for percent_of",
+   "parent": "eb70f0f8cf"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how round_half_up behaves on edge inputs\n- note how add_tax behaves on edge inputs\n- note how parse_amount behaves on edge inputs\n- note how add_tax behaves on edge inputs\n- note how split_evenly behaves on edge inputs\n- note how round_half_up behaves on edge inputs\n- note how percent_of behaves on edge inputs\n- note how convert behaves on edge inputs\n"
+   },
+   "date": "2025-04-05T15:31:00Z",
+   "id": "23779a1232",
+   "message": "docs: changelog entry for convert",
+   "parent": "bb5c76a6e1"
+  },
+  {
+   "author": "Ada Park",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how round_half_up behaves on edge inputs\n- note how add_tax behaves on edge inputs\n- note how parse_amount behaves on edge inputs\n- note how add_tax behaves on edge inputs\n- note how split_evenly behaves on edge inputs\n- note how round_half_up behaves on edge inputs\n- note how percent_of behaves on edge inputs\n- note how convert behaves on edge inputs\n- note how split_evenly behaves on edge inputs\n"
+   },
+   "date": "2025-04-05T21:53:00Z",
+   "id": "02a495d5c9",
+   "message": "docs: changelog entry for split_evenly",
+   "parent": "23779a1232"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how round_half_up behaves on edge inputs\n- note how add_tax behaves on edge inputs\n- note how parse_amount behaves on edge inputs\n- note how add_tax behaves on edge inputs\n- note how split_evenly behaves on edge inputs\n- note how round_half_up behaves on edge inputs\n- note how percent_of behaves on edge inputs\n- note how convert behaves on edge inputs\n- note how split_evenly behaves on edge inputs\n- note how add_tax behaves on edge inputs\n"
+   },
+   "date": "2025-04-07T04:38:00Z",
+   "id": "bac4d4c3f1",
+   "message": "docs: changelog entry for add_tax",
+   "parent": "02a495d5c9"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "tests/test_core.py": "import unittest\n\nfrom moneyfmt import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_round_half_up(self):\n        self.assertEqual(core.round_half_up(5, 10), 1)\n        self.assertEqual(core.round_half_up(-15, 10), -2)\n        self.assertEqual(core.round_half_up(14, 10), 1)\n\n    def test_format_cents(self):\n        self.assertEqual(core.format_cents(1234567), \"$12,345.67\")\n        self.assertEqual(core.format_cents(-5), \"-$0.05\")\n\n    def test_parse_amount(self):\n        self.assertEqual(core.parse_amount(\"-$1,234.5\"), -123450)\n        self.assertEqual(core.parse_amount(\"$0.07\"), 7)\n\n    def test_format_zero(self):\n        self.assertEqual(core.format_cents(0), \"$0.00\")\n\n    def test_split_evenly(self):\n        self.assertEqual(core.split_evenly(100, 3), [34, 33, 33])\n\n    def test_parse_whole(self):\n        self.assertEqual(core.parse_amount(\"12\"), 1200)\n\n    def test_percent_of(self):\n        self.assertEqual(core.percent_of(250, 10), 25)\n\n    def test_format_euro(self):\n        self.assertEqual(core.format_cents(150, \"\u20ac\"), \"\u20ac1.50\")\n\n    def test_add_tax(self):\n        self.assertEqual(core.add_tax(1000, 800), 1080)\n\n    def test_convert(self):\n        self.assertEqual(core.convert(100, 3, 2), 150)\n\n    def test_round_exact(self):\n        self.assertEqual(core.round_half_up(20, 10), 2)\n"
+   },
+   "date": "2025-04-07T18:13:00Z",
+   "id": "5863533a7a",
+   "message": "test: cover exact division",
+   "parent": "bac4d4c3f1"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "moneyfmt/core.py": "\"\"\"Money amounts held as integer cents.\"\"\"\n\n\ndef round_half_up(numerator, denominator):\n    \"\"\"numerator / denominator to the nearest integer, halves away from zero.\"\"\"\n    negative = (numerator < 0) != (denominator < 0)\n    whole, remainder = divmod(abs(numerator), abs(denominator))\n    if 2 * remainder > abs(denominator):\n        whole += 1\n    return -whole if negative else whole\n\n\ndef format_cents(cents, symbol=\"$\"):\n    \"\"\"1234567 -> '$12,345.67'.\"\"\"\n    sign = \"-\" if cents < 0 else \"\"\n    dollars, rest = divmod(abs(cents), 100)\n    return f\"{sign}{symbol}{dollars:,}.{rest:02d}\"\n\n\ndef parse_amount(text):\n    \"\"\"'-$1,234.5' -> -123450.\"\"\"\n    cleaned = text.strip().replace(\",\", \"\")\n    negative = cleaned.startswith(\"-\")\n    cleaned = cleaned.lstrip(\"-\").lstrip(\"$\")\n    dollars, _, cents = cleaned.partition(\".\")\n    value = int(dollars or \"0\") * 100 + int((cents + \"00\")[:2])\n    return -value if negative else value\n\n# parse_amount: keep this module free of I/O\n\n# parse_amount: keep this module free of I/O\n\n# round_half_up: keep this module free of I/O\n\n\ndef split_evenly(cents, parts):\n    \"\"\"Split cents into parts that differ by at most one cent.\"\"\"\n    share, extra = divmod(cents, parts)\n    return [share + (1 if k < extra else 0) for k in range(parts)]\n\n# add_tax: keep this module free of I/O\n\n\ndef percent_of(cents, percent):\n    \"\"\"percent % of cents, rounded half up.\"\"\"\n    return round_half_up(cents * percent, 100)\n\n# round_half_up: keep this module free of I/O\n\n# split_evenly: keep this module free of I/O\n\n# percent_of: keep this module free of I/O\n\n\ndef add_tax(cents, basis_points):\n    \"\"\"cents plus a tax given in basis points (825 = 8.25%).\"\"\"\n    return cents + round_half_up(cents * basis_points, 10000)\n\n# format_cents: keep this module free of I/O\n\n# percent_of: keep this module free of I/O\n\n# convert: keep this module free of I/O\n\n# percent_of: keep this module free of I/O\n\n# parse_amount: keep this module free of I/O\n\n\ndef convert(cents, rate_numerator, rate_denominator):\n    \"\"\"cents at an exchange rate given as a fraction.\"\"\"\n    return round_half_up(cents * rate_numerator, rate_denominator)\n\n# add_tax: keep this module free of I/O\n\n\ndef format_plain(cents):\n    \"\"\"1234 -> '12.34', no symbol or separators.\"\"\"\n    return format_cents(cents, symbol=\"\").replace(\",\", \"\")\n",
+    "tests/test_core.py": "import unittest\n\nfrom moneyfmt import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_round_half_up(self):\n        self.assertEqual(core.round_half_up(5, 10), 1)\n        self.assertEqual(core.round_half_up(-15, 10), -2)\n        self.assertEqual(core.round_half_up(14, 10), 1)\n\n    def test_format_cents(self):\n        self.assertEqual(core.format_cents(1234567), \"$12,345.67\")\n        self.assertEqual(core.format_cents(-5), \"-$0.05\")\n\n    def test_parse_amount(self):\n        self.assertEqual(core.parse_amount(\"-$1,234.5\"), -123450)\n        self.assertEqual(core.parse_amount(\"$0.07\"), 7)\n\n    def test_format_zero(self):\n        self.assertEqual(core.format_cents(0), \"$0.00\")\n\n    def test_split_evenly(self):\n        self.assertEqual(core.split_evenly(100, 3), [34, 33, 33])\n\n    def test_parse_whole(self):\n        self.assertEqual(core.parse_amount(\"12\"), 1200)\n\n    def test_percent_of(self):\n        self.assertEqual(core.percent_of(250, 10), 25)\n\n    def test_format_euro(self):\n        self.assertEqual(core.format_cents(150, \"\u20ac\"), \"\u20ac1.50\")\n\n    def test_add_tax(self):\n        self.assertEqual(core.add_tax(1000, 800), 1080)\n\n    def test_convert(self):\n        self.assertEqual(core.convert(100, 3, 2), 150)\n\n    def test_round_exact(self):\n        self.assertEqual(core.round_half_up(20, 10), 2)\n\n    def test_format_plain(self):\n        self.assertEqual(core.format_plain(123456), \"1234.56\")\n"
+   },
+   "date": "2025-04-08T15:31:00Z",
+   "id": "7a3be15abf",
+   "message": "feat: format_plain",
+   "parent": "5863533a7a"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "moneyfmt/__init__.py": "\"\"\"Money amounts held as integer cents.\"\"\"\n\n__version__ = \"0.1.11\"\n"
+   },
+   "date": "2025-04-09T05:50:00Z",
+   "id": "68bcaa3234",
+   "message": "chore: bump version to 0.1.11",
+   "parent": "7a3be15abf"
+  },
+  {
+   "author": "Farah Haddad",
+   "changes": {
+    "moneyfmt/core.py": "\"\"\"Money amounts held as integer cents.\"\"\"\n\n\ndef round_half_up(numerator, denominator):\n    \"\"\"numerator / denominator to the nearest integer, halves away from zero.\"\"\"\n    negative = (numerator < 0) != (denominator < 0)\n    whole, remainder = divmod(abs(numerator), abs(denominator))\n    if 2 * remainder > abs(denominator):\n        whole += 1\n    return -whole if negative else whole\n\n\ndef format_cents(cents, symbol=\"$\"):\n    \"\"\"1234567 -> '$12,345.67'.\"\"\"\n    sign = \"-\" if cents < 0 else \"\"\n    dollars, rest = divmod(abs(cents), 100)\n    return f\"{sign}{symbol}{dollars:,}.{rest:02d}\"\n\n\ndef parse_amount(text):\n    \"\"\"'-$1,234.5' -> -123450.\"\"\"\n    cleaned = text.strip().replace(\",\", \"\")\n    negative = cleaned.startswith(\"-\")\n    cleaned = cleaned.lstrip(\"-\").lstrip(\"$\")\n    dollars, _, cents = cleaned.partition(\".\")\n    value = int(dollars or \"0\") * 100 + int((cents + \"00\")[:2])\n    return -value if negative else value\n\n# parse_amount: keep this module free of I/O\n\n# parse_amount: keep this module free of I/O\n\n# round_half_up: keep this module free of I/O\n\n\ndef split_evenly(cents, parts):\n    \"\"\"Split cents into parts that differ by at most one cent.\"\"\"\n    share, extra = divmod(cents, parts)\n    return [share + (1 if k < extra else 0) for k in range(parts)]\n\n# add_tax: keep this module free of I/O\n\n\ndef percent_of(cents, percent):\n    \"\"\"percent % of cents, rounded half up.\"\"\"\n    return round_half_up(cents * percent, 100)\n\n# round_half_up: keep this module free of I/O\n\n# split_evenly: keep this module free of I/O\n\n# percent_of: keep this module free of I/O\n\n\ndef add_tax(cents, basis_points):\n    \"\"\"cents plus a tax given in basis points (825 = 8.25%).\"\"\"\n    return cents + round_half_up(cents * basis_points, 10000)\n\n# format_cents: keep this module free of I/O\n\n# percent_of: keep this module free of I/O\n\n# convert: keep this module free of I/O\n\n# percent_of: keep this module free of I/O\n\n# parse_amount: keep this module free of I/O\n\n\ndef convert(cents, rate_numerator, rate_denominator):\n    \"\"\"cents at an exchange rate given as a fraction.\"\"\"\n    return round_half_up(cents * rate_numerator, rate_denominator)\n\n# add_tax: keep this module free of I/O\n\n\ndef format_plain(cents):\n    \"\"\"1234 -> '12.34', no symbol or separators.\"\"\"\n    return format_cents(cents, symbol=\"\").replace(\",\", \"\")\n\n# parse_amount: keep this module free of I/O\n"
+   },
+   "date": "2025-04-09T20:29:00Z",
+   "id": "590ef0418e",
+   "message": "style: note on parse_amount",
+   "parent": "68bcaa3234"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "moneyfmt/core.py": "\"\"\"Money amounts held as integer cents.\"\"\"\n\n\ndef round_half_up(numerator, denominator):\n    \"\"\"numerator / denominator to the nearest integer, halves away from zero.\"\"\"\n    negative = (numerator < 0) != (denominator < 0)\n    whole, remainder = divmod(abs(numerator), abs(denominator))\n    if 2 * remainder > abs(denominator):\n        whole += 1\n    return -whole if negative else whole\n\n\ndef format_cents(cents, symbol=\"$\"):\n    \"\"\"1234567 -> '$12,345.67'.\"\"\"\n    sign = \"-\" if cents < 0 else \"\"\n    dollars, rest = divmod(abs(cents), 100)\n    return f\"{sign}{symbol}{dollars:,}.{rest:02d}\"\n\n\ndef parse_amount(text):\n    \"\"\"'-$1,234.5' -> -123450.\"\"\"\n    cleaned = text.strip().replace(\",\", \"\")\n    negative = cleaned.startswith(\"-\")\n    cleaned = cleaned.lstrip(\"-\").lstrip(\"$\")\n    dollars, _, cents = cleaned.partition(\".\")\n    value = int(dollars or \"0\") * 100 + int((cents + \"00\")[:2])\n    return -value if negative else value\n\n# parse_amount: keep this module free of I/O\n\n# parse_amount: keep this module free of I/O\n\n# round_half_up: keep this module free of I/O\n\n\ndef split_evenly(cents, parts):\n    \"\"\"Split cents into parts that differ by at most one cent.\"\"\"\n    share, extra = divmod(cents, parts)\n    return [share + (1 if k < extra else 0) for k in range(parts)]\n\n# add_tax: keep this module free of I/O\n\n\ndef percent_of(cents, percent):\n    \"\"\"percent % of cents, rounded half up.\"\"\"\n    return round_half_up(cents * percent, 100)\n\n# round_half_up: keep this module free of I/O\n\n# split_evenly: keep this module free of I/O\n\n# percent_of: keep this module free of I/O\n\n\ndef add_tax(cents, basis_points):\n    \"\"\"cents plus a tax given in basis points (825 = 8.25%).\"\"\"\n    return cents + round_half_up(cents * basis_points, 10000)\n\n# format_cents: keep this module free of I/O\n\n# percent_of: keep this module free of I/O\n\n# convert: keep this module free of I/O\n\n# percent_of: keep this module free of I/O\n\n# parse_amount: keep this module free of I/O\n\n\ndef convert(cents, rate_numerator, rate_denominator):\n    \"\"\"cents at an exchange rate given as a fraction.\"\"\"\n    return round_half_up(cents * rate_numerator, rate_denominator)\n\n# add_tax: keep this module free of I/O\n\n\ndef format_plain(cents):\n    \"\"\"1234 -> '12.34', no symbol or separators.\"\"\"\n    return format_cents(cents, symbol=\"\").replace(\",\", \"\")\n\n# parse_amount: keep this module free of I/O\n\n# round_half_up: keep this module free of I/O\n"
+   },
+   "date": "2025-04-10T11:46:00Z",
+   "id": "4293914d38",
+   "message": "style: note on round_half_up",
+   "parent": "590ef0418e"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "CHANGELOG.md": "# Changelog\n\n- 0.1.0: first release\n- note how round_half_up behaves on edge inputs\n- note how add_tax behaves on edge inputs\n- note how parse_amount behaves on edge inputs\n- note how add_tax behaves on edge inputs\n- note how split_evenly behaves on edge inputs\n- note how round_half_up behaves on edge inputs\n- note how percent_of behaves on edge inputs\n- note how convert behaves on edge inputs\n- note how split_evenly behaves on edge inputs\n- note how add_tax behaves on edge inputs\n- note how percent_of behaves on edge inputs\n"
+   },
+   "date": "2025-04-11T13:36:00Z",
+   "id": "86556fbd51",
+   "message": "docs: changelog entry for percent_of",
+   "parent": "4293914d38"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "moneyfmt/__init__.py": "\"\"\"Money amounts held as integer cents.\"\"\"\n\n__version__ = \"0.1.12\"\n"
+   },
+   "date": "2025-04-12T20:22:00Z",
+   "id": "8e50e00651",
+   "message": "chore: bump version to 0.1.12",
+   "parent": "86556fbd51"
+  },
+  {
+   "author": "Ben Ortiz",
+   "changes": {
+    "moneyfmt/core.py": "\"\"\"Money amounts held as integer cents.\"\"\"\n\n\ndef round_half_up(numerator, denominator):\n    \"\"\"numerator / denominator to the nearest integer, halves away from zero.\"\"\"\n    negative = (numerator < 0) != (denominator < 0)\n    whole, remainder = divmod(abs(numerator), abs(denominator))\n    if 2 * remainder > abs(denominator):\n        whole += 1\n    return -whole if negative else whole\n\n\ndef format_cents(cents, symbol=\"$\"):\n    \"\"\"1234567 -> '$12,345.67'.\"\"\"\n    sign = \"-\" if cents < 0 else \"\"\n    dollars, rest = divmod(abs(cents), 100)\n    return f\"{sign}{symbol}{dollars:,}.{rest:02d}\"\n\n\ndef parse_amount(text):\n    \"\"\"'-$1,234.5' -> -123450.\"\"\"\n    cleaned = text.strip().replace(\",\", \"\")\n    negative = cleaned.startswith(\"-\")\n    cleaned = cleaned.lstrip(\"-\").lstrip(\"$\")\n    dollars, _, cents = cleaned.partition(\".\")\n    value = int(dollars or \"0\") * 100 + int((cents + \"00\")[:2])\n    return -value if negative else value\n\n# parse_amount: keep this module free of I/O\n\n# parse_amount: keep this module free of I/O\n\n# round_half_up: keep this module free of I/O\n\n\ndef split_evenly(cents, parts):\n    \"\"\"Split cents into parts that differ by at most one cent.\"\"\"\n    share, extra = divmod(cents, parts)\n    return [share + (1 if k < extra else 0) for k in range(parts)]\n\n# add_tax: keep this module free of I/O\n\n\ndef percent_of(cents, percent):\n    \"\"\"percent % of cents, rounded half up.\"\"\"\n    return round_half_up(cents * percent, 100)\n\n# round_half_up: keep this module free of I/O\n\n# split_evenly: keep this module free of I/O\n\n# percent_of: keep this module free of I/O\n\n\ndef add_tax(cents, basis_points):\n    \"\"\"cents plus a tax given in basis points (825 = 8.25%).\"\"\"\n    return cents + round_half_up(cents * basis_points, 10000)\n\n# format_cents: keep this module free of I/O\n\n# percent_of: keep this module free of I/O\n\n# convert: keep this module free of I/O\n\n# percent_of: keep this module free of I/O\n\n# parse_amount: keep this module free of I/O\n\n\ndef convert(cents, rate_numerator, rate_denominator):\n    \"\"\"cents at an exchange rate given as a fraction.\"\"\"\n    return round_half_up(cents * rate_numerator, rate_denominator)\n\n# add_tax: keep this module free of I/O\n\n\ndef format_plain(cents):\n    \"\"\"1234 -> '12.34', no symbol or separators.\"\"\"\n    return format_cents(cents, symbol=\"\").replace(\",\", \"\")\n\n# parse_amount: keep this module free of I/O\n\n# round_half_up: keep this module free of I/O\n\n# round_half_up: keep this module free of I/O\n"
+   },
+   "date": "2025-04-13T18:43:00Z",
+   "id": "97e2b4d7b6",
+   "message": "style: note on round_half_up",
+   "parent": "8e50e00651"
+  },
+  {
+   "author": "Chen Li",
+   "changes": {
+    "README.md": "# moneyfmt\n\nMoney amounts held as integer cents.\n\n## parse_amount\n\nSee `tests/test_core.py` for parse_amount examples.\n\n## split_evenly\n\nSee `tests/test_core.py` for split_evenly examples.\n\n## add_tax\n\nSee `tests/test_core.py` for add_tax examples.\n\n## parse_amount\n\nSee `tests/test_core.py` for parse_amount examples.\n\n## round_half_up\n\nSee `tests/test_core.py` for round_half_up examples.\n\n## round_half_up\n\nSee `tests/test_core.py` for round_half_up examples.\n\n## percent_of\n\nSee `tests/test_core.py` for percent_of examples.\n\n## format_cents\n\nSee `tests/test_core.py` for format_cents examples.\n\n## add_tax\n\nSee `tests/test_core.py` for add_tax examples.\n\n## format_cents\n\nSee `tests/test_core.py` for format_cents examples.\n\n## percent_of\n\nSee `tests/test_core.py` for percent_of examples.\n\n## percent_of\n\nSee `tests/test_core.py` for percent_of examples.\n"
+   },
+   "date": "2025-04-14T06:50:00Z",
+   "id": "ae35cc0f35",
+   "message": "docs: document percent_of",
+   "parent": "97e2b4d7b6"
+  },
+  {
+   "author": "Dana Kim",
+   "changes": {
+    "moneyfmt/__init__.py": "\"\"\"Money amounts held as integer cents.\"\"\"\n\n__version__ = \"0.1.13\"\n"
+   },
+   "date": "2025-04-15T07:58:00Z",
+   "id": "219c186464",
+   "message": "chore: bump version to 0.1.13",
+   "parent": "ae35cc0f35"
+  },
+  {
+   "author": "Eli Novak",
+   "changes": {
+    "tests/test_core.py": "import unittest\n\nfrom moneyfmt import core\n\n\nclass CoreTest(unittest.TestCase):\n    def test_round_half_up(self):\n        self.assertEqual(core.round_half_up(5, 10), 1)\n        self.assertEqual(core.round_half_up(-15, 10), -2)\n        self.assertEqual(core.round_half_up(14, 10), 1)\n\n    def test_format_cents(self):\n        self.assertEqual(core.format_cents(1234567), \"$12,345.67\")\n        self.assertEqual(core.format_cents(-5), \"-$0.05\")\n\n    def test_parse_amount(self):\n        self.assertEqual(core.parse_amount(\"-$1,234.5\"), -123450)\n        self.assertEqual(core.parse_amount(\"$0.07\"), 7)\n\n    def test_format_zero(self):\n        self.assertEqual(core.format_cents(0), \"$0.00\")\n\n    def test_split_evenly(self):\n        self.assertEqual(core.split_evenly(100, 3), [34, 33, 33])\n\n    def test_parse_whole(self):\n        self.assertEqual(core.parse_amount(\"12\"), 1200)\n\n    def test_percent_of(self):\n        self.assertEqual(core.percent_of(250, 10), 25)\n\n    def test_format_euro(self):\n        self.assertEqual(core.format_cents(150, \"\u20ac\"), \"\u20ac1.50\")\n\n    def test_add_tax(self):\n        self.assertEqual(core.add_tax(1000, 800), 1080)\n\n    def test_convert(self):\n        self.assertEqual(core.convert(100, 3, 2), 150)\n\n    def test_round_exact(self):\n        self.assertEqual(core.round_half_up(20, 10), 2)\n\n    def test_format_plain(self):\n        self.assertEqual(core.format_plain(123456), \"1234.56\")\n\n    def test_parse_spaces(self):\n        self.assertEqual(core.parse_amount(\"  $3.10 \"), 310)\n"
+   },
+   "date": "2025-04-15T13:10:00Z",
+   "id": "cffc482958",
+   "message": "test: cover padding",
+   "parent": "219c186464"
+  }
+ ],
+ "repo": "moneyfmt"
+}

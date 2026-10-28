@@ -1,0 +1,37 @@
+{
+  "description": "Boundary: HEAD itself (64 of 64) is the first bad commit; all three calls are needed.",
+  "repo": "iniparse",
+  "calls": [
+    [
+      8,
+      16,
+      24,
+      32,
+      40,
+      48,
+      56
+    ],
+    [
+      57,
+      58,
+      59,
+      60,
+      61,
+      62,
+      63
+    ],
+    [
+      64
+    ]
+  ],
+  "submit": {
+    "first_bad": 64,
+    "last_good": 63,
+    "skipped_between": []
+  },
+  "expect": {
+    "valid": true,
+    "score": 1.0,
+    "check": null
+  }
+}

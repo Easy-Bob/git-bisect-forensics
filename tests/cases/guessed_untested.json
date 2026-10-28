@@ -1,0 +1,25 @@
+{
+  "description": "The right commits, guessed from commit messages after one call: never tested.",
+  "repo": "moneyfmt",
+  "calls": [
+    [
+      8,
+      16,
+      24,
+      32,
+      40,
+      48,
+      56
+    ]
+  ],
+  "submit": {
+    "first_bad": 37,
+    "last_good": 36,
+    "skipped_between": []
+  },
+  "expect": {
+    "valid": false,
+    "score": 0.5,
+    "check": "proven"
+  }
+}

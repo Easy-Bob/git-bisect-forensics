@@ -1,0 +1,34 @@
+{
+  "description": "Boundary: the regression lands right after the known-good root (2 of 64); position 1 must be tested to prove it.",
+  "repo": "dateparse",
+  "calls": [
+    [
+      8,
+      16,
+      24,
+      32,
+      40,
+      48,
+      56
+    ],
+    [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ]
+  ],
+  "submit": {
+    "first_bad": 2,
+    "last_good": 1,
+    "skipped_between": []
+  },
+  "expect": {
+    "valid": true,
+    "score": 1.0,
+    "check": null
+  }
+}

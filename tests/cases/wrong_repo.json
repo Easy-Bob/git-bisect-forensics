@@ -1,0 +1,35 @@
+{
+  "description": "The submission names another repo than the task's.",
+  "repo": "moneyfmt",
+  "calls": [
+    [
+      8,
+      16,
+      24,
+      32,
+      40,
+      48,
+      56
+    ],
+    [
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39
+    ]
+  ],
+  "submit": {
+    "repo": "dateparse",
+    "first_bad": 37,
+    "last_good": 36,
+    "skipped_between": []
+  },
+  "expect": {
+    "valid": false,
+    "score": 0.0,
+    "check": "submitted-shape"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "description": "A 33-commit history with a misleading 'fix rounding' message on good commit 16.",
+  "repo": "csvsum",
+  "calls": [
+    [
+      4,
+      8,
+      12,
+      16,
+      20,
+      24,
+      28
+    ],
+    [
+      17,
+      18,
+      19
+    ]
+  ],
+  "submit": {
+    "first_bad": 17,
+    "last_good": 16,
+    "skipped_between": []
+  },
+  "expect": {
+    "valid": true,
+    "score": 1.0,
+    "check": null
+  }
+}
